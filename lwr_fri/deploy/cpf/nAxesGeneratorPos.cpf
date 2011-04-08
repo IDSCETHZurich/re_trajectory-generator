@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "cpf.dtd">
+<!-- Properties of the Position-Generator component -->
+<properties>
+<simple name="num_axes" type="ushort"> <description></description><value>7</value></simple>
+<struct name="max_vel" type="array">  <description>The maximum velocity in trajectory</description> 
+   <simple name="0" type="double"><description>Axis 1</description><value>0.1</value></simple>
+   <simple name="1" type="double"><description>Axis 2</description><value>0.1</value></simple>
+   <simple name="2" type="double"><description>Axis 3</description><value>0.1</value></simple>
+   <simple name="2" type="double"><description>Axis 4</description><value>0.1</value></simple>
+   <simple name="2" type="double"><description>Axis 5</description><value>0.1</value></simple>
+   <simple name="2" type="double"><description>Axis 6</description><value>0.1</value></simple>
+   <simple name="2" type="double"><description>Axis 7</description><value>0.1</value></simple>
+</struct>
+<struct name="max_acc" type="array">  <description>The maximum acceleration in trajectory</description> 
+   <simple name="0" type="double"><description>Axis 1</description><value>1.0</value></simple>
+   <simple name="1" type="double"><description>Axis 2</description><value>1.0</value></simple>
+   <simple name="2" type="double"><description>Axis 3</description><value>1.0</value></simple>
+   <simple name="2" type="double"><description>Axis 4</description><value>1.0</value></simple>
+   <simple name="2" type="double"><description>Axis 5</description><value>1.0</value></simple>
+   <simple name="2" type="double"><description>Axis 6</description><value>1.0</value></simple>
+   <simple name="2" type="double"><description>Axis 7</description><value>1.0</value></simple>
+</struct>
+</properties>

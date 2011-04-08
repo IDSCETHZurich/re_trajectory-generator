@@ -1,0 +1,9 @@
+time timeStamp
+Poison poisonStamp
+string base_frame_uri
+string target_frame_uri
+# need some more frames?	
+CartesianVector linear_stiffness
+CartesianVector rotational_stiffness
+CartesianVector linear_damping
+CartesianVector rotational_damping

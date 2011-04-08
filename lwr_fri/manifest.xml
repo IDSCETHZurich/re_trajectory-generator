@@ -1,0 +1,21 @@
+<package>
+  <description brief="LWR">
+
+     LWR FRI components
+
+  </description>
+  <author>Ruben Smits</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/LWR</url>
+  <!--<depend package="kuka_lwr_fri"/>-->
+  <depend package="kuka_typekit"/>
+  <depend package="rtt"/>
+  <depend package="ocl"/>
+  <depend package="orocos_kdl"/>
+  <depend package="geometry_msgs"/>
+  <depend package="tf_conversions"/>
+
+</package>
+
+

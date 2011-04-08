@@ -1,0 +1,17 @@
+<package>
+  <description brief="trajectory_generators">
+     trajectory_generators
+  </description>
+  <author>rsmits</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/trajectory_generators</url>
+
+  <depend package="rtt"/>
+  <depend package="ocl"/>
+  <depend package="brics_actuator"/>
+  <depend package="orocos_kdl"/>
+  <depend package="geometry_msgs"/>
+  <!--<depend package="kuka_typekit"/>-->
+  <depend package="tf_conversions"/>
+</package>

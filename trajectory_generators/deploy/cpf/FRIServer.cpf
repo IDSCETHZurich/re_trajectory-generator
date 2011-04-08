@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "cpf.dtd">
+<properties>
+  <simple name="local_port" type="long"><description>local port</description><value>49938</value></simple>
+  <simple name="control_mode" type="long">
+  <description>selected control mode, (1
+: position control,2 : velocity control, 3 : torque control, 4 : cartesian position control, 5 : cartesian TCP wrench control
+  </description><value>1</value></simple>
+</properties>

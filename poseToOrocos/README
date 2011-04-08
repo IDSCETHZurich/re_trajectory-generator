@@ -1,0 +1,2 @@
+to Run:
+rosrun poseToOrocos posePub.py 

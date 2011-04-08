@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "cpf.dtd">
+<properties>
+	<simple name="Import" type="string"><value>lwr_fri</value></simple>
+	<simple name="Import" type="string"><value>kdl_typekit</value></simple>
+	<simple name="Import" type="string"><value>kuka_typekit</value></simple>
+	<simple name="Import" type="string"><value>rtt_ros_integration</value></simple>
+	<simple name="Import" type="string"><value>rtt_ros_integration_geometry_msgs</value></simple>
+	<simple name="Import" type="string"><value>trajectory_generators</value></simple>
+
+	<struct name="FRIServer" type="lwr_fri::FRIComponent">
+ 		<struct name="Activity" type="NonPeriodicActivity">
+			<simple name="Priority" type="short"><value>1</value></simple>
+			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
+		</struct>
+    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
+		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+		<simple name="LoadProperties" type="string"><value>cpf/FRIServer.cpf</value></simple>
+		<struct name="Ports" type="PropertyBag">
+			<simple name="msrJntPos" type="string"><value>JointPositionMeasured</value></simple>
+			<simple name="cmdJntPos" type="string"><value>JointPositionDesired</value></simple>
+		</struct>
+	</struct>
+
+	<struct name="trajectoryGeneratorJntPos" type="trajectory_generators::CartesianGeneratorPos">
+		<struct name="Activity" type="PeriodicActivity">
+			<simple name="Period" type="double"><value>0.01</value></simple>
+			<simple name="Priority" type="short"><value>1</value></simple>
+    	<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
+  		</struct>
+		<simple name="AutoConf" type="boolean"><value>1</value></simple>
+		<simple name="AutoStart" type="boolean"><value>0</value></simple>
+		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGeneratorPos.cpf</value></simple>
+		<struct name="Ports" type="PropertyBag">
+     		<simple name="JointPositionMsr" type="string"><value>JointPositionMeasured</value></simple>
+			<simple name="JointPositionDes" type="string"><value>JointPositionDesired</value></simple>
+		</struct>
+	</struct>
+</properties>
+
