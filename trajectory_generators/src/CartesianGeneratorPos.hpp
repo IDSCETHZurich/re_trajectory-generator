@@ -67,6 +67,7 @@ namespace trajectory_generators
 
       geometry_msgs::Pose lastCommandedPose;
       std::vector<double> lastCommndedPoseJntPos;
+      std::vector<double> jntVel;
 
       double max_duration;
       bool is_moving;

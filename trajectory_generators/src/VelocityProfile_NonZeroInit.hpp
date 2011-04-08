@@ -17,6 +17,7 @@ public:
 	double getDuration(void);
 	bool setDuration(double newDuration);
 	double getPos(double time);
+	double getVel(double time);
 private:
 	double t1, t2, t3, duration, timeScale;
 	// Profile mode in order

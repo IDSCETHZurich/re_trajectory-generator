@@ -107,14 +107,32 @@ double VelocityProfile_NonZeroInit::getDuration(){
 
 double VelocityProfile_NonZeroInit::getPos(double time){
 	for( int i = 0 ; i < (int)subVelocityProfiles.size()-1 ; i++ ){
-		if(time > subVelocityProfiles[i][0] && time <=  subVelocityProfiles[i][0] ){
+		if(time > subVelocityProfiles[i][0] && time <=  subVelocityProfiles[i+1][0] ){
 			return subVelocityProfiles[i][1] \
 					+ timeScale * subVelocityProfiles[i][2] * (time -  subVelocityProfiles[i][0]) \
 					+ 0.5 * timeScale * timeScale * subVelocityProfiles[i][3]*(time -  subVelocityProfiles[i][0])*(time -  subVelocityProfiles[i][0]);
 		}
 
 	}
-	return 0.0;
+	// if we are here, time is higher than time duration so we can call the destructor
+	int lastElement = subVelocityProfiles.size();
+	return subVelocityProfiles[lastElement][1] \
+						+ subVelocityProfiles[lastElement][2] * (duration -  subVelocityProfiles[lastElement][0]) \
+						+ 0.5 * subVelocityProfiles[lastElement][3]*(duration -  subVelocityProfiles[lastElement][0])*(duration -  subVelocityProfiles[lastElement][0]);
+}
+
+double VelocityProfile_NonZeroInit::getVel(double time){
+	for( int i = 0 ; i < (int)subVelocityProfiles.size()-1 ; i++ ){
+		if(time > subVelocityProfiles[i][0] && time <=  subVelocityProfiles[i+1][0] ){
+			return timeScale * subVelocityProfiles[i][2]  \
+					+ 0.5 * timeScale * timeScale * subVelocityProfiles[i][3]*(time -  subVelocityProfiles[i][0]);
+		}
+
+	}
+	// if we are here, time is higher than time duration so we can call the destructor
+	int lastElement = subVelocityProfiles.size();
+	return  subVelocityProfiles[lastElement][2]  \
+				+ 0.5 * subVelocityProfiles[lastElement][3]*(duration -  subVelocityProfiles[lastElement][0]);
 }
 
 

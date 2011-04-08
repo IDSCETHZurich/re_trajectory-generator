@@ -20,6 +20,7 @@ namespace trajectory_generators
     	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
     	v_max = std::vector<double>(7,2.0);
     	a_max = std::vector<double>(7,1.0);
+    	jntVel = std::vector<double>(7,0.0);
 
         //Adding InputPorts
         this->addPort("CartesianPoseDes",cmd_cartPosPort);
@@ -67,6 +68,7 @@ namespace trajectory_generators
 
     void CartesianGeneratorPos::updateHook()
     {
+    	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
     	if(cmd_cartPosPort.read(lastCommandedPose) == RTT::NewData){
     		log(Info) << "a new Pose arrived from ROS" << endlog();
     		//Do IK and reset velocity profiles
@@ -75,20 +77,34 @@ namespace trajectory_generators
     		double maxDuration = 0.0;
     		std::vector<double> jntPos;
     		msr_jntPosPort.read(jntPos);
+    		for(int i = 0; i < (int)motionProfile.size(); i++)
+    			jntVel[i] = motionProfile[i].getVel(time_passed);
     		motionProfile.clear();
     		//TODO: Check dimensions
     		for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    			motionProfile.push_back(VelocityProfile_NonZeroInit(a_max[i], v_max[i], lastCommndedPoseJntPos[i], jntPos[i], 0.0));
+    			motionProfile.push_back(VelocityProfile_NonZeroInit(a_max[i], v_max[i], lastCommndedPoseJntPos[i], jntPos[i], jntVel[i]));
     			//TODO: Add non zero velocities.
-    			//if(motionProfile[i].getDuration > maxDuration )  maxDuration = motionProfile[i].getDuration;
+    			if(motionProfile[i].getDuration() > maxDuration )
+    				maxDuration = motionProfile[i].getDuration();
     		}
+    		//Do sync
     		for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
     			motionProfile[i].setDuration(maxDuration);
     		}
 
+    		//Set times
+    		time_begin = os::TimeService::Instance()->getTicks();
+    		time_passed = 0.0;
 
     	}else{
     		//Execute current velocity profile
+    		if (motionProfile.size()==7){
+    			std::vector<double> jntPosCmd;
+    			for(int i = 0; i < (int)motionProfile.size(); i++){
+    				jntPosCmd.push_back(motionProfile[i].getPos(time_passed));
+    			}
+    			cmd_jntPosPort.write(jntPosCmd);
+    		}
 
 
     	}
