@@ -1,0 +1,7 @@
+README file of convenience
+
+Generate typekit using the following command:
+typegen -o kuka_typekit kuka_typekit lwr_fri/include/friComm.h  -t mqueue
+
+Before ROS making add modify PKG_CONFIG_PATH as follows:
+export PKG_CONFIG_PATH=/opt/orocos/lib/pkgconfig:$(rospack find rtt)/install/lib/pkgconfig:$PKG_CONFIG_PATH
