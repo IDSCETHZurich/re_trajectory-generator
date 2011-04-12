@@ -13,13 +13,14 @@ namespace trajectory_generators
     CartesianGeneratorPos::CartesianGeneratorPos(string name)
         : TaskContext(name,PreOperational)
     {
+    	PI = 3.141592;
         //Creating TaskContext
 
     	is_moving = false;
     	toROS = true;
     	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
-    	v_max = std::vector<double>(7,0.1);
-    	a_max = std::vector<double>(7,0.2);
+    	v_max = std::vector<double>(7,0.5);
+    	a_max = std::vector<double>(7,0.5);
     	jntVel = std::vector<double>(7,0.0);
     	num_axes = 7;
 
@@ -82,6 +83,7 @@ namespace trajectory_generators
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
     	if(cmd_cartPosPort.read(lastCommandedPose) == RTT::NewData){
     		log(Info) << "a new Pose arrived from ROS" << endlog();
+    		cout << "a new Pose arrived from ROS" << endl;
     		//Do IK and reset velocity profiles
     		this->ikSolver(lastCommandedPose, lastCommndedPoseJntPos);
     		//Create joint specific velocity profiles
@@ -152,17 +154,49 @@ namespace trajectory_generators
 
     bool CartesianGeneratorPos::ikSolver(geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr){
     	//TODO: Check size of jntPosDsr. Should be 7
-    	poseDsr.position.x = 0.0;
-    	poseDsr.position.y = 0.0;
-    	poseDsr.position.z = 0.0;
+    	double a2 = 0.4, a3 = 0.39, d6 = 0.078;
+    	double mod_pW, mod_pWxy, c2, s2, c3, s3;
 
-    	poseDsr.orientation.x = 0.0;
-    	poseDsr.orientation.y = 0.0;
-    	poseDsr.orientation.z = 0.0;
-    	poseDsr.orientation.w = 0.0;
+    	KDL::Rotation R = KDL::Rotation::Quaternion(poseDsr.orientation.x,poseDsr.orientation.y,poseDsr.orientation.z,poseDsr.orientation.w);
+    	KDL::Vector p(poseDsr.position.x, poseDsr.position.y, poseDsr.position.z);
+
+    	// wrist position
+    	KDL::Vector pW = p - d6 * R.UnitZ();
+
+    	//Q1
+    	jntPosDsr[0] = std::atan2(pW[1], pW[0]);
+    	mod_pW = pow(pW.Norm(),2);
+
+    	c3 = (mod_pW - a2*a2 - a3*a3)/(2*a2*a3);
+    	s3 = -sqrt(1-c3*c3);
+    	jntPosDsr[3] = atan2(s3,c3)+PI/2;
+
+    	jntPosDsr[2] = 0.0;
+
+    	mod_pWxy = sqrt(pW[0]*pW[0] + pW[1]*pW[1]);
+    	s2 = ((a2+a3*c3)*pW[2] - a3*s3*mod_pWxy)/mod_pW;
+    	c2 = ((a2+a3*c3)*mod_pWxy + a3*s3*pW[2])/mod_pW;
+    	jntPosDsr[1] = atan2(s2,c2);
+
+    	KDL::Rotation T01(cos(jntPosDsr[0]), 0.0, sin(jntPosDsr[0]), sin(jntPosDsr[0]), 0.0, -cos(jntPosDsr[0]), 0.0, 1.0, 0.0);
+    	KDL::Rotation T12(cos(jntPosDsr[1]), -sin(jntPosDsr[1]), 0.0, sin(jntPosDsr[1]), cos(jntPosDsr[1]), 0.0, 0.0 , 0.0, 1.0);
+    	KDL::Rotation T23(cos(jntPosDsr[3]), 0.0, sin(jntPosDsr[3]), sin(jntPosDsr[3]), 0.0, -cos(jntPosDsr[3]), 0.0, 1.0, 0.0);
+
+    	KDL::Rotation pose03 = T01*T12*T23;
+    	KDL::Rotation pose36 = pose03.Inverse() * R;
+
+    	jntPosDsr[4] = atan2(pose36(1,2),pose36(0,2));
+    	jntPosDsr[5] = atan2(sqrt(pose36(0,2)*pose36(0,2) + pose36(1,2)*pose36(1,2)), pose36(2,2));
+    	jntPosDsr[6] = atan2(pose36(2,1),-pose36(2,0));
+
+    	//Adjust to robot from IK coordinates
+    	jntPosDsr[1] -= PI/2;
+    	jntPosDsr[3] -= PI/2;
+    	jntPosDsr[6] -= PI;
+
 
     	for(int i=0; i < (int)jntPosDsr.size(); i++){
-    		jntPosDsr[i] = 1.0;
+    		cout << i << ":" << jntPosDsr[i] << endl;
     	}
 
     	return true;

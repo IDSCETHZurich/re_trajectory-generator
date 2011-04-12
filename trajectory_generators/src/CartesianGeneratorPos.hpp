@@ -15,6 +15,7 @@
 #include <kdl/kdl.hpp>
 #include <kdl/frames.hpp>
 
+
 //#include <brics_actuator/CartesianPose.h>
 //#include <brics_actuator/CartesianTwist.h>
 
@@ -71,6 +72,7 @@ namespace trajectory_generators
       std::vector<double> lastCommndedPoseJntPos;
       std::vector<double> jntPosCmd;
       std::vector<double> jntVel;
+      double PI;
 
       sensor_msgs::JointState jntState; // to ROS
 

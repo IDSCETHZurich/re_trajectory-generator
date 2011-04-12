@@ -10,7 +10,7 @@ def posePulisher():
 	while not rospy.is_shutdown():
 		poseDsr.position.x = 0.3
 		poseDsr.position.y = 0.3
-		poseDsr.position.z = 0.9
+		poseDsr.position.z = 0.3
 
 		poseDsr.orientation.x = 0.0
 		poseDsr.orientation.y = 0.0
@@ -18,7 +18,7 @@ def posePulisher():
 		poseDsr.orientation.w = 1.0
 
 		pub.publish(poseDsr)
-		rospy.sleep(2.0)
+		rospy.sleep(20.0)
 
 if __name__ == '__main__':
 	try:
