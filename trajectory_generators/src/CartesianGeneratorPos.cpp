@@ -1,7 +1,7 @@
 #include "CartesianGeneratorPos.hpp"
 #include <ocl/Component.hpp>
 
-ORO_CREATE_COMPONENT( trajectory_generators::CartesianGeneratorPos );
+ORO_CREATE_COMPONENT( trajectory_generators::CartesianGeneratorPos);
 
 namespace trajectory_generators
 {
@@ -18,9 +18,10 @@ namespace trajectory_generators
     	is_moving = false;
     	toROS = true;
     	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
-    	v_max = std::vector<double>(7,2.0);
-    	a_max = std::vector<double>(7,1.0);
+    	v_max = std::vector<double>(7,0.1);
+    	a_max = std::vector<double>(7,0.2);
     	jntVel = std::vector<double>(7,0.0);
+    	num_axes = 7;
 
         //Adding InputPorts
         this->addPort("CartesianPoseDes",cmd_cartPosPort);
@@ -41,6 +42,15 @@ namespace trajectory_generators
 
         //Adding Methods
         this->addOperation( "resetPosition",&CartesianGeneratorPos::resetPosition,this,OwnThread).doc("Reset generator's position" );
+
+        jntState.header.frame_id = "arm_0_link";
+        jntState.name.push_back("arm_1_joint");
+        jntState.name.push_back("arm_2_joint");
+        jntState.name.push_back("arm_3_joint");
+        jntState.name.push_back("arm_4_joint");
+        jntState.name.push_back("arm_5_joint");
+        jntState.name.push_back("arm_6_joint");
+        jntState.name.push_back("arm_7_joint");
 
     }
 
@@ -77,9 +87,16 @@ namespace trajectory_generators
     		//Create joint specific velocity profiles
     		double maxDuration = 0.0;
     		std::vector<double> jntPos;
-    		msr_jntPosPort.read(jntPos);
-    		for(int i = 0; i < (int)motionProfile.size(); i++)
-    			jntVel[i] = motionProfile[i].getVel(time_passed);
+    		jntPos = std::vector<double>(7,0.0);
+    		//msr_jntPosPort.read(jntPos);
+    		if ((int)motionProfile.size() == 0){//Only for the first run
+    			for(int i = 0; i < (int)num_axes; i++)
+    				jntVel[i] = 0.0;
+    		}else{
+    			for(int i = 0; i < (int)motionProfile.size(); i++)
+    				jntVel[i] = motionProfile[i].getVel(time_passed);
+    		}
+
     		motionProfile.clear();
     		//TODO: Check dimensions
     		for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
@@ -96,12 +113,14 @@ namespace trajectory_generators
     		//Set times
     		time_begin = os::TimeService::Instance()->getTicks();
     		time_passed = 0.0;
+    		log(Info) << "A new set of motion profiles were successfully created." << endlog();
 
     	}else{
     		//Execute current velocity profile
+
     		if (motionProfile.size()==7){
-    			std::vector<double> jntPosCmd;
-    			sensor_msgs::JointState jntState = new sensor_msgs::JointState();
+    			jntState.position.clear();
+    			jntPosCmd.clear();
     			for(int i = 0; i < (int)motionProfile.size(); i++){
     				jntPosCmd.push_back(motionProfile[i].getPos(time_passed));
     				if(toROS){jntState.position.push_back(motionProfile[i].getPos(time_passed));}
@@ -109,6 +128,7 @@ namespace trajectory_generators
     			cmd_jntPosPort.write(jntPosCmd);
     			if(toROS){cmd_jntPosPort_toROS.write(jntState);}
     		}
+
     	}
     }
 
@@ -141,12 +161,11 @@ namespace trajectory_generators
     	poseDsr.orientation.z = 0.0;
     	poseDsr.orientation.w = 0.0;
 
-    	for(int )
-
-
+    	for(int i=0; i < (int)jntPosDsr.size(); i++){
+    		jntPosDsr[i] = 1.0;
+    	}
 
     	return true;
-
     }
 }//namespace
 

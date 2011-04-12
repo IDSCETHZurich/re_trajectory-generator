@@ -12,6 +12,7 @@
   <depend package="brics_actuator"/>
   <depend package="orocos_kdl"/>
   <depend package="geometry_msgs"/>
+  <depend package="sensor_msgs"/>
   <!--<depend package="kuka_typekit"/>-->
   <depend package="tf_conversions"/>
 </package>

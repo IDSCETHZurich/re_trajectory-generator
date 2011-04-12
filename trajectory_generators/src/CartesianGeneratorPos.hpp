@@ -69,7 +69,10 @@ namespace trajectory_generators
 
       geometry_msgs::Pose lastCommandedPose;
       std::vector<double> lastCommndedPoseJntPos;
+      std::vector<double> jntPosCmd;
       std::vector<double> jntVel;
+
+      sensor_msgs::JointState jntState; // to ROS
 
       double max_duration;
       bool is_moving;

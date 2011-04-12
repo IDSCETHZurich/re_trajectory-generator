@@ -115,7 +115,7 @@ double VelocityProfile_NonZeroInit::getPos(double time){
 
 	}
 	// if we are here, time is higher than time duration so we can call the destructor
-	int lastElement = subVelocityProfiles.size();
+	int lastElement = subVelocityProfiles.size()-1;
 	return subVelocityProfiles[lastElement][1] \
 						+ subVelocityProfiles[lastElement][2] * (duration -  subVelocityProfiles[lastElement][0]) \
 						+ 0.5 * subVelocityProfiles[lastElement][3]*(duration -  subVelocityProfiles[lastElement][0])*(duration -  subVelocityProfiles[lastElement][0]);
@@ -130,10 +130,9 @@ double VelocityProfile_NonZeroInit::getVel(double time){
 
 	}
 	// if we are here, time is higher than time duration so we can call the destructor
-	int lastElement = subVelocityProfiles.size();
+	int lastElement = subVelocityProfiles.size()-1;
 	return  subVelocityProfiles[lastElement][2]  \
 				+ 0.5 * subVelocityProfiles[lastElement][3]*(duration -  subVelocityProfiles[lastElement][0]);
 }
-
 
 }//end of namespace

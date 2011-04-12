@@ -26,7 +26,7 @@
  	
 	<struct name="trajectoryGeneratorJntPos" type="trajectory_generators::CartesianGeneratorPos">
 		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.01</value></simple>
+			<simple name="Period" type="double"><value>0.05</value></simple>
 			<simple name="Priority" type="short"><value>1</value></simple>
     	<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>
