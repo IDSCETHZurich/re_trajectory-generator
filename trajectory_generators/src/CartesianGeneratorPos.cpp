@@ -9,7 +9,6 @@ namespace trajectory_generators
     using namespace RTT;
     using namespace KDL;
     using namespace std;
-    using namespace brics_actuator;
 
     CartesianGeneratorPos::CartesianGeneratorPos(string name)
         : TaskContext(name,PreOperational)
@@ -17,6 +16,7 @@ namespace trajectory_generators
         //Creating TaskContext
 
     	is_moving = false;
+    	toROS = true;
     	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
     	v_max = std::vector<double>(7,2.0);
     	a_max = std::vector<double>(7,1.0);
@@ -28,6 +28,7 @@ namespace trajectory_generators
 
         //Adding OutputPorts
         this->addPort("JointPositionDes",cmd_jntPosPort);
+        this->addPort("JointPositionDesToROS",cmd_jntPosPort_toROS);
         //Adding Properties
         //this->addProperty("max_vel",v_max).doc("Maximum Velocity in Trajectory");
         //this->addProperty("max_acc",a_max).doc("Maximum Acceleration in Trajectory");
@@ -100,13 +101,14 @@ namespace trajectory_generators
     		//Execute current velocity profile
     		if (motionProfile.size()==7){
     			std::vector<double> jntPosCmd;
+    			sensor_msgs::JointState jntState = new sensor_msgs::JointState();
     			for(int i = 0; i < (int)motionProfile.size(); i++){
     				jntPosCmd.push_back(motionProfile[i].getPos(time_passed));
+    				if(toROS){jntState.position.push_back(motionProfile[i].getPos(time_passed));}
     			}
     			cmd_jntPosPort.write(jntPosCmd);
+    			if(toROS){cmd_jntPosPort_toROS.write(jntState);}
     		}
-
-
     	}
     }
 
@@ -130,15 +132,16 @@ namespace trajectory_generators
 
     bool CartesianGeneratorPos::ikSolver(geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr){
     	//TODO: Check size of jntPosDsr. Should be 7
-    	poseDsr.position.x = 0.3;
-    	poseDsr.position.y = 0.3;
-    	poseDsr.position.z = 0.9;
+    	poseDsr.position.x = 0.0;
+    	poseDsr.position.y = 0.0;
+    	poseDsr.position.z = 0.0;
 
     	poseDsr.orientation.x = 0.0;
     	poseDsr.orientation.y = 0.0;
     	poseDsr.orientation.z = 0.0;
-    	poseDsr.orientation.w = 1.0;
+    	poseDsr.orientation.w = 0.0;
 
+    	for(int )
 
 
 

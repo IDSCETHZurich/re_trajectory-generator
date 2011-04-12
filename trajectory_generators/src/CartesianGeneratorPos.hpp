@@ -15,12 +15,14 @@
 #include <kdl/kdl.hpp>
 #include <kdl/frames.hpp>
 
-#include <brics_actuator/CartesianPose.h>
-#include <brics_actuator/CartesianTwist.h>
+//#include <brics_actuator/CartesianPose.h>
+//#include <brics_actuator/CartesianTwist.h>
 
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Wrench.h>
+
+#include <sensor_msgs/JointState.h>
 
 #include <std_msgs/Float64.h>
 
@@ -71,6 +73,7 @@ namespace trajectory_generators
 
       double max_duration;
       bool is_moving;
+      bool toROS;
 
       ///Robot specific data
 
@@ -81,6 +84,8 @@ namespace trajectory_generators
       RTT::InputPort< std::vector<double> > msr_jntPosPort;
       /// Dataport containing the desired joint angles
       RTT::OutputPort< std::vector<double> >  cmd_jntPosPort;
+      /// Dataport containing the desired joint angles (In s)
+      RTT::OutputPort< sensor_msgs::JointState >  cmd_jntPosPort_toROS;
 
   }; // class
 }//namespace
