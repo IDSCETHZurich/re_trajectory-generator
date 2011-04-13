@@ -25,7 +25,7 @@ namespace trajectory_generators
     	num_axes = 7;
 
         //Adding InputPorts
-        this->addPort("CartesianPoseDes",cmd_cartPosPort);
+        this->addEventPort("CartesianPoseDes",cmd_cartPosPort, boost::bind(&CartesianGeneratorPos::generateNewVelocityProfiles, this, _1));
         this->addPort("JointPositionMsr",msr_jntPosPort);
 
         //Adding OutputPorts
@@ -78,61 +78,67 @@ namespace trajectory_generators
     	return true;
     }
 
-    void CartesianGeneratorPos::updateHook()
+    bool CartesianGeneratorPos::generateNewVelocityProfiles(RTT::base::PortInterface* portInterface){
+    	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
+    	log(Info) << "a new Pose arrived from ROS" << endlog();
+    	cout << "a new Pose arrived from ROS" << endl;
+
+    	cmd_cartPosPort.read(lastCommandedPose);
+    	cout << "Pose.position.x  = " << lastCommandedPose.position.x << endl << endl;
+    	//Do IK and reset velocity profiles
+    	this->ikSolver(lastCommandedPose, lastCommndedPoseJntPos);
+    	//Create joint specific velocity profiles
+    	double maxDuration = 0.0;
+    	std::vector<double> jntPos;
+
+    	jntPos = std::vector<double>(7,0.0);//msr_jntPosPort.read(jntPos);
+
+    	if ((int)motionProfile.size() == 0){//Only for the first run
+    		for(int i = 0; i < (int)num_axes; i++)
+    			jntVel[i] = 0.0;
+    	}else{
+    		for(int i = 0; i < (int)motionProfile.size(); i++)
+    			jntVel[i] = motionProfile[i].getVel(time_passed);
+    	}
+
+    	motionProfile.clear();
+
+    	//TODO: Check dimensions
+    	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
+    		motionProfile.push_back(VelocityProfile_NonZeroInit(a_max[i], v_max[i], lastCommndedPoseJntPos[i], jntPos[i], jntVel[i]));
+    		//TODO: Add non zero velocities.
+    		if(motionProfile[i].getDuration() > maxDuration )
+    			maxDuration = motionProfile[i].getDuration();
+    	}
+
+    	//Do sync
+    	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
+    		motionProfile[i].setDuration(maxDuration);
+    	}
+
+    	//Set times
+    	time_begin = os::TimeService::Instance()->getTicks();
+    	log(Info) << "A new set of motion profiles were successfully created." << endlog();
+    	return true;
+
+    }
+
+    void CartesianGeneratorPos::CartesianGeneratorPos::updateHook()
     {
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-    	if(cmd_cartPosPort.read(lastCommandedPose) == RTT::NewData){
-    		log(Info) << "a new Pose arrived from ROS" << endlog();
-    		cout << "a new Pose arrived from ROS" << endl;
-    		//Do IK and reset velocity profiles
-    		this->ikSolver(lastCommandedPose, lastCommndedPoseJntPos);
-    		//Create joint specific velocity profiles
-    		double maxDuration = 0.0;
-    		std::vector<double> jntPos;
-    		jntPos = std::vector<double>(7,0.0);
-    		//msr_jntPosPort.read(jntPos);
-    		if ((int)motionProfile.size() == 0){//Only for the first run
-    			for(int i = 0; i < (int)num_axes; i++)
-    				jntVel[i] = 0.0;
-    		}else{
-    			for(int i = 0; i < (int)motionProfile.size(); i++)
-    				jntVel[i] = motionProfile[i].getVel(time_passed);
-    		}
-
-    		motionProfile.clear();
-    		//TODO: Check dimensions
-    		for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    			motionProfile.push_back(VelocityProfile_NonZeroInit(a_max[i], v_max[i], lastCommndedPoseJntPos[i], jntPos[i], jntVel[i]));
-    			//TODO: Add non zero velocities.
-    			if(motionProfile[i].getDuration() > maxDuration )
-    				maxDuration = motionProfile[i].getDuration();
-    		}
-    		//Do sync
-    		for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    			motionProfile[i].setDuration(maxDuration);
-    		}
-
-    		//Set times
-    		time_begin = os::TimeService::Instance()->getTicks();
-    		time_passed = 0.0;
-    		log(Info) << "A new set of motion profiles were successfully created." << endlog();
-
-    	}else{
-    		//Execute current velocity profile
-
-    		if (motionProfile.size()==7){
-    			jntState.position.clear();
-    			jntPosCmd.clear();
-    			for(int i = 0; i < (int)motionProfile.size(); i++){
-    				jntPosCmd.push_back(motionProfile[i].getPos(time_passed));
-    				if(toROS){jntState.position.push_back(motionProfile[i].getPos(time_passed));}
-    			}
-    			cmd_jntPosPort.write(jntPosCmd);
-    			if(toROS){cmd_jntPosPort_toROS.write(jntState);}
-    		}
-
+    	//Execute current velocity profile
+    	if (motionProfile.size()==8){
+    		jntState.position.clear();
+    	    jntPosCmd.clear();
+    	    for(int i = 0; i < (int)motionProfile.size(); i++){
+    	    	jntPosCmd.push_back(motionProfile[i].getPos(time_passed));
+    	    	if(toROS){jntState.position.push_back(motionProfile[i].getPos(time_passed));}
+    	    }
+    	    cmd_jntPosPort.write(jntPosCmd);
+    	    if(toROS){cmd_jntPosPort_toROS.write(jntState);}
     	}
     }
+
 
     void CartesianGeneratorPos::stopHook()
     {

@@ -59,6 +59,7 @@ namespace trajectory_generators
       bool moveFinished() const;
       void resetPosition();
       bool ikSolver(geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr);
+      bool generateNewVelocityProfiles(RTT::base::PortInterface* portInterface);
 
       unsigned int num_axes;
       std::vector<double> p_m, p_d, v_d;
