@@ -19,7 +19,7 @@ public:
 	double getPos(double time);
 	double getVel(double time);
 private:
-	double t1, t2, t3, duration, timeScale;
+	double duration, timeScale;
 	// Profile mode in order
 	std::vector< std::vector<double> > subVelocityProfiles;
 	void subProfileBuilder(double maxAcc, double maxVel, double finalPos, double initPos, double initVel);
