@@ -81,7 +81,7 @@ int main(int argc, char **argv)
    * buffer up before throwing some away.
    */
 // %Tag(PUBLISHER)%
-  ros::Publisher posePub = n.advertise<geometry_msgs::Pose>("poseDsr", 5);
+  ros::Publisher posePub = n.advertise<geometry_msgs::Pose>("poseDsr", 2, true);
 // %EndTag(PUBLISHER)%
 
 // %Tag(LOOP_RATE)%
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
     pose.orientation.x = 0.0;
     pose.orientation.y = 0.0; 
     pose.orientation.z = 0.0;
-    pose.orientation.w = 0.0;
+    pose.orientation.w = 1.0;
 
     /**
      * The publish() function is how you send messages. The parameter

@@ -4,6 +4,9 @@
  *  Created on: Apr 7, 2011
  *      Author: Gajan
  */
+#include <rtt/RTT.hpp>
+#include <rtt/TaskContext.hpp>
+#include <ocl/OCL.hpp>
 
 #ifndef VELOCITYPROFILE_NONZEROINIT_H_
 #define VELOCITYPROFILE_NONZEROINIT_H_

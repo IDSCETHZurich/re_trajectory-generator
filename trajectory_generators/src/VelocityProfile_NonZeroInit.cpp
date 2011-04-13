@@ -4,22 +4,31 @@
  *  Created on: Apr 7, 2011
  *      Author: demo
  */
-
-#include <rtt/RTT.hpp>
-
 #include "VelocityProfile_NonZeroInit.hpp"
 
 
 namespace trajectory_generators {
 
+
+using namespace RTT;
+using namespace KDL;
+using namespace std;
+
 VelocityProfile_NonZeroInit::VelocityProfile_NonZeroInit(double maxAcc, double maxVel, double finalPos, double initPos, double initVel){
 	//TODO: Perform checks
+
+	// set Time scale to default
+	log(Info) << "Building Velocity Profile with maxAc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
+			initPos << ") initVel(" << initVel << ") " << endlog();
+	log(Info) << "------------------------------------------" << endlog();
+
+	timeScale = 1;
 	subProfileBuilder(maxAcc, maxVel, finalPos, initPos, initVel);
 }
 
 void VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxVel, double finalPos, double initPos, double initVel){
-	// Before redimensioning, the timeScale must be set to 1
-	timeScale = 1;
+
+
 	// We need the distance (absolute) to be covered
 	double Dp = abs(finalPos -  initPos) + 0.0001;
 	// trajSign gives the direction of the trajectory
@@ -31,6 +40,7 @@ void VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxVel
 
 	if (Dp < 0.5* initVel*initVel / maxAcc){
 	//slow down to zero and perform a new trajectory going back
+		log(Info) << "Slow down to zero and perform a new trajectory going back " << endlog();
 		std::vector<double> sp1;
 		double T1 = abs(initVel)/maxAcc;
 		double D1 = 0.5*initVel*T1;
@@ -43,7 +53,7 @@ void VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxVel
 			sp1.push_back(maxAcc);
 		else
 			sp1.push_back(-maxAcc);
-
+		//log(Info) << sp1 << endlog();
 		subVelocityProfiles.push_back(sp1);
 		//Duration will be set is this call
 		subProfileBuilder(maxAcc, maxVel, finalPos, initPos+D1, 0.0);
@@ -51,7 +61,8 @@ void VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxVel
 	//end of slow down to Zero and go back
 
 	}else if ( Dp < (0.5/maxAcc)*(2*maxVel*maxVel - initVel*initVel)){
-	//triangular velocity profile
+		log(Info) << "Triangular velocity profile " << endlog();
+		//triangular velocity profile
 		std::vector<double> sp1,sp2;
 		//Adding the acceleration subProfile
 		sp1.push_back(0.0); //t_0
@@ -61,19 +72,23 @@ void VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxVel
 		subVelocityProfiles.push_back(sp1);
 
 		//Adding the deceleration subProfile
-		double maxVelProfile = sqrt(Dp*maxAcc - 0.5*initVel*initVel);
+		double maxVelProfile = sqrt(Dp*maxAcc + 0.5*initVel*initVel);
 		double T1 = abs(trajSign*maxVelProfile-initVel)/maxAcc;
 
 		sp2.push_back( T1 );
-		sp2.push_back(initPos + 0.5*T1*(trajSign*maxVelProfile - initVel) );
+		sp2.push_back(initPos + 0.5*T1*(trajSign*maxVelProfile + initVel) );
 		sp2.push_back( trajSign*maxVelProfile );
 		sp2.push_back( -trajSign*maxAcc );
 		subVelocityProfiles.push_back(sp2);
 
 		duration = T1 + maxVelProfile/maxAcc;
+		//log(Info) << sp1 << endlog();
+		//log(Info) << sp2 << endlog();
+
 	//end of triangular velocity profile
 	}else{
-	//Asymmetric trapezoidal velocity profile
+		log(Info) << "Asymmetric trapezoidal velocity profile " << endlog();
+		//Asymmetric trapezoidal velocity profile
 		std::vector<double> sp1,sp2,sp3;
 		//Adding the acceleration subProfile
 		sp1.push_back( 0.0 ); //t_0
@@ -84,7 +99,7 @@ void VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxVel
 
 		//Adding the constant velocity subProfile
 		double T1 = abs(trajSign*maxVel-initVel)/maxAcc;
-		double P1 = initPos + 0.5*T1*(trajSign*maxVel - initVel) ; // position at the start of the subProfile
+		double P1 = initPos + 0.5*T1*(trajSign*maxVel + initVel) ; // position at the start of the subProfile
 		sp2.push_back( T1 );
 		sp2.push_back( P1 );
 		sp2.push_back( trajSign*maxVel );
@@ -92,13 +107,19 @@ void VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxVel
 		subVelocityProfiles.push_back(sp2);
 
 		//Adding the Deceleration subProfile
-		double T2 = (1/maxVel) * (Dp + 0.5*initVel*(initVel-2*maxVel)/maxAcc);
+		double T2 = trajSign * (1/maxVel) * (finalPos - P1 + (0.5*maxVel*maxVel)/(-trajSign*maxAcc));
 		double P2 = P1 + (T2-T1)*trajSign*maxVel;
 		sp3.push_back( T2 );
 		sp3.push_back( P2 );
 		sp3.push_back( trajSign*maxVel );
 		sp3.push_back( -trajSign*maxAcc );
 		subVelocityProfiles.push_back(sp3);
+
+		duration = T2 + maxVel/maxAcc;
+
+		//log(Info) << sp1 << endlog();
+		//log(Info) << sp2 << endlog();
+		//log(Info) << sp3 << endlog();
 	//End of Asymmetric trapezoidal velocity profile
 	}
 }
@@ -128,9 +149,11 @@ double VelocityProfile_NonZeroInit::getPos(double time){
 	}
 	// if we are here, time is higher than duration so we set the output to the last requested position
 	int lastElement = subVelocityProfiles.size()-1;
+	if (time > duration) time = duration;
+
 	return subVelocityProfiles[lastElement][1] \
-						+ subVelocityProfiles[lastElement][2] * (duration -  subVelocityProfiles[lastElement][0]) \
-						+ 0.5 * subVelocityProfiles[lastElement][3]*(duration -  subVelocityProfiles[lastElement][0])*(duration -  subVelocityProfiles[lastElement][0]);
+						+ subVelocityProfiles[lastElement][2] * (time -  subVelocityProfiles[lastElement][0]) \
+						+ 0.5 * subVelocityProfiles[lastElement][3]*(time -  subVelocityProfiles[lastElement][0])*(time -  subVelocityProfiles[lastElement][0]);
 }
 
 double VelocityProfile_NonZeroInit::getVel(double time){

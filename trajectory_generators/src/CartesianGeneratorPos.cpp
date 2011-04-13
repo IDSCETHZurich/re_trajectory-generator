@@ -19,8 +19,8 @@ namespace trajectory_generators
     	is_moving = false;
     	toROS = true;
     	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
-    	v_max = std::vector<double>(7,0.5);
-    	a_max = std::vector<double>(7,0.5);
+    	v_max = std::vector<double>(7,0.1);
+    	a_max = std::vector<double>(7,0.1);
     	jntVel = std::vector<double>(7,0.0);
     	num_axes = 7;
 
@@ -113,7 +113,7 @@ namespace trajectory_generators
 
     	//Do sync
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile[i].setDuration(maxDuration);
+    		//motionProfile[i].setDuration(maxDuration);
     	}
 
     	//Set times
@@ -127,15 +127,15 @@ namespace trajectory_generators
     {
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
     	//Execute current velocity profile
-    	if (motionProfile.size()==8){
+    	if (motionProfile.size()==7){
     		jntState.position.clear();
     	    jntPosCmd.clear();
     	    for(int i = 0; i < (int)motionProfile.size(); i++){
     	    	jntPosCmd.push_back(motionProfile[i].getPos(time_passed));
-    	    	if(toROS){jntState.position.push_back(motionProfile[i].getPos(time_passed));}
+    	    	jntState.position.push_back(motionProfile[i].getPos(time_passed));
     	    }
     	    cmd_jntPosPort.write(jntPosCmd);
-    	    if(toROS){cmd_jntPosPort_toROS.write(jntState);}
+    	    cmd_jntPosPort_toROS.write(jntState);
     	}
     }
 
@@ -200,6 +200,7 @@ namespace trajectory_generators
     	jntPosDsr[3] -= PI/2;
     	jntPosDsr[6] -= PI;
 
+    	jntPosDsr[3] = -jntPosDsr[3]; //Correcting for the RobotRotation
 
     	for(int i=0; i < (int)jntPosDsr.size(); i++){
     		cout << i << ":" << jntPosDsr[i] << endl;
