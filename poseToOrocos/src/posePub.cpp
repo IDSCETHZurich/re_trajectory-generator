@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 // %EndTag(PUBLISHER)%
 
 // %Tag(LOOP_RATE)%
-  ros::Rate loop_rate(1);
+  ros::Rate loop_rate(0.2);
 // %EndTag(LOOP_RATE)%
 
   /**
@@ -94,6 +94,20 @@ int main(int argc, char **argv)
    */
 // %Tag(ROS_OK)%
   int count = 0;
+  std::vector<double> pos_x;
+  std::vector<double> pos_y;
+  std::vector<double> pos_z;
+  // We add the points
+  pos_x.push_back(0.5);
+  pos_x.push_back(0);
+  pos_x.push_back(-0.5);
+  pos_y.push_back(0);
+  pos_y.push_back(0.5);
+  pos_y.push_back(0);
+  pos_z.push_back(0.5);
+  pos_z.push_back(0.5);
+  pos_z.push_back(0.5);
+
   while (ros::ok())
   {
 // %EndTag(ROS_OK)%
@@ -102,9 +116,10 @@ int main(int argc, char **argv)
      */
 // %Tag(FILL_MESSAGE)%
     geometry_msgs::Pose pose;
-    pose.position.x = 0.3 + count*0.05;
-    pose.position.y = 0.3;
-    pose.position.z = 0.3; 
+
+    pose.position.x = pos_x[count%3];
+    pose.position.y = pos_y[count%3];
+    pose.position.z = pos_z[count%3];
 
     pose.orientation.x = 0.0;
     pose.orientation.y = 0.0; 

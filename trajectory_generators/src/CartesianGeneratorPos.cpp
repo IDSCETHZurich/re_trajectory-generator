@@ -20,7 +20,7 @@ namespace trajectory_generators
     	toROS = true;
     	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
     	v_max = std::vector<double>(7,0.5);
-    	a_max = std::vector<double>(7,0.5);
+    	a_max = std::vector<double>(7,1.0);
     	jntVel = std::vector<double>(7,0.0);
     	num_axes = 7;
 
@@ -91,11 +91,11 @@ namespace trajectory_generators
     	double maxDuration = 0.0;
     	std::vector<double> jntPos;
 
-    	jntPos = std::vector<double>(7,0.1);//msr_jntPosPort.read(jntPos);
+    	msr_jntPosPort.read(jntPos);
 
     	if ((int)motionProfile.size() == 0){//Only for the first run
     		for(int i = 0; i < (int)num_axes; i++)
-    			jntVel[i] = -0.4;
+    			jntVel[i] = 0.0;
     	}else{
     		for(int i = 0; i < (int)motionProfile.size(); i++)
     			jntVel[i] = motionProfile[i].getVel(time_passed);
@@ -106,14 +106,13 @@ namespace trajectory_generators
     	//TODO: Check dimensions
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
     		motionProfile.push_back(VelocityProfile_NonZeroInit(a_max[i], v_max[i], lastCommndedPoseJntPos[i], jntPos[i], jntVel[i]));
-    		//TODO: Add non zero velocities.
     		if(motionProfile[i].getDuration() > maxDuration )
     			maxDuration = motionProfile[i].getDuration();
     	}
 
     	//Do sync
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		//motionProfile[i].setDuration(maxDuration);
+    		motionProfile[i].setDuration(maxDuration);
     	}
 
     	//Set times

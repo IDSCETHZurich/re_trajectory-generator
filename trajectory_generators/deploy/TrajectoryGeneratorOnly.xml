@@ -13,7 +13,7 @@
 	<struct name="ROSConPoseIn" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple><!-- type of connection: 0 means Data -->
   		<simple name="size" type="short"><value>1</value></simple><!-- buffer size -->
-  		<simple name="transport" type="short"><value>3</value></simple><!--3 means ROS-->
+  		<simple name="transport" type="short"><value>3</value></simple><!--3 means ROS -->
   		<simple name="name_id" type="string"><value>poseDsr</value></simple><!-- topic name -->
 	</struct>
 	

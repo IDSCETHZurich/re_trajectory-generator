@@ -41,7 +41,19 @@ double VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxV
 	if (finalPos -  initPos < 0)
 		trajSign = -1.0;
 
-	//TODO: add the case of no movement (finalPos == initPos)
+	if(abs(finalPos-initPos) < 0.0001 && abs(initVel) < 0.0001 ){
+		std::vector<double> sp1;
+		sp1.push_back(initTime);
+		sp1.push_back(initPos);
+		sp1.push_back(0.0);
+		sp1.push_back(0.0);
+
+		subVelocityProfiles.push_back(sp1);
+
+		tmpDuration = 0.0001;
+		return tmpDuration;
+	}
+
 	if (Dp < 0.5* initVel*initVel / maxAcc){
 	//slow down to zero and perform a new trajectory going back
 		log(Info) << "Slow down to zero and perform a new trajectory going back " << endlog();
@@ -61,7 +73,6 @@ double VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxV
 		subVelocityProfiles.push_back(sp1);
 		//Duration will be set is this call
 		tmpDuration = T1 + subProfileBuilder(maxAcc, maxVel, finalPos, initPos+D1, 0.0, T1 + initTime);
-		//TODO: Check the duration in this case. Might be wrong....
 		//end of slow down to Zero and go back
 
 	}else if ( Dp < (0.5/maxAcc)*(2*maxVel*maxVel - initVel*initVel)){
@@ -89,7 +100,7 @@ double VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxV
 
 		cout << "T1 = " << T1 << endl;
 		cout << "vp = " << maxVelProfile << endl;
-		cout << "Tf = " << duration << endl;
+		cout << "Tf = " << tmpDuration << endl;
 		//log(Info) << sp1 << endlog();
 		//log(Info) << sp2 << endlog();
 
@@ -144,7 +155,7 @@ VelocityProfile_NonZeroInit::~VelocityProfile_NonZeroInit() {
 
 bool VelocityProfile_NonZeroInit::setDuration(double newDuration){
 	//Can be called more than one time
-	timeScale = duration/newDuration;
+	timeScale = 1; //duration/newDuration;
 	return true;
 }
 
@@ -154,34 +165,34 @@ double VelocityProfile_NonZeroInit::getDuration(){
 
 double VelocityProfile_NonZeroInit::getPos(double time){
 	for( int i = 0 ; i < (int)subVelocityProfiles.size()-1 ; i++ ){
-		if(time > subVelocityProfiles[i][0] && time <=  subVelocityProfiles[i+1][0] ){
+		if(time > subVelocityProfiles[i][0]/timeScale && time <=  subVelocityProfiles[i+1][0]/timeScale ){
 			return subVelocityProfiles[i][1] \
-					+ timeScale * subVelocityProfiles[i][2] * (time -  subVelocityProfiles[i][0]) \
-					+ 0.5 * timeScale * timeScale * subVelocityProfiles[i][3]*(time -  subVelocityProfiles[i][0])*(time -  subVelocityProfiles[i][0]);
+					+ timeScale * subVelocityProfiles[i][2] * (time -  subVelocityProfiles[i][0]/timeScale) \
+					+ 0.5 * timeScale * timeScale * subVelocityProfiles[i][3]*(time -  subVelocityProfiles[i][0]/timeScale)*(time -  subVelocityProfiles[i][0]/timeScale);
 		}
 
 	}
 	// if we are here, time is higher than duration so we set the output to the last requested position
 	int lastElement = subVelocityProfiles.size()-1;
-	if (time > duration) time = duration;
+	if (time > duration/timeScale) time = duration/timeScale;
 
 	return subVelocityProfiles[lastElement][1] \
-						+ subVelocityProfiles[lastElement][2] * (time -  subVelocityProfiles[lastElement][0]) \
-						+ 0.5 * subVelocityProfiles[lastElement][3]*(time -  subVelocityProfiles[lastElement][0])*(time -  subVelocityProfiles[lastElement][0]);
+						+ timeScale *subVelocityProfiles[lastElement][2] * (time -  subVelocityProfiles[lastElement][0]/timeScale) \
+						+ 0.5 * timeScale * timeScale * subVelocityProfiles[lastElement][3]*(time -  subVelocityProfiles[lastElement][0]/timeScale)*(time -  subVelocityProfiles[lastElement][0]/timeScale);
 }
 
 double VelocityProfile_NonZeroInit::getVel(double time){
 	for( int i = 0 ; i < (int)subVelocityProfiles.size()-1 ; i++ ){
-		if(time > subVelocityProfiles[i][0] && time <=  subVelocityProfiles[i+1][0] ){
+		if(time > subVelocityProfiles[i][0]/timeScale && time <=  subVelocityProfiles[i+1][0]/timeScale ){
 			return timeScale * subVelocityProfiles[i][2]  \
-					+ timeScale * timeScale * subVelocityProfiles[i][3]*(time -  subVelocityProfiles[i][0]);
+					+ timeScale * timeScale * subVelocityProfiles[i][3]*(time -  subVelocityProfiles[i][0]/timeScale);
 		}
 
 	}
 	// if we are here, time is higher than duration so we set the output to the final velocity
 	int lastElement = subVelocityProfiles.size()-1;
-	return  subVelocityProfiles[lastElement][2]  \
-				+ subVelocityProfiles[lastElement][3]*(duration -  subVelocityProfiles[lastElement][0]);
+	return  timeScale *subVelocityProfiles[lastElement][2]  \
+				+ timeScale * timeScale * subVelocityProfiles[lastElement][3]*(duration -  subVelocityProfiles[lastElement][0]/timeScale);
 }
 
 }//end of namespace
