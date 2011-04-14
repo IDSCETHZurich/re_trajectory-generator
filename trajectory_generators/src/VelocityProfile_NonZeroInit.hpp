@@ -25,7 +25,7 @@ private:
 	double duration, timeScale;
 	// Profile mode in order
 	std::vector< std::vector<double> > subVelocityProfiles;
-	void subProfileBuilder(double maxAcc, double maxVel, double finalPos, double initPos, double initVel);
+	double subProfileBuilder(double maxAcc, double maxVel, double finalPos, double initPos, double initVel, double initTime);
 };
 
 } //end of namespace

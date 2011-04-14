@@ -19,8 +19,8 @@ namespace trajectory_generators
     	is_moving = false;
     	toROS = true;
     	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
-    	v_max = std::vector<double>(7,0.1);
-    	a_max = std::vector<double>(7,0.1);
+    	v_max = std::vector<double>(7,0.5);
+    	a_max = std::vector<double>(7,0.5);
     	jntVel = std::vector<double>(7,0.0);
     	num_axes = 7;
 
@@ -91,11 +91,11 @@ namespace trajectory_generators
     	double maxDuration = 0.0;
     	std::vector<double> jntPos;
 
-    	jntPos = std::vector<double>(7,0.0);//msr_jntPosPort.read(jntPos);
+    	jntPos = std::vector<double>(7,0.1);//msr_jntPosPort.read(jntPos);
 
     	if ((int)motionProfile.size() == 0){//Only for the first run
     		for(int i = 0; i < (int)num_axes; i++)
-    			jntVel[i] = 0.0;
+    			jntVel[i] = -0.4;
     	}else{
     		for(int i = 0; i < (int)motionProfile.size(); i++)
     			jntVel[i] = motionProfile[i].getVel(time_passed);
