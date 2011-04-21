@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 // %EndTag(PUBLISHER)%
 
 // %Tag(LOOP_RATE)%
-  ros::Rate loop_rate(0.2);
+  ros::Rate loop_rate(1);
 // %EndTag(LOOP_RATE)%
 
   /**
@@ -94,19 +94,21 @@ int main(int argc, char **argv)
    */
 // %Tag(ROS_OK)%
   int count = 0;
-  std::vector<double> pos_x;
-  std::vector<double> pos_y;
-  std::vector<double> pos_z;
+  bool newposition = false;
+  double x,y,z;
+//  std::vector<double> pos_x;
+//  std::vector<double> pos_y;
+//  std::vector<double> pos_z;
   // We add the points
-  pos_x.push_back(0.5);
-  pos_x.push_back(0);
-  pos_x.push_back(-0.5);
-  pos_y.push_back(0);
-  pos_y.push_back(0.5);
-  pos_y.push_back(0);
-  pos_z.push_back(0.5);
-  pos_z.push_back(0.5);
-  pos_z.push_back(0.5);
+//  pos_x.push_back(0.5);
+//  pos_x.push_back(0);
+//  pos_x.push_back(0);
+//  pos_y.push_back(0);
+//  pos_y.push_back(0.5);
+//  pos_y.push_back(-0.5);
+//  pos_z.push_back(0.5);
+//  pos_z.push_back(0.5);
+//  pos_z.push_back(0.5);
 
   while (ros::ok())
   {
@@ -117,13 +119,23 @@ int main(int argc, char **argv)
 // %Tag(FILL_MESSAGE)%
     geometry_msgs::Pose pose;
 
-    pose.position.x = pos_x[count%3];
-    pose.position.y = pos_y[count%3];
-    pose.position.z = pos_z[count%3];
+    newposition = false;
+    while (!newposition) {
+    	x = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
+    	y = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
+    	z = (0.7-(0.2))*(double)rand()/(double)RAND_MAX + (0.2);
+    	if (x*x+y*y+z*z>=0.50 && x*x+y*y+z*z<=0.70) {
+    		newposition = true;
+    	}
+    }
 
-    pose.orientation.x = 0.0;
-    pose.orientation.y = 0.0; 
-    pose.orientation.z = 0.0;
+    pose.position.x = x;
+    pose.position.y = y;
+    pose.position.z = z;
+
+    pose.orientation.x = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
+    pose.orientation.y = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
+    pose.orientation.z = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
     pose.orientation.w = 1.0;
 
     /**

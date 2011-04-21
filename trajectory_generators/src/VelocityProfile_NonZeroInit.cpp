@@ -23,17 +23,13 @@ VelocityProfile_NonZeroInit::VelocityProfile_NonZeroInit(double maxAcc, double m
 	cout << "------------------------------------------" << endl;
 
 	timeScale = 1;
-	duration = subProfileBuilder(maxAcc, maxVel, finalPos, initPos, initVel, 0.0);
+	duration = subProfileBuilder(maxAcc, maxVel, finalPos, initPos, initVel, 0.0); // Initial time set to zero for new trajectories
 }
 
 double VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxVel, double finalPos, double initPos, double initVel, double initTime){
 
-
 	// We need the distance (absolute) to be covered
 	double Dp = abs(finalPos -  initPos), tmpDuration;
-	cout << "Initial point: " << initPos << endl;
-	cout << "Final point:   " << finalPos << endl;
-	cout << "Distance to cover: " << Dp << endl;
 	// trajSign gives the direction of the trajectory
 	// +1 for positive ((finalPos>initPos)
 	double trajSign = 1.0;
@@ -69,7 +65,6 @@ double VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxV
 			sp1.push_back(maxAcc);
 		else
 			sp1.push_back(-maxAcc);
-		//log(Info) << sp1 << endlog();
 		subVelocityProfiles.push_back(sp1);
 		//Duration will be set is this call
 		tmpDuration = T1 + subProfileBuilder(maxAcc, maxVel, finalPos, initPos+D1, 0.0, T1 + initTime);
@@ -98,12 +93,6 @@ double VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxV
 
 		tmpDuration = T1 + maxVelProfile/maxAcc;
 
-		cout << "T1 = " << T1 << endl;
-		cout << "vp = " << maxVelProfile << endl;
-		cout << "Tf = " << tmpDuration << endl;
-		//log(Info) << sp1 << endlog();
-		//log(Info) << sp2 << endlog();
-
 	//end of triangular velocity profile
 	}else{
 		log(Info) << "Asymmetric trapezoidal velocity profile " << endlog();
@@ -117,7 +106,7 @@ double VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxV
 		subVelocityProfiles.push_back(sp1);
 
 		//Adding the constant velocity subProfile
-		double T1 = abs(trajSign*maxVel-initVel)/maxAcc;
+		double T1 = (trajSign*maxVel-initVel)/(trajSign*maxAcc);
 		double P1 = initPos + 0.5*T1*(trajSign*maxVel + initVel) ; // position at the start of the subProfile
 		sp2.push_back( T1 + initTime );
 		sp2.push_back( P1 );
@@ -126,7 +115,7 @@ double VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxV
 		subVelocityProfiles.push_back(sp2);
 
 		//Adding the Deceleration subProfile
-		double T2 =  trajSign * (1/maxVel) * (finalPos - P1 + (0.5*maxVel*maxVel)/(trajSign*maxAcc) - initVel);
+		double T2 =  1/(trajSign*maxVel) * (finalPos - P1 + T1*trajSign*maxVel - (0.5*maxVel*maxVel)/(trajSign*maxAcc));
 		double P2 = P1 + (T2-T1)*trajSign*maxVel;
 		sp3.push_back( T2 + initTime );
 		sp3.push_back( P2 );
@@ -136,14 +125,6 @@ double VelocityProfile_NonZeroInit::subProfileBuilder(double maxAcc, double maxV
 
 		tmpDuration = T2 + maxVel/maxAcc;
 
-		cout << "T1 = " << T1 << endl;
-		cout << "T2 = " << T2 << endl;
-		cout << "P1 = " << P1 << endl;
-		cout << "P2 = " << P2 << endl;
-
-		//log(Info) << sp1 << endlog();
-		//log(Info) << sp2 << endlog();
-		//log(Info) << sp3 << endlog();
 	//End of Asymmetric trapezoidal velocity profile
 	}
 	return tmpDuration;
@@ -172,7 +153,7 @@ double VelocityProfile_NonZeroInit::getPos(double time){
 		}
 
 	}
-	// if we are here, time is higher than duration so we set the output to the last requested position
+	// if we are here, time is in the last piece or higher than duration so we set the output to the last requested position
 	int lastElement = subVelocityProfiles.size()-1;
 	if (time > duration/timeScale) time = duration/timeScale;
 
@@ -189,10 +170,11 @@ double VelocityProfile_NonZeroInit::getVel(double time){
 		}
 
 	}
-	// if we are here, time is higher than duration so we set the output to the final velocity
+	// if we are here, time is in the last piece or higher than duration so we set the output to the final velocity
 	int lastElement = subVelocityProfiles.size()-1;
+	if (time > duration/timeScale) time = duration/timeScale;
 	return  timeScale *subVelocityProfiles[lastElement][2]  \
-				+ timeScale * timeScale * subVelocityProfiles[lastElement][3]*(duration -  subVelocityProfiles[lastElement][0]/timeScale);
+				+ timeScale * timeScale * subVelocityProfiles[lastElement][3]*(time -  subVelocityProfiles[lastElement][0]/timeScale);
 }
 
 }//end of namespace
