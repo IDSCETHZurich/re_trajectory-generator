@@ -18,8 +18,10 @@ namespace trajectory_generators
 
     	is_moving = false;
     	toROS = true;
+
+	// TODO: Marshall all these values to avoid hard-coding
     	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
-    	v_max = std::vector<double>(7,1.6);
+    	v_max = std::vector<double>(7,1.4);
     	a_max = std::vector<double>(7,3);
     	jntVel = std::vector<double>(7,0.0);
     	num_axes = 7;
@@ -95,7 +97,7 @@ namespace trajectory_generators
 
     	//Create joint specific velocity profiles
     	double maxDuration = 0.0;
-    	std::vector<double> jntPos;// = std::vector<double>(7,0.0);
+    	std::vector<double> jntPos = std::vector<double>(7,0.0);
 
     	msr_jntPosPort.read(jntPos);
 
