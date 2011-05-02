@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "cpf.dtd">
 <properties>
-  <simple name="AutoTrigger" type="boolean"><description>When set to 1, the data is taken upon each update(), otherwise, the data is only taken when the user invokes 'snapshot()'.</description><value>1</value></simple>
   <simple name="WriteHeader" type="boolean"><description>Set to true to start each report with a header.</description><value>1</value></simple>
   <simple name="Decompose" type="boolean"><description>Set to true to decompose data ports.</description><value>1</value></simple>
   <simple name="ReportFile" type="string"><description>Location on disc to store the reports.</description><value>reports.dat</value></simple>

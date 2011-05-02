@@ -27,7 +27,7 @@
  	
 	<struct name="trajectoryGeneratorJntPos" type="trajectory_generators::CartesianGeneratorPos">
 		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.02</value></simple>
+			<simple name="Period" type="double"><value>0.005</value></simple>
 			<simple name="Priority" type="short"><value>1</value></simple>
     	<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>
@@ -47,7 +47,7 @@
 			<simple name="Priority" type="short"><value>1</value></simple>
 			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
 		</struct>
-    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
+	    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
 		<simple name="LoadProperties" type="string"><value>cpf/FRIServer.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
@@ -57,20 +57,20 @@
 	</struct>
 	
 	<struct name="Reporter" type="OCL::FileReporting">
-    	<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.01</value></simple>
-			<simple name="Priority" type="short"><value>0</value></simple>
-			<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
+	    	<struct name="Activity" type="PeriodicActivity">
+				<simple name="Period" type="double"><value>0.005</value></simple>
+				<simple name="Priority" type="short"><value>0</value></simple>
+				<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
+	    	</struct>
+	    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
+	    	<simple name="AutoStart" type="boolean"><value>1</value></simple>
+	    	<simple name="AutoSave" type="boolean"><value>1</value></simple>
+	    	<simple name="LoadProperties" type="string"><value>reportParam.cpf</value></simple>
+	    	<!-- List all peers (uni-directional) -->
+	    	<struct name="Peers" type="PropertyBag">
+	    		<simple type="string"><value>trajectoryGeneratorJntPos</value></simple>
+	    		<simple type="string"><value>FRIServer</value></simple>
+	    	</struct>
     	</struct>
-    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
-    	<simple name="AutoStart" type="boolean"><value>1</value></simple>
-    	<simple name="AutoSave" type="boolean"><value>1</value></simple>
-    	<simple name="LoadProperties" type="string"><value>reportParam.cpf</value></simple>
-    	<!-- List all peers (uni-directional) -->
-    	<struct name="Peers" type="PropertyBag">
-    		<simple type="string"><value>trajectoryGeneratorJntPos</value></simple>
-    		<simple type="string"><value>FRIServer</value></simple>
-    	</struct>
-    </struct>
 	
 </properties>
