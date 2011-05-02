@@ -13,7 +13,7 @@
 	<struct name="ROSConPoseIn" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple><!-- type of connection: 0 means Data -->
   		<simple name="size" type="short"><value>1</value></simple><!-- buffer size -->
-  		<simple name="transport" type="short"><value>3</value></simple><!--3 means ROS-->
+  		<simple name="transport" type="short"><value>3</value></simple><!--3 means ROS -->
   		<simple name="name_id" type="string"><value>poseDsr</value></simple><!-- topic name -->
 	</struct>
 	
@@ -38,4 +38,21 @@
     		<simple name="JointPositionDesToROS" type="string"><value>ROSConJntPosOut</value></simple>
   		</struct>
 	</struct>
+	
+	<struct name="Reporter" type="OCL::FileReporting">
+    	<struct name="Activity" type="PeriodicActivity">
+			<simple name="Period" type="double"><value>0.01</value></simple>
+			<simple name="Priority" type="short"><value>0</value></simple>
+			<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
+    	</struct>
+    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
+    	<simple name="AutoStart" type="boolean"><value>1</value></simple>
+    	<simple name="AutoSave" type="boolean"><value>1</value></simple>
+    	<simple name="LoadProperties" type="string"><value>reporting.cpf</value></simple>
+    	<!-- List all peers (uni-directional) -->
+    	<struct name="Peers" type="PropertyBag">
+    		<simple type="string"><value>trajectoryGeneratorJntPos</value></simple>
+    	</struct>
+    </struct>
+	
 </properties>

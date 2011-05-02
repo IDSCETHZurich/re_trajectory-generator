@@ -4,6 +4,9 @@
  *  Created on: Apr 7, 2011
  *      Author: Gajan
  */
+#include <rtt/RTT.hpp>
+#include <rtt/TaskContext.hpp>
+#include <ocl/OCL.hpp>
 
 #ifndef VELOCITYPROFILE_NONZEROINIT_H_
 #define VELOCITYPROFILE_NONZEROINIT_H_
@@ -22,7 +25,7 @@ private:
 	double duration, timeScale;
 	// Profile mode in order
 	std::vector< std::vector<double> > subVelocityProfiles;
-	void subProfileBuilder(double maxAcc, double maxVel, double finalPos, double initPos, double initVel);
+	double subProfileBuilder(double maxAcc, double maxVel, double finalPos, double initPos, double initVel, double initTime);
 };
 
 } //end of namespace

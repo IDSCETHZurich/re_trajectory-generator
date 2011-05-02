@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "cpf.dtd">
+<properties>
+  <simple name="AutoTrigger" type="boolean"><description>When set to 1, the data is taken upon each update(), otherwise, the data is only taken when the user invokes 'snapshot()'.</description><value>1</value></simple>
+  <simple name="WriteHeader" type="boolean"><description>Set to true to start each report with a header.</description><value>1</value></simple>
+  <simple name="Decompose" type="boolean"><description>Set to true to decompose data ports.</description><value>1</value></simple>
+  <simple name="ReportFile" type="string"><description>Location on disc to store the reports.</description><value>reports.dat</value></simple>
+  <simple name="Synchronize" type="boolean"><description>Set to true if the timestamp should be synchronized with the logging</description><value>0</value></simple>
+  <struct name="ReportData" type="PropertyBag">
+     <description>A PropertyBag which defines which ports or components to report.</description>
+     <simple name="Port" type="string"><value>trajectoryGeneratorJntPos.JointPositionDes</value></simple>
+  </struct>
+  <simple name="SnapshotOnly" type="boolean"><description>Set to true to only log data if a snapshot() was done.</description><value>0</value></simple>
+  <simple name="NullSample" type="string"><description>The characters written to the log to indicate that no new data was available for that port during a snapshot(). As a special value, the string 'last' is interpreted as repeating the last value.</description><value>last</value></simple>
+</properties>

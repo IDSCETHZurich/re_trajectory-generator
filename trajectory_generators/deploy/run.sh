@@ -1,1 +1,1 @@
-rosrun ocl deployer-gnulinux --start TrajectoryGeneratorOnly.xml
+rosrun ocl deployer-gnulinux --start Final.xml
