@@ -1,0 +1,13 @@
+<package>
+  <description brief="kuka_typekit-typekit">
+
+      kuka_typekit-typekit description
+
+  </description>
+  <author></author>
+  <license></license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/kuka_typekit-typekit</url>
+  <depend package="rtt"/>
+
+</package>

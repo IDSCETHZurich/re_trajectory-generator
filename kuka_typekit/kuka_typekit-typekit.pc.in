@@ -1,0 +1,18 @@
+# Generated from orogen/lib/orogen/templates/typekit/typekit.pc
+
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/lib/orocos/types
+includedir=${prefix}/include/orocos
+
+project_name=kuka_typekit
+
+type_registry=${prefix}/share/orogen/kuka_typekit.tlb
+
+Name: kuka_typekitTypekit
+Version: 
+
+Description: kuka_typekit types support for the Orocos type system
+Libs: -L${libdir} -l@libname@
+Cflags: -I${includedir} -I${includedir}/kuka_typekit/types  @PKG_CFLAGS@
+
