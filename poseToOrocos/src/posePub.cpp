@@ -96,19 +96,8 @@ int main(int argc, char **argv)
   int count = 0;
   bool newposition = false;
   double x,y,z;
-//  std::vector<double> pos_x;
-//  std::vector<double> pos_y;
-//  std::vector<double> pos_z;
-  // We add the points
-//  pos_x.push_back(0.5);
-//  pos_x.push_back(0);
-//  pos_x.push_back(0);
-//  pos_y.push_back(0);
-//  pos_y.push_back(0.5);
-//  pos_y.push_back(-0.5);
-//  pos_z.push_back(0.5);
-//  pos_z.push_back(0.5);
-//  pos_z.push_back(0.5);
+// Set the random seed based on actual time
+  srand ( time(NULL) );
 
   while (ros::ok())
   {
@@ -133,6 +122,7 @@ int main(int argc, char **argv)
     pose.position.y = y;
     pose.position.z = z;
 
+    // TODO: Design random values for orientation (quaternions)
     pose.orientation.x = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
     pose.orientation.y = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
     pose.orientation.z = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
