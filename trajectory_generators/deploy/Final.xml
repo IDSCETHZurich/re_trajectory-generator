@@ -4,7 +4,7 @@
 
  	<simple name="Import" type="string"><value>kdl_typekit</value></simple>
  	<simple name="Import" type="string"><value>lwr_fri</value></simple>
-  	<simple name="Import" type="string"><value>kuka_typekit</value></simple>
+  	<!--<simple name="Import" type="string"><value>kuka_typekit</value></simple>-->
   	<simple name="Import" type="string"><value>rtt_ros_integration</value></simple>
 	<simple name="Import" type="string"><value>trajectory_generators</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_std_msgs</value></simple>
@@ -33,7 +33,7 @@
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<!--<simple name="PropertyFile" type="string"><value>cpf/trajectoryGeneratorPos.cpf</value></simple>-->
+		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGeneratorPos.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
     		<simple name="CartesianPoseDes" type="string"><value>ROSConPoseIn</value></simple>
     		<simple name="JointPositionDesToROS" type="string"><value>ROSConJntPosOut</value></simple>

@@ -19,12 +19,14 @@ namespace trajectory_generators
     	is_moving = false;
     	toROS = true;
 
-	// TODO: Marshall all these values to avoid hard-coding
-    	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
-    	v_max = std::vector<double>(7,1.4);
+    	// TODO: Marshall all these values to avoid hard-coding
+    	v_max = std::vector<double>(7,1.8);
     	a_max = std::vector<double>(7,3);
+    	//num_axes = 7;
+
+    	lastCommndedPoseJntPos = std::vector<double>(7,0.0);
     	jntVel = std::vector<double>(7,0.0);
-    	num_axes = 7;
+
 
         //Adding InputPorts
         this->addEventPort("CartesianPoseDes",cmd_cartPosPort, boost::bind(&CartesianGeneratorPos::generateNewVelocityProfiles, this, _1));
@@ -33,10 +35,14 @@ namespace trajectory_generators
         //Adding OutputPorts
         this->addPort("JointPositionDes",cmd_jntPosPort);
         this->addPort("JointPositionDesToROS",cmd_jntPosPort_toROS);
+
+
         //Adding Properties
         //this->addProperty("max_vel",v_max).doc("Maximum Velocity in Trajectory");
         //this->addProperty("max_acc",a_max).doc("Maximum Acceleration in Trajectory");
-        //this->addProperty("num_axes",num_axes).doc("Number of Axes");
+        this->addProperty("num_axes",num_axes).doc("Number of Axes");
+
+        //this->getProvider<Marshalling>("marshalling")->readProperties("attribute.cpf");
 
         this->addOperation("moveTo",&CartesianGeneratorPos::moveTo,this,OwnThread)
         	  .doc("Set the position setpoint")

@@ -9,7 +9,7 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/LWR</url>
   <!--<depend package="kuka_lwr_fri"/>-->
-  <depend package="kuka_typekit"/>
+  <!--<depend package="kuka_typekit"/>-->
   <depend package="rtt"/>
   <depend package="ocl"/>
   <depend package="orocos_kdl"/>

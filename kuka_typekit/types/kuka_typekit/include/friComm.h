@@ -1,1 +1,0 @@
-/home/demo/ros/stacks/demoLocal/lwr_fri/include/friComm.h

@@ -9,12 +9,13 @@
 #include <rtt/Property.hpp>
 #include <rtt/PropertyBag.hpp>
 
+#include <rtt/marsh/Marshalling.hpp>
+
 #include <kdl/velocityprofile_trap.hpp>
 #include <rtt/os/TimeService.hpp>
 
 #include <kdl/kdl.hpp>
 #include <kdl/frames.hpp>
-
 
 //#include <brics_actuator/CartesianPose.h>
 //#include <brics_actuator/CartesianTwist.h>
