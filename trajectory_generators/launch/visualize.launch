@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Load arm into parameter server -->
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find re_kuka)/description/robots/lbr.urdf.xacro'" />
+
+  <!-- State publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" >
+	<!--<remap from="joint_states" to="joint_positions"/>-->
+  </node>  
+
+  <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d launch/kuka.vcg" />
+</launch>
+

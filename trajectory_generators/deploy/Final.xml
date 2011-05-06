@@ -3,19 +3,26 @@
 <properties>
 
  	<simple name="Import" type="string"><value>kdl_typekit</value></simple>
- 	<simple name="Import" type="string"><value>lwr_fri</value></simple>
+	<simple name="Import" type="string"><value>lwr_fri</value></simple>
   	<!--<simple name="Import" type="string"><value>kuka_typekit</value></simple>-->
   	<simple name="Import" type="string"><value>rtt_ros_integration</value></simple>
 	<simple name="Import" type="string"><value>trajectory_generators</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_std_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_sensor_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_geometry_msgs</value></simple>
-
+	
 	<struct name="ROSConPoseIn" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple><!-- type of connection: 0 means Data -->
   		<simple name="size" type="short"><value>1</value></simple><!-- buffer size -->
   		<simple name="transport" type="short"><value>3</value></simple><!--3 means ROS-->
   		<simple name="name_id" type="string"><value>poseDsr</value></simple><!-- topic name -->
+	</struct>
+	
+	<struct name="ROSConJntPosIn" type="ConnPolicy">
+  		<simple name="type" type="short"><value>0</value></simple>
+  		<simple name="size" type="short"><value>1</value></simple>
+  		<simple name="transport" type="short"><value>3</value></simple>
+  		<simple name="name_id" type="string"><value>jntPosDsr</value></simple>
 	</struct>
 	
 	<struct name="ROSConJntPosOut" type="ConnPolicy">
@@ -24,24 +31,25 @@
   		<simple name="transport" type="short"><value>3</value></simple>
   		<simple name="name_id" type="string"><value>joint_states</value></simple>
 	</struct>
- 	
+	
 	<struct name="trajectoryGeneratorJntPos" type="trajectory_generators::CartesianGeneratorPos">
 		<struct name="Activity" type="PeriodicActivity">
 			<simple name="Period" type="double"><value>0.005</value></simple>
 			<simple name="Priority" type="short"><value>1</value></simple>
-    	<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
+    			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
 		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGeneratorPos.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
-    		<simple name="CartesianPoseDes" type="string"><value>ROSConPoseIn</value></simple>
-    		<simple name="JointPositionDesToROS" type="string"><value>ROSConJntPosOut</value></simple>
-    		<simple name="JointPositionMsr" type="string"><value>MsrJointPosition</value></simple>
-    		<simple name="JointPositionDes" type="string"><value>DesJointPosition</value></simple>
+    			<simple name="CartesianPoseInput" type="string"><value>ROSConPoseIn</value></simple>
+    			<simple name="JointPositionInput" type="string"><value>ROSConJntPosIn</value></simple>
+    			<simple name="JointPositionDesToROS" type="string"><value>ROSConJntPosOut</value></simple>
+    			<simple name="JointPositionMsr" type="string"><value>MsrJointPosition</value></simple>
+    			<simple name="JointPositionDes" type="string"><value>DesJointPosition</value></simple>
   		</struct>
 	</struct>
-	
+
 	<struct name="FRIServer" type="lwr_fri::FRIComponent">
  		<struct name="Activity" type="NonPeriodicActivity">
 			<simple name="Priority" type="short"><value>1</value></simple>
@@ -57,20 +65,19 @@
 	</struct>
 	
 	<struct name="Reporter" type="OCL::FileReporting">
-	    	<struct name="Activity" type="PeriodicActivity">
-				<simple name="Period" type="double"><value>0.005</value></simple>
-				<simple name="Priority" type="short"><value>0</value></simple>
-				<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
-	    	</struct>
-	    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
-	    	<simple name="AutoStart" type="boolean"><value>1</value></simple>
-	    	<simple name="AutoSave" type="boolean"><value>1</value></simple>
-	    	<simple name="LoadProperties" type="string"><value>reportParam.cpf</value></simple>
-	    	<!-- List all peers (uni-directional) -->
-	    	<struct name="Peers" type="PropertyBag">
-	    		<simple type="string"><value>trajectoryGeneratorJntPos</value></simple>
-	    		<simple type="string"><value>FRIServer</value></simple>
-	    	</struct>
+    		<struct name="Activity" type="PeriodicActivity">
+			<simple name="Period" type="double"><value>0.005</value></simple>
+			<simple name="Priority" type="short"><value>0</value></simple>
+			<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
+    		</struct>
+    		<simple name="AutoConf" type="boolean"><value>1</value></simple>
+    		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+    		<simple name="AutoSave" type="boolean"><value>1</value></simple>
+    		<simple name="LoadProperties" type="string"><value>reporting.cpf</value></simple>
+    		<!-- List all peers (uni-directional) -->
+    		<struct name="Peers" type="PropertyBag">
+    			<simple type="string"><value>trajectoryGeneratorJntPos</value></simple>
+    			<simple type="string"><value>FRIServer</value></simple>
+    		</struct>
     	</struct>
-	
 </properties>

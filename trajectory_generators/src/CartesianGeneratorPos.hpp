@@ -17,9 +17,6 @@
 #include <kdl/kdl.hpp>
 #include <kdl/frames.hpp>
 
-//#include <brics_actuator/CartesianPose.h>
-//#include <brics_actuator/CartesianTwist.h>
-
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Wrench.h>
@@ -31,6 +28,7 @@
 
 
 #include "VelocityProfile_NonZeroInit.hpp"
+#include "KukaLWR_IK.hpp"
 
 namespace trajectory_generators
 {
@@ -59,12 +57,13 @@ namespace trajectory_generators
       bool moveTo(std::vector<double> position, double time=0);
       bool moveFinished() const;
       void resetPosition();
-      bool ikSolver(geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr);
-      bool generateNewVelocityProfiles(RTT::base::PortInterface* portInterface);
+
+      bool generateNewVelocityProfilesCartPosInput(RTT::base::PortInterface* portInterface);
+      bool generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface);
 
       unsigned int num_axes;
       std::vector<double> p_m, p_d, v_d;
-      std::vector<double> v_max, a_max;
+      std::vector<double> v_max, a_max, p_max, p_min;
       std::vector<VelocityProfile_NonZeroInit> motionProfile;
 
       RTT::os::TimeService::ticks	time_begin;
@@ -74,9 +73,8 @@ namespace trajectory_generators
       std::vector<double> lastCommndedPoseJntPos;
       std::vector<double> jntPosCmd;
       std::vector<double> jntVel;
-      double PI;
 
-      sensor_msgs::JointState jntState; // to ROS
+      sensor_msgs::JointState jntState, cmdJntState; // to/fromROS
 
       double max_duration;
       bool is_moving;
@@ -86,13 +84,15 @@ namespace trajectory_generators
 
     protected:
       /// Dataport containing commanded Cartesian pose
-      RTT::InputPort< geometry_msgs::Pose > cmd_cartPosPort;
-      /// Dataport containing the measured joint angles
+      RTT::InputPort< geometry_msgs::Pose > input_cartPosPort;
+      /// Dataport containing commanded joint position
+      RTT::InputPort< sensor_msgs::JointState > input_jntPosPort;
+      /// Dataport containing the measured joint angles from the Robot
       RTT::InputPort< std::vector<double> > msr_jntPosPort;
       /// Dataport containing the desired joint angles
-      RTT::OutputPort< std::vector<double> >  cmd_jntPosPort;
+      RTT::OutputPort< std::vector<double> >  output_jntPosPort;
       /// Dataport containing the desired joint angles (In s)
-      RTT::OutputPort< sensor_msgs::JointState >  cmd_jntPosPort_toROS;
+      RTT::OutputPort< sensor_msgs::JointState >  output_jntPosPort_toROS;
 
   }; // class
 }//namespace
