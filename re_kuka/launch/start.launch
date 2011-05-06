@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <!-- Gazebo empty world -->
+  <include file="$(find gazebo_worlds)/launch/empty_world.launch" />
+
+  <!-- Start arm -->
+  <include file="$(find re_kuka)/launch/arm_sdh.launch" ns="re_kuka"/>
+  
+  <!-- Start cabinet -->
+  <include file="$(find re_kuka)/launch/cabinet.launch" ns="cabinet"/>
+	 
+	<!-- Rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find re_kuka)/launch/re_kuka.vcg" respawn="false" output="screen" />
+  
+</launch>

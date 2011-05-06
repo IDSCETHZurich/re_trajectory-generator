@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/roboearth/repos/!svn/ver/749/ros_roboearth/re_kuka/scripts
+END
+test_ik_trajectory.py
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/roboearth/repos/!svn/ver/749/ros_roboearth/re_kuka/scripts/test_ik_trajectory.py
+END
+getCurrentPose.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/roboearth/repos/!svn/ver/738/ros_roboearth/re_kuka/scripts/getCurrentPose.py
+END

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/description/urdf/cabinet_v0
+END
+cabinet.urdf.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/description/urdf/cabinet_v0/cabinet.urdf.xacro
+END
+cabinet.gazebo.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/description/urdf/cabinet_v0/cabinet.gazebo.xacro
+END
+cabinet.transmission.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/description/urdf/cabinet_v0/cabinet.transmission.xacro
+END

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+	<xacro:macro name="cabinet_gazebo_v0" params="name">
+
+		<gazebo reference="cabinet_bottom">
+			<material value="PR2/Black" />
+			<turnGravityOff>false</turnGravityOff>
+		</gazebo>
+
+		<gazebo reference="cabinet_left">
+			<material value="PR2/Black" />
+			<turnGravityOff>false</turnGravityOff>
+		</gazebo>
+	
+		<gazebo reference="cabinet_top">
+			<material value="PR2/Black" />
+			<turnGravityOff>false</turnGravityOff>
+		</gazebo>
+	
+		<gazebo reference="cabinet_right">
+			<material value="PR2/Black" />
+			<turnGravityOff>false</turnGravityOff>
+		</gazebo>
+	
+		<gazebo reference="cabinet_hor">
+			<material value="PR2/Black" />
+			<turnGravityOff>false</turnGravityOff>
+		</gazebo>
+
+		<gazebo reference="cabinet_ver">
+			<material value="PR2/Black" />
+			<turnGravityOff>false</turnGravityOff>
+		</gazebo>
+
+		<gazebo reference="cabinet_left_hinge">
+			<material value="PR2/Red" />
+			<turnGravityOff>false</turnGravityOff>
+		</gazebo>
+
+                <gazebo reference="cabinet_right_upper_hinge">
+			<material value="PR2/Red" />
+			<turnGravityOff>false</turnGravityOff>
+		</gazebo>
+		
+		<gazebo reference="cabinet_right_lower_hinge">
+			<material value="PR2/Red" />
+			<turnGravityOff>false</turnGravityOff>
+		</gazebo>
+
+	</xacro:macro>
+
+</robot>

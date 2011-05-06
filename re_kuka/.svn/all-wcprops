@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/roboearth/repos/!svn/ver/1022/ros_roboearth/re_kuka
+END
+manifest.xml
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/roboearth/repos/!svn/ver/718/ros_roboearth/re_kuka/manifest.xml
+END
+mainpage.dox
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/roboearth/repos/!svn/ver/717/ros_roboearth/re_kuka/mainpage.dox
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/roboearth/repos/!svn/ver/730/ros_roboearth/re_kuka/CMakeLists.txt
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/roboearth/repos/!svn/ver/717/ros_roboearth/re_kuka/Makefile
+END

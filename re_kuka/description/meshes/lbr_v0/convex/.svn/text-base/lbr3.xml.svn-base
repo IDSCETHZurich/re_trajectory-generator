@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <NXUSTREAM2>
+    <NxuPhysicsCollection id="beshon" sdkVersion="244" nxuVersion="100">
+      <NxPhysicsSDKDesc id="SDK">
+        <hwPageSize>65536</hwPageSize>
+        <hwPageMax>256</hwPageMax>
+        <hwConvexMax>2048</hwConvexMax>
+      </NxPhysicsSDKDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_0">
+    <points>
+      0.059643783 -0.041858666 0.141805783  0.000008 -0.014481456 0.130081505  0.055363327 -0.041858666 0.107475489  0.000168 -0.008386758 0.115115233  
+      0.058329001 -0.018928949 0.112709045  0 -0.0075 0.141805783  0.0334212 0.0095 0.141805783  0.000008 0.0095 0.141700998  
+      0.004828 0.0095 0.131695002  0.056628998 -0.026604803 0.141805783  0.000008 0.0095 0.131695002  0.039007999 -0.008064794 0.115188718  
+    </points>
+    <triangles>
+      0 1 2  3 2 1  4 2 3  4 0 2  
+      5 1 0  5 0 6  5 6 7  8 7 6  
+      9 6 0  9 0 4  9 4 6  10 7 8  
+      10 1 5  10 5 7  10 3 1  11 3 10  
+      11 10 8  11 4 3  11 6 4  11 8 6  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_1">
+    <points>
+      -0.033418372 0.0095 0.141803667  -0.059622619 -0.041877273 0.141803667  -0.005047563 0.0095 0.141803667  0 -0.0075 0.141803667  
+      -0.058242999 -0.018737352 0.11275278  -0.05535559 -0.041877273 0.107471243  0.000008 -0.014481456 0.130081505  0.000008 -0.008407293 0.115154102  
+      0.000008 0.0095 0.131695002  0.000008 0.0095 0.141700998  -0.056506 -0.026340026 0.141803667  -0.040967263 -0.008189696 0.115160212  
+    </points>
+    <triangles>
+      0 1 2  3 2 1  4 5 1  6 5 7  
+      6 1 5  6 3 1  8 6 7  8 0 2  
+      9 2 3  9 8 2  9 3 6  9 6 8  
+      10 1 0  10 0 4  10 4 1  11 4 0  
+      11 0 8  11 8 7  11 7 5  11 5 4  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_2">
+    <points>
+      -0.003546 -0.071227901 0.100772157  -0.05959148 -0.041877273 0.176136076  0.000008 -0.093217328 0.176136076  -0.05535559 -0.041877273 0.107471243  
+      -0.040460553 -0.079221167 0.176136076  -0.034109 -0.06229255 0.10281159  -0.043776002 -0.072524004 0.148874  -0.023122 -0.084577002 0.150003001  
+      -0.05438 -0.062619001 0.174500003  -0.023122 -0.089166775 0.176136076  -0.003546 -0.089233004 0.152954996  0.000008 -0.086448275 0.144108444  
+    </points>
+    <triangles>
+      0 1 2  3 1 0  4 2 1  5 6 3  
+      5 3 0  7 6 5  7 5 0  7 4 6  
+      8 6 4  8 4 1  8 1 3  8 3 6  
+      9 2 4  9 4 7  10 2 9  10 9 7  
+      10 7 0  11 0 2  11 2 10  11 10 0  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_3">
+    <points>
+      0.000008 -0.071179487 0.100783207  0.059582189 -0.041858666 0.176136076  0.055363327 -0.041858666 0.107475489  0.000008 -0.093217328 0.176136076  
+      0.028396999 -0.08690273 0.176136076  0.033792 -0.062453683 0.102774814  0.017092001 -0.086750001 0.151380002  0.043510001 -0.072811998 0.149069995  
+      0.051243 -0.067695998 0.172579005  0.051243 -0.067657314 0.176136076  0.058286 -0.05015 0.143491998  0.000008 -0.089190617 0.152928084  
+    </points>
+    <triangles>
+      0 1 2  3 4 1  3 1 0  5 0 2  
+      6 0 5  6 4 3  7 4 6  7 6 5  
+      7 5 2  7 8 4  9 1 4  9 4 8  
+      10 1 9  10 9 8  10 8 7  10 7 2  
+      10 2 1  11 3 0  11 0 6  11 6 3  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_4">
+    <points>
+      0 -0.042119231 0.251361936  0 -0.0075 0.213818043  0.052883159 -0.042119231 0.213818043  0 0.0095 0.25150001  
+      0.055497859 0.0095 0.213818043  0.033792 -0.042119231 0.23968412  0.036045 0.0095 0.239466995  0 0.0095 0.241500005  
+      0.017092001 -0.039691001 0.248793006  0.036045 -0.0075 0.239466995  0.018999999 0.0095 0.248411998  0.046909999 -0.0125 0.228909001  
+    </points>
+    <triangles>
+      0 1 2  1 0 3  4 2 1  5 0 2  
+      6 4 3  7 1 3  7 3 4  7 4 1  
+      8 0 5  8 5 9  8 3 0  10 6 3  
+      10 3 8  10 9 6  10 8 9  11 4 6  
+      11 6 9  11 9 5  11 5 2  11 2 4  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_5">
+    <points>
+      -0 -0.0075 0.213818043  0 -0.042138498 0.251360953  -0.052825794 -0.042138498 0.213818043  0 0.0095 0.25150001  
+      -0.055497859 0.0095 0.213818043  -0.036045 0.0095 0.239466995  -0.034109 -0.042138498 0.239428058  0 0.0095 0.241500005  
+      -0.018999999 0.0095 0.248411998  -0.034109 -0.0211 0.240575001  -0.017384 -0.042138498 0.248534173  -0.047892001 -0.016565001 0.227403998  
+    </points>
+    <triangles>
+      0 1 2  1 0 3  4 0 2  5 3 4  
+      6 2 1  7 3 0  7 0 4  7 4 3  
+      8 3 5  8 5 9  8 1 3  10 6 1  
+      10 1 8  10 9 6  10 8 9  11 6 9  
+      11 4 2  11 2 6  11 9 5  11 5 4  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_6">
+    <points>
+      0 -0.093217477 0.176136076  -0.028732 -0.086731888 0.176136076  -0.059581775 -0.042138498 0.176136076  -0.001511 -0.042138498 0.251395583  
+      -0.001511 -0.086547002 0.225132003  -0.043776002 -0.042138498 0.229825124  -0.047892001 -0.054304 0.218075007  -0.017384 -0.065327004 0.242337003  
+      -0.034109 -0.078550003 0.213861004  -0.051440999 -0.067322999 0.179873005  0 -0.066638887 0.245225757  -0.023122 -0.042138498 0.246223137  
+    </points>
+    <triangles>
+      0 1 2  0 2 3  0 4 1  5 3 2  
+      5 2 6  7 5 6  8 4 7  8 7 6  
+      8 1 4  9 2 1  9 1 8  9 6 2  
+      9 8 6  10 3 7  10 7 4  10 4 0  
+      10 0 3  11 3 5  11 5 7  11 7 3  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_7">
+    <points>
+      0 -0.042119231 0.251361936  0 -0.093217477 0.176136076  0 -0.084116846 0.229119763  0.059571277 -0.042119231 0.176136076  
+      0.043510001 -0.076668002 0.181867003  0.043510001 -0.042119231 0.230170682  0.028396999 -0.081189997 0.217571005  0.011822 -0.066085003 0.244007006  
+      0.038860999 -0.059266999 0.229004994  0.051243 -0.061652001 0.201415002  0 -0.066638887 0.245225757  0.022777 -0.042119231 0.246387392  
+    </points>
+    <triangles>
+      0 1 2  1 0 3  4 1 3  5 3 0  
+      6 2 1  6 1 4  7 2 6  7 6 8  
+      9 8 6  9 6 4  9 3 5  9 5 8  
+      9 4 3  10 0 2  10 2 7  10 7 0  
+      11 5 0  11 0 7  11 8 5  11 7 8  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_8">
+    <points>
+      0.052883159 -0.042119231 0.213818043  0 -0.0075 0.141805783  0.059643783 -0.041858666 0.141805783  0 -0.0075 0.213818043  
+      0.055497859 0.0095 0.213818043  0.005059261 0.0095 0.141805783  0.039786998 0.0095 0.146588996  0.058786999 0.0095 0.179498002  
+      0.059397001 -0.027702 0.195121005  0.0334212 0.0095 0.141805783  0.059397001 -0.042119231 0.183695152  0.04461772 0.0095 0.213818043  
+    </points>
+    <triangles>
+      0 1 2  3 0 4  3 1 0  5 2 1  
+      5 4 6  5 1 3  7 2 6  7 6 4  
+      8 2 7  8 4 0  8 7 4  9 6 2  
+      9 2 5  9 5 6  10 0 2  10 2 8  
+      10 8 0  11 3 4  11 4 5  11 5 3  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_9">
+    <points>
+      0 -0.0075 0.141803667  -0.052825794 -0.042138498 0.213818043  -0.059622619 -0.041877273 0.141803667  -0 -0.0075 0.213818043  
+      -0.033418372 0.0095 0.141803667  -0.055497859 0.0095 0.213818043  -0.059563 0.0095 0.198732004  -0.005047563 0.0095 0.141803667  
+      -0.056101002 0.0095 0.170223996  -0.059445001 -0.035909999 0.189935997  -0.056506 -0.026340026 0.141803667  -0.04461772 0.0095 0.213818043  
+    </points>
+    <triangles>
+      0 1 2  1 0 3  4 0 2  5 4 6  
+      5 1 3  5 6 1  7 4 5  7 3 0  
+      7 0 4  8 2 6  8 6 4  9 2 1  
+      9 1 6  9 6 2  10 4 2  10 2 8  
+      10 8 4  11 5 3  11 3 7  11 7 5  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxConvexMeshDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_10">
+    <points>
+      -0.059923999 -0.025016081 0.111319698  0.033792 -0.062453683 0.102774814  0.033950999 -0.007574061 0.11530073  -0.059999999 0 0  
+      -0.018406 -0.046489 -0.017000001  -0.026032999 0.054058 0  0.033950999 0.047524001 0.038027  -0.023122 -0.067318365 0.101664484  
+      0.059939999 -0.025222858 0.111272506  0.059999999 0 0  0.024088001 0.043815002 -0.017000001  0.037409 -0.046909999 0  
+    </points>
+    <triangles>
+      0 1 2  3 4 0  3 0 5  6 5 0  
+      6 0 2  7 1 0  7 0 4  8 9 6  
+      8 6 2  8 2 1  10 5 6  10 6 9  
+      10 4 3  10 3 5  10 9 4  11 9 8  
+      11 8 1  11 1 7  11 7 4  11 4 9  
+    </triangles>
+  </NxConvexMeshDesc>
+  <NxSceneDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3">
+        <filterBool>false</filterBool>
+        <filterOp0>NX_FILTEROP_AND</filterOp0>
+        <filterOp1>NX_FILTEROP_AND</filterOp1>
+        <filterOp2>NX_FILTEROP_AND</filterOp2>
+        <NxGroupsMask id="groupMask0" bits0="0" bits1="0" bits2="0" bits3="0"/>
+        <NxGroupsMask id="groupMask1" bits0="0" bits1="0" bits2="0" bits3="0"/>
+        <gravity>0 -9.800000191 0</gravity>
+        <maxTimestep>0.016666668</maxTimestep>
+        <maxIter>8</maxIter>
+        <timeStepMethod>NX_TIMESTEP_FIXED</timeStepMethod>
+        <maxBounds>FLT_MIN FLT_MIN FLT_MIN  FLT_MAX FLT_MAX FLT_MAX</maxBounds>
+        <NxSceneLimits id="limits">
+          <maxNbActors>0</maxNbActors>
+          <maxNbBodies>0</maxNbBodies>
+          <maxNbStaticShapes>0</maxNbStaticShapes>
+          <maxNbDynamicShapes>0</maxNbDynamicShapes>
+          <maxNbJoints>0</maxNbJoints>
+        </NxSceneLimits>
+        <simType>NX_SIMULATION_SW</simType>
+        <groundPlane>true</groundPlane>
+        <boundsPlanes>false</boundsPlanes>
+        <NxSceneFlags id="flags">
+          <NX_SF_DISABLE_SSE>false</NX_SF_DISABLE_SSE>
+          <NX_SF_DISABLE_COLLISIONS>false</NX_SF_DISABLE_COLLISIONS>
+          <NX_SF_SIMULATE_SEPARATE_THREAD>true</NX_SF_SIMULATE_SEPARATE_THREAD>
+          <NX_SF_ENABLE_MULTITHREAD>false</NX_SF_ENABLE_MULTITHREAD>
+        </NxSceneFlags>
+        <internalThreadCount>0</internalThreadCount>
+        <backgroundThreadCount>0</backgroundThreadCount>
+        <threadMask>1431655764</threadMask>
+        <backgroundThreadMask>1431655764</backgroundThreadMask>
+        <NxMaterialDesc id="Material_0" userProperties="" hasSpring="false" materialIndex="0">
+          <dynamicFriction>0.5</dynamicFriction>
+          <staticFriction>0.5</staticFriction>
+          <restitution>0</restitution>
+          <dynamicFrictionV>0</dynamicFrictionV>
+          <staticFrictionV>0</staticFrictionV>
+          <frictionCombineMode>NX_CM_AVERAGE</frictionCombineMode>
+          <restitutionCombineMode>NX_CM_AVERAGE</restitutionCombineMode>
+          <dirOfAnisotropy>1 0 0</dirOfAnisotropy>
+          <NxMaterialFlag id="flags">
+            <NX_MF_ANISOTROPIC>false</NX_MF_ANISOTROPIC>
+            <NX_MF_DISABLE_FRICTION>false</NX_MF_DISABLE_FRICTION>
+            <NX_MF_DISABLE_STRONG_FRICTION>false</NX_MF_DISABLE_STRONG_FRICTION>
+          </NxMaterialFlag>
+        </NxMaterialDesc>
+    <NxActorDesc id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3" userProperties="" hasBody="true" name="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3">
+      <globalPose>1 0 0    0 1 0    0 0 1    0 0 0 </globalPose>
+			<NxBodyDesc>
+        <mass>1</mass>
+        <linearDamping>0</linearDamping>
+        <angularDamping>0</angularDamping>
+        <solverIterationCount>32</solverIterationCount>
+        <NxBodyFlag id="flags">
+          <NX_BF_POSE_SLEEP_TEST>true</NX_BF_POSE_SLEEP_TEST>
+          <NX_AF_DISABLE_COLLISION>false</NX_AF_DISABLE_COLLISION>
+        </NxBodyFlag>
+      </NxBodyDesc>
+      <name>Bip01 Pelvis</name>
+      <NxConvexShapeDesc id="Shape_0" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_0">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_1" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_1">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_2" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_2">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_3" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_3">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_4" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_4">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_5" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_5">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_6" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_6">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_7" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_7">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_8" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_8">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_9" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_9">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+      <NxConvexShapeDesc id="Shape_10" meshData="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3_10">
+      <NxShapeDesc>
+        <localPose>1 0 0    0 1 0    0 0 1    0 0 0 </localPose>
+        <skinWidth>0</skinWidth>
+      </NxShapeDesc>
+      </NxConvexShapeDesc>
+    </NxActorDesc>
+  </NxSceneDesc>
+	 <NxSceneInstance id="/home/rob/repos/cob/cob_common/cob_description/ros/meshes/lbr_v0/convex/lbr3">
+	 	 <sceneName>beshon</sceneName>
+	 	 <NxuUserProperties></NxuUserProperties>
+	 	 <rootNode>1	0	0	0	1	0	0	0	1	0	0 0</rootNode>
+	 	 <newScene>false</newScene>
+	 	 <ignorePlane>true</ignorePlane>
+	 	 <numSceneInstances>0</numSceneInstances>
+	 </NxSceneInstance>
+  </NxuPhysicsCollection>
+</NXUSTREAM2>
