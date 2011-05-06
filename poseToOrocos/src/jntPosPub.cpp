@@ -30,7 +30,7 @@
 // %EndTag(ROS_HEADER)%
 // %Tag(MSG_HEADER)%
 #include "std_msgs/String.h"
-#include "geometry_msgs/Pose.h"
+#include "sensor_msgs/JointState.h"
 // %EndTag(MSG_HEADER)%
 
 #include <sstream>
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
    * buffer up before throwing some away.
    */
 // %Tag(PUBLISHER)%
-  ros::Publisher posePub = n.advertise<geometry_msgs::Pose>("poseDsr", 2, true);
+  ros::Publisher posePub = n.advertise<sensor_msgs::JointState>("jntPosDsr", 2, true);
 // %EndTag(PUBLISHER)%
 
 // %Tag(LOOP_RATE)%
@@ -93,11 +93,8 @@ int main(int argc, char **argv)
    * a unique string for each message.
    */
 // %Tag(ROS_OK)%
-  int count = 0;
-  bool newposition = false;
-  double x,y,z;
 // Set the random seed based on actual time
-  srand ( time(NULL) );
+//  srand ( time(NULL) );
 
   while (ros::ok())
   {
@@ -106,27 +103,12 @@ int main(int argc, char **argv)
      * This is a message object. You stuff it with data, and then publish it.
      */
 // %Tag(FILL_MESSAGE)%
-    geometry_msgs::Pose pose;
+    sensor_msgs::JointState jntState;
 
-    newposition = false;
-    while (!newposition) {
-    	x = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    	y = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    	z = (0.7-(0.2))*(double)rand()/(double)RAND_MAX + (0.2);
-    	if (x*x+y*y+z*z>=0.50 && x*x+y*y+z*z<=0.70) {
-    		newposition = true;
-    	}
+    jntState.position.clear();
+    for(int i=0; i< 7 ; i++ ){
+    	jntState.position.push_back(-1.0 + 2.0*((double)rand()/(double)RAND_MAX));
     }
-
-    pose.position.x = x;
-    pose.position.y = y;
-    pose.position.z = z;
-
-    // TODO: Design random values for orientation (quaternions)
-    pose.orientation.x = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    pose.orientation.y = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    pose.orientation.z = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    pose.orientation.w = 1.0;
 
     /**
      * The publish() function is how you send messages. The parameter
@@ -135,7 +117,7 @@ int main(int argc, char **argv)
      * in the constructor above.
      */
 // %Tag(PUBLISH)%
-    posePub.publish(pose);
+    posePub.publish(jntState);
 // %EndTag(PUBLISH)%
 
 // %Tag(SPINONCE)%
@@ -145,7 +127,6 @@ int main(int argc, char **argv)
 // %Tag(RATE_SLEEP)%
     loop_rate.sleep();
 // %EndTag(RATE_SLEEP)%
-    ++count;
   }
 
 
