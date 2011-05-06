@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/description/robots
+END
+lbr_pin.urdf.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/roboearth/repos/!svn/ver/746/ros_roboearth/re_kuka/description/robots/lbr_pin.urdf.xacro
+END
+cabinet.urdf.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/description/robots/cabinet.urdf.xacro
+END
+lbr_pin_cabinet.urdf.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/roboearth/repos/!svn/ver/746/ros_roboearth/re_kuka/description/robots/lbr_pin_cabinet.urdf.xacro
+END
+lbr_sdh.urdf.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/roboearth/repos/!svn/ver/717/ros_roboearth/re_kuka/description/robots/lbr_sdh.urdf.xacro
+END
+arm_sdh.urdf.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/description/robots/arm_sdh.urdf.xacro
+END
+lbr.urdf.xacro
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/roboearth/repos/!svn/ver/832/ros_roboearth/re_kuka/description/robots/lbr.urdf.xacro
+END

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/controller
+END
+cabinet_controller.launch
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/controller/cabinet_controller.launch
+END
+sdh_controller.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/controller/sdh_controller.yaml
+END
+arm_controller.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/roboearth/repos/!svn/ver/749/ros_roboearth/re_kuka/controller/arm_controller.yaml
+END
+cabinet_controller.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/controller/cabinet_controller.yaml
+END
+sdh_controller.launch
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/controller/sdh_controller.launch
+END
+arm_controller.launch
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/roboearth/repos/!svn/ver/1020/ros_roboearth/re_kuka/controller/arm_controller.launch
+END

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Load robot into parameter server -->
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find re_kuka)/description/robots/arm_sdh.urdf.xacro'" />
+  
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="re_kuka" pkg="gazebo_tools" type="gazebo_model" args="-p robot_description spawn" respawn="false" output="screen" />
+
+  <!-- arm Controllers -->
+  <include file="$(find re_kuka)/controller/arm_controller.launch" />
+
+  <!-- sdh Controllers -->
+  <include file="$(find re_kuka)/controller/sdh_controller.launch"/>
+  
+  <!-- TF Publisher -->
+  <node name="tf_publisher" pkg="robot_state_publisher" type="state_publisher" args="" respawn="false" output="screen" />
+
+  <!-- IK solver -->
+	<!--<node pkg="re_kuka" type="ik_solver_kdl" name="kuka_ik_solver" ns="arm_controller" cwd="node" respawn="false" output="screen"/>-->
+	<node pkg="re_kuka" name="arm_kinematics" type="arm_kinematics" output="screen">
+	 <param name="root_name" value="arm_0_link"/>
+	 <param name="tip_name" value="arm_7_link"/>
+	</node>
+	  
+	<!-- Get out of singularity -->
+  <node name="get_out_of_singularity" pkg="re_kuka" type="get_out_of_singularity" args="" respawn="false" output="screen" />
+  
+  <!-- Start to move the arm with simple action -->
+	<node name="cartesian_ik_trajectory_executor" pkg="re_kuka" type="ik_trajectory_executor" respawn="false" output="screen"/>	
+  
+</launch>

@@ -1,0 +1,311 @@
+<?xml version="1.0"?>
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+	
+       <include filename="$(find re_kuka)/description/urdf/cabinet_v0/cabinet.gazebo.xacro" />
+       <include filename="$(find re_kuka)/description/urdf/cabinet_v0/cabinet.transmission.xacro" />
+       <include filename="$(find re_kuka)/description/urdf/handle_v0/handle.urdf.xacro" />  
+	
+       <xacro:macro name="cabinet_v0" params="parent name *origin">
+	
+        <!-- joint between {parent} and cabinet_base -->
+	<joint name="${parent}_cabinet" type="fixed" >
+		<insert_block name="origin" />
+		<parent link="${parent}" />
+		<child link="cabinet_bottom" />
+	</joint>
+		
+        <link name="cabinet_bottom">
+		<inertial>
+		   <origin xyz="0 0 0" rpy="0 0 0"/>
+		   <mass value="1"/>
+		   <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+		</inertial>
+
+		<visual>
+		   <origin xyz="0 0 0.025" rpy="0 0 0" />
+		   <geometry>
+			  <box size="0.4 0.78 0.05" />
+		   </geometry>
+                   <material name="Black" />
+		</visual>
+
+		<collision>
+		   <origin xyz="0 0 0.025" rpy="0 0 0" />
+		   <geometry>
+			<box size="0.4 0.78 0.05" />
+		   </geometry>
+		</collision>
+	</link>
+	
+        <!-- Joint 2 -->
+        <joint name="bottom_left" type="fixed">
+    		<origin xyz="0 -0.365 0.365" rpy="0 0 0"/>
+    		<parent link="cabinet_bottom"/>
+    		<child link="cabinet_left"/>
+ 	</joint>
+
+        <link name="cabinet_left">
+		<inertial>
+		   <origin xyz="0 0 0" rpy="0 0 0"/>
+		   <mass value="1"/>
+		   <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+		</inertial>
+
+		<visual>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			  <box size="0.4 0.05 0.68" />
+		   </geometry>
+                   <material name="Black" />
+		</visual>
+
+		<collision>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			<box size="0.4 0.05 0.68" />
+		   </geometry>
+		</collision>
+	</link>
+
+	<!-- Joint 3 -->
+     	<joint name="bottom_top" type="fixed">
+    		<origin xyz="0 0 0.73" rpy="0 0 0"/>
+    		<parent link="cabinet_bottom"/>
+    		<child link="cabinet_top"/>
+ 	</joint>
+
+	<link name="cabinet_top">
+		<inertial>
+		   <origin xyz="0 0 0" rpy="0 0 0"/>
+		   <mass value="1"/>
+		   <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+		</inertial>
+
+		<visual>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			  <box size="0.4 0.78 0.05" />
+		   </geometry>
+                   <material name="Black" />
+		</visual>
+
+		<collision>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			<box size="0.4 0.78 0.05" />
+		   </geometry>
+		</collision>
+	</link>
+ 
+	<!-- Joint 4 -->
+     	<joint name="bottom_right" type="fixed">
+    		<origin xyz="0 0.365 0.365" rpy="0 0 0"/>
+    		<parent link="cabinet_bottom"/>
+    		<child link="cabinet_right"/>
+ 	</joint>
+
+	<link name="cabinet_right">
+		<inertial>
+		   <origin xyz="0 0 0" rpy="0 0 0"/>
+		   <mass value="1"/>
+		   <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+		</inertial>
+
+		<visual>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			  <box size="0.4 0.05 0.68" />
+		   </geometry>
+                   <material name="Black" />
+		</visual>
+
+		<collision>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			<box size="0.4 0.05 0.68" />
+		   </geometry>
+		</collision>
+	</link>
+
+	<!-- Joint 5a -->
+     	<joint name="bottom_hor" type="fixed">
+    		<origin xyz="0 0 0.365" rpy="0 0 0"/>
+    		<parent link="cabinet_bottom"/>
+    		<child link="cabinet_hor"/>
+ 	</joint>
+
+	<link name="cabinet_hor">
+		<inertial>
+		   <origin xyz="0 0 0" rpy="0 0 0"/>
+		   <mass value="1"/>
+		   <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+		</inertial>
+
+		<visual>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			  <box size="0.4 0.68 0.02" />
+		   </geometry>
+		   <material name="Black" />
+		</visual>
+
+		<collision>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			<box size="0.4 0.68 0.02" />
+		   </geometry>
+		</collision>
+	</link>
+
+	<!-- Joint 5b -->
+     	<joint name="bottom_ver" type="fixed">
+    		<origin xyz="0 0 0.365" rpy="0 0 0"/>
+    		<parent link="cabinet_bottom"/>
+    		<child link="cabinet_ver"/>
+ 	</joint>
+
+	<link name="cabinet_ver">
+		<inertial>
+		   <origin xyz="0 0 0" rpy="0 0 0"/>
+		   <mass value="1"/>
+		   <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+		</inertial>
+
+		<visual>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			  <box size="0.4 0.02 0.68" />
+		   </geometry>
+                   <material name="Black" />
+		</visual>
+
+		<collision>
+		   <origin xyz="0 0 0" rpy="0 0 0" />
+		   <geometry>
+			<box size="0.4 0.02 0.68" />
+		   </geometry>
+		</collision>
+	</link>
+
+	<!-- Joint 6 -->
+     	<joint name="bottom_left_hinge" type="revolute">
+     	        <axis xyz="0 0 1"/>
+    		<origin xyz="0.2 -0.34 0.54" rpy="0 0 0"/>
+    		<parent link="cabinet_bottom"/>
+    		<child link="cabinet_left_hinge"/>
+    		<limit effort="100" velocity="100" lower="-1.57" upper="0" />
+ 	</joint>
+        
+	<link name="cabinet_left_hinge">
+		<inertial>
+		   <origin xyz="-0.01 0.165 0" rpy="0 0 0"/>
+		   <mass value="1"/>
+		   <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+		</inertial>
+
+		<visual>
+		   <origin xyz="-0.01 0.165 0" rpy="0 0 0" />
+		   <geometry>
+			  <box size="0.02 0.33 0.33" />
+		   </geometry>
+                   <material name="Red" />
+		</visual>
+
+		<collision>
+		   <origin xyz="-0.01 0.165 0" rpy="0 0 0" />
+		   <geometry>
+			<box size="0.02 0.33 0.33" />
+		   </geometry>
+		</collision>
+	</link>
+	
+	<!--handle1-->
+  	<xacro:handle_v0 name="handle1" parent="cabinet_left_hinge">
+    		<origin xyz="0 0.3 0" rpy="1.57 0 0"/>
+  	</xacro:handle_v0>
+
+	<!-- Joint 7 -->
+     	<joint name="bottom_right_upper_hinge" type="prismatic">
+     	        <axis xyz="1 0 0"/>
+    		<origin xyz="0.2 0.34 0.6225" rpy="0 0 0"/>
+    		<parent link="cabinet_bottom"/>
+    		<child link="cabinet_right_upper_hinge"/>
+    		<limit effort="100" velocity="100" lower="0" upper="0.3" />
+ 	</joint>
+
+	<link name="cabinet_right_upper_hinge">
+		<inertial>
+		   <origin xyz="-0.01 -0.165 0" rpy="0 0 0"/>
+		   <mass value="1"/>
+		   <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+		</inertial>
+
+		<visual>
+		   <origin xyz="-0.01 -0.165 0" rpy="0 0 0" />
+		   <geometry>
+			  <box size="0.02 0.33 0.164" />
+		   </geometry>
+                   <material name="Red" />
+		</visual>
+
+		<collision>
+		   <origin xyz="-0.01 -0.165 0" rpy="0 0 0" />
+		   <geometry>
+			<box size="0.02 0.33 0.164" />
+		   </geometry>
+		</collision>
+	</link>
+	
+	<!--handle2-->
+  	<xacro:handle_v0 name="handle2" parent="cabinet_right_upper_hinge">
+    		<origin xyz="0 -0.165 0" rpy="0 0 0"/>
+  	</xacro:handle_v0>
+
+	<!-- Joint 8 -->
+     	<joint name="bottom_right_lower_hinge" type="prismatic">
+     	        <axis xyz="1 0 0"/> 
+    		<origin xyz="0.2 0.34 0.4575" rpy="0 0 0"/>
+    		<parent link="cabinet_bottom"/>
+    		<child link="cabinet_right_lower_hinge"/>
+    		<limit effort="100" velocity="100" lower="0" upper="0.3" />
+ 	</joint>
+
+	<link name="cabinet_right_lower_hinge">
+		<inertial>
+		   <origin xyz="-0.01 -0.165 0" rpy="0 0 0"/>
+		   <mass value="1"/>
+		   <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1" />
+		</inertial>
+
+		<visual>
+		   <origin xyz="-0.01 -0.165 0" rpy="0 0 0" />
+		   <geometry>
+			  <box size="0.02 0.33 0.164" />
+		   </geometry>
+                   <material name="Red" />
+		</visual>
+
+		<collision>
+		   <origin xyz="-0.01 -0.165 0" rpy="0 0 0" />
+		   <geometry>
+			<box size="0.02 0.33 0.164" />
+		   </geometry>
+		</collision>
+	</link>
+	
+	<!--handle3-->
+  	<xacro:handle_v0 name="handle3" parent="cabinet_right_lower_hinge">
+    		<origin xyz="0 -0.165 0" rpy="0 0 0"/>
+  	</xacro:handle_v0>
+	
+	<!-- extensions -->
+	<xacro:cabinet_gazebo_v0 name="${name}" />
+	<xacro:cabinet_transmission_v0 name="${name}" />
+	
+	</xacro:macro>
+
+</robot>
+
