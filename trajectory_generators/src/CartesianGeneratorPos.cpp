@@ -1,3 +1,4 @@
+
 #include "CartesianGeneratorPos.hpp"
 #include <ocl/Component.hpp>
 
