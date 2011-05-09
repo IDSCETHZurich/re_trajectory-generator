@@ -110,8 +110,8 @@ namespace trajectory_generators
     	}else{
     		for(int i = 0; i < (int)motionProfile.size(); i++)
     		{
-    			jntVel[i] = motionProfile[i].Vel(time_passed);
-    			jntPos[i] = motionProfile[i].Pos(time_passed);
+    			jntVel[i] = motionProfile[i].getVel(time_passed);
+    			jntPos[i] = motionProfile[i].getPos(time_passed);
  	   		}
      	}
 
@@ -127,7 +127,7 @@ namespace trajectory_generators
 
     	//Do sync
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile[i].SetProfileDuration(maxDuration);
+    		motionProfile[i].setDuration(maxDuration);
     	}
 
     	//Set times
@@ -167,8 +167,8 @@ namespace trajectory_generators
     	}else{
     		for(int i = 0; i < (int)motionProfile.size(); i++)
     		{
-    			jntVel[i] = motionProfile[i].Vel(time_passed);
-    			jntPos[i] = motionProfile[i].Pos(time_passed);
+    			jntVel[i] = motionProfile[i].getVel(time_passed);
+    			jntPos[i] = motionProfile[i].getPos(time_passed);
  	   		}
      	}
 
@@ -184,7 +184,7 @@ namespace trajectory_generators
 
     	//Do sync
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile[i].SetProfileDuration(maxDuration);
+    		motionProfile[i].setDuration(maxDuration);
     	}
 
     	//Set times
@@ -202,8 +202,8 @@ namespace trajectory_generators
     		jntState.position.clear();
     	    jntPosCmd.clear();
     	    for(int i = 0; i < (int)motionProfile.size(); i++){
-    	    	jntPosCmd.push_back(motionProfile[i].Pos(time_passed));
-    	    	jntState.position.push_back(motionProfile[i].Pos(time_passed));
+    	    	jntPosCmd.push_back(motionProfile[i].getPos(time_passed));
+    	    	jntState.position.push_back(motionProfile[i].getPos(time_passed));
     	    }
     	    output_jntPosPort.write(jntPosCmd);
     	    output_jntPosPort_toROS.write(jntState);
