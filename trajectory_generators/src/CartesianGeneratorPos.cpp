@@ -119,8 +119,8 @@ namespace trajectory_generators
 
     	//TODO: Check dimensions
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile.push_back(VelocityProfile_NonZeroInit(a_max[i], v_max[i]));
-    		motionProfile[i].SetProfile(lastCommndedPoseJntPos[i], jntPos[i], jntVel[i]);
+    		motionProfile.push_back(VelocityProfile_NonZeroInit(v_max[i], a_max[i]));
+    		motionProfile[i].SetProfile(jntPos[i], lastCommndedPoseJntPos[i], jntVel[i]);
     		if(motionProfile[i].Duration() > maxDuration )
     			maxDuration = motionProfile[i].Duration();
     	}
@@ -176,8 +176,8 @@ namespace trajectory_generators
 
     	//TODO: Check dimensions
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile.push_back(VelocityProfile_NonZeroInit(a_max[i], v_max[i]));
-    		motionProfile[i].SetProfile (lastCommndedPoseJntPos[i], jntPos[i], jntVel[i]);
+    		motionProfile.push_back(VelocityProfile_NonZeroInit(v_max[i], a_max[i]));
+    		motionProfile[i].SetProfile (jntPos[i], lastCommndedPoseJntPos[i], jntVel[i]);
     		if(motionProfile[i].Duration() > maxDuration )
     			maxDuration = motionProfile[i].Duration();
     	}
