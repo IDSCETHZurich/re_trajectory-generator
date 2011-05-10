@@ -28,7 +28,7 @@
 
 
 #include "VelocityProfile_NonZeroInit.hpp"
-#include "KukaLWR_IK.hpp"
+#include "KukaLWR_Kinematics.hpp"
 
 namespace trajectory_generators
 {
@@ -36,7 +36,7 @@ namespace trajectory_generators
      * The description goes here
      *
      */
-    class CartesianGeneratorPos : public RTT::TaskContext
+    class TrajectoryGenerator : public RTT::TaskContext
     {
     public:
         /**
@@ -44,8 +44,8 @@ namespace trajectory_generators
          *
          * @param name name of the TaskContext
          */
-        CartesianGeneratorPos(std::string name);
-        virtual ~CartesianGeneratorPos();
+        TrajectoryGenerator(std::string name);
+        virtual ~TrajectoryGenerator();
 
         virtual bool configureHook();
         virtual bool startHook();
@@ -64,6 +64,7 @@ namespace trajectory_generators
       unsigned int num_axes;
       std::vector<double> p_m, p_d, v_d;
       std::vector<double> v_max, a_max, p_max, p_min;
+      //TODO: Question: Should this be a vector<VelocityProfile> (without the NonZero Init)???
       std::vector<VelocityProfile_NonZeroInit> motionProfile;
 
       RTT::os::TimeService::ticks	time_begin;

@@ -1,8 +1,8 @@
 
-#include "CartesianGeneratorPos.hpp"
+#include "TrajectoryGenerator.hpp"
 #include <ocl/Component.hpp>
 
-ORO_CREATE_COMPONENT( trajectory_generators::CartesianGeneratorPos);
+ORO_CREATE_COMPONENT( trajectory_generators::TrajectoryGenerator);
 
 namespace trajectory_generators
 {
@@ -10,7 +10,7 @@ namespace trajectory_generators
     using namespace KDL;
     using namespace std;
 
-    CartesianGeneratorPos::CartesianGeneratorPos(string name)
+    TrajectoryGenerator::TrajectoryGenerator(string name)
         : TaskContext(name,PreOperational)
     {
         //Creating TaskContext
@@ -18,8 +18,8 @@ namespace trajectory_generators
     	toROS = true;
 
         //Adding InputPorts
-        this->addEventPort("CartesianPoseInput",input_cartPosPort, boost::bind(&CartesianGeneratorPos::generateNewVelocityProfilesCartPosInput, this, _1));
-        this->addEventPort("JointPositionInput",input_jntPosPort, boost::bind(&CartesianGeneratorPos::generateNewVelocityProfilesJntPosInput, this, _1));
+        this->addEventPort("CartesianPoseInput",input_cartPosPort, boost::bind(&TrajectoryGenerator::generateNewVelocityProfilesCartPosInput, this, _1));
+        this->addEventPort("JointPositionInput",input_jntPosPort, boost::bind(&TrajectoryGenerator::generateNewVelocityProfilesJntPosInput, this, _1));
         this->addPort("JointPositionMsr",msr_jntPosPort);
 
         //Adding OutputPorts
@@ -36,13 +36,13 @@ namespace trajectory_generators
         lastCommndedPoseJntPos = std::vector<double>(7,0.0);
         jntVel = std::vector<double>(7,0.0);
 
-        this->addOperation("moveTo",&CartesianGeneratorPos::moveTo,this,OwnThread)
+        this->addOperation("moveTo",&TrajectoryGenerator::moveTo,this,OwnThread)
         	  .doc("Set the position setpoint")
         	  .arg("setpoint", "position setpoint for end effector")
         	  .arg("time", "minimum time to execute trajectory" );
 
         //Adding Methods
-        this->addOperation( "resetPosition",&CartesianGeneratorPos::resetPosition,this,OwnThread).doc("Reset generator's position" );
+        this->addOperation( "resetPosition",&TrajectoryGenerator::resetPosition,this,OwnThread).doc("Reset generator's position" );
 
         jntState.header.frame_id = "arm_0_link";
         jntState.name.push_back("arm_1_joint");
@@ -55,11 +55,11 @@ namespace trajectory_generators
 
     }
 
-    CartesianGeneratorPos::~CartesianGeneratorPos()
+    TrajectoryGenerator::~TrajectoryGenerator()
     {
     }
 
-    bool CartesianGeneratorPos::configureHook()
+    bool TrajectoryGenerator::configureHook()
     {
     	//num_axes = num_axes_prop.rvalue();
     	//TODO:check if dimensions of v_max and a_max match num_axes
@@ -73,28 +73,46 @@ namespace trajectory_generators
 
     }
 
-    bool CartesianGeneratorPos::startHook()
+    bool TrajectoryGenerator::startHook()
     {
     	return true;
     }
 
-    bool CartesianGeneratorPos::generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface){
+    bool TrajectoryGenerator::generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface){
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
     	log(Info) << "a new Pose arrived from ROS" << endlog();
     	cout << "a new Pose arrived from ROS" << endl;
 
     	input_jntPosPort.read(cmdJntState);
+    	lastCommndedPoseJntPos = cmdJntState.position;
+
     	for(int i=0; i < 7; i++){
-    		if(cmdJntState.position[i]<p_min[i] || cmdJntState.position[i]>p_max[i]){
+    		cout << "Joint " << i << " : " << lastCommndedPoseJntPos[i] << " /// ";
+    		if(lastCommndedPoseJntPos[i]<p_min[i] || lastCommndedPoseJntPos[i]>p_max[i]){
     			log(Info) << "Commanded joint position out of bounds" << endlog();
     			cout << "Commanded joint position out of bounds" << endl;
     			return false;
     		}
 
     	}
+    	cout << endl;
 
+    	//Do FK and check if z value is within the limits
+    	//TODO: Think of a more clever way (not hardcoded) to implement this restriction
+    	if (!(KukaLWR_Kinematics::fkSolver(lastCommndedPoseJntPos, lastCommandedPose))){
+    		cout << "lastCommandedPose cannot be achieved, Destination point modified" << endl;
+    	}
 
-    	lastCommndedPoseJntPos = cmdJntState.position;
+    	//Show results
+		cout << "Coordinate x : " << lastCommandedPose.position.x << endl;
+		cout << "Coordinate y : " << lastCommandedPose.position.y << endl;
+		cout << "Coordinate z : " << lastCommandedPose.position.z << endl;
+
+    	if (lastCommandedPose.position.z < 0.2)
+    	{
+    		cout << "lastCommandedPose out of safety zone, Destination point modified" << endl;
+    		lastCommndedPoseJntPos = std::vector<double>(7,0.0);
+    	}
 
     	//Create joint specific velocity profiles
     	double maxDuration = 0.0;
@@ -111,8 +129,8 @@ namespace trajectory_generators
     	}else{
     		for(int i = 0; i < (int)motionProfile.size(); i++)
     		{
-    			jntVel[i] = motionProfile[i].getVel(time_passed);
-    			jntPos[i] = motionProfile[i].getPos(time_passed);
+    			jntVel[i] = motionProfile[i].Vel(time_passed);
+    			jntPos[i] = motionProfile[i].Pos(time_passed);
  	   		}
      	}
 
@@ -128,7 +146,7 @@ namespace trajectory_generators
 
     	//Do sync
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile[i].setDuration(maxDuration);
+    		motionProfile[i].SetProfileDuration(maxDuration);
     	}
 
     	//Set times
@@ -138,7 +156,7 @@ namespace trajectory_generators
 
     }
 
-    bool CartesianGeneratorPos::generateNewVelocityProfilesCartPosInput(RTT::base::PortInterface* portInterface){
+    bool TrajectoryGenerator::generateNewVelocityProfilesCartPosInput(RTT::base::PortInterface* portInterface){
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
     	log(Info) << "a new joint position arrived from ROS" << endlog();
     	cout << "a new joint position arrived from ROS" << endl;
@@ -149,7 +167,7 @@ namespace trajectory_generators
     	cout << "Pose.position.z  = " << lastCommandedPose.position.z << endl;
 
     	//Do IK and reset velocity profiles
-    	if (!(KukaLWR_IK::ikSolver(lastCommandedPose, lastCommndedPoseJntPos))){
+    	if (!(KukaLWR_Kinematics::ikSolver(lastCommandedPose, lastCommndedPoseJntPos))){
     		cout << "lastCommandedPose cannot be achieved, Destination point modified" << endl;
     	}
 
@@ -168,8 +186,8 @@ namespace trajectory_generators
     	}else{
     		for(int i = 0; i < (int)motionProfile.size(); i++)
     		{
-    			jntVel[i] = motionProfile[i].getVel(time_passed);
-    			jntPos[i] = motionProfile[i].getPos(time_passed);
+    			jntVel[i] = motionProfile[i].Vel(time_passed);
+    			jntPos[i] = motionProfile[i].Pos(time_passed);
  	   		}
      	}
 
@@ -185,7 +203,7 @@ namespace trajectory_generators
 
     	//Do sync
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile[i].setDuration(maxDuration);
+    		motionProfile[i].SetProfileDuration(maxDuration);
     	}
 
     	//Set times
@@ -195,7 +213,7 @@ namespace trajectory_generators
 
     }
 
-    void CartesianGeneratorPos::CartesianGeneratorPos::updateHook()
+    void TrajectoryGenerator::TrajectoryGenerator::updateHook()
     {
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
     	//Execute current velocity profile
@@ -203,8 +221,8 @@ namespace trajectory_generators
     		jntState.position.clear();
     	    jntPosCmd.clear();
     	    for(int i = 0; i < (int)motionProfile.size(); i++){
-    	    	jntPosCmd.push_back(motionProfile[i].getPos(time_passed));
-    	    	jntState.position.push_back(motionProfile[i].getPos(time_passed));
+    	    	jntPosCmd.push_back(motionProfile[i].Pos(time_passed));
+    	    	jntState.position.push_back(motionProfile[i].Pos(time_passed));
     	    }
     	    output_jntPosPort.write(jntPosCmd);
     	    output_jntPosPort_toROS.write(jntState);
@@ -212,20 +230,20 @@ namespace trajectory_generators
     }
 
 
-    void CartesianGeneratorPos::stopHook()
+    void TrajectoryGenerator::stopHook()
     {
     }
 
-    void CartesianGeneratorPos::cleanupHook()
+    void TrajectoryGenerator::cleanupHook()
     {
     }
 
-    bool CartesianGeneratorPos::moveTo(std::vector<double> position, double time)
+    bool TrajectoryGenerator::moveTo(std::vector<double> position, double time)
     {
 	  return true;
     }
 
-    void CartesianGeneratorPos::resetPosition()
+    void TrajectoryGenerator::resetPosition()
     {
     	//This function is really not necessary since we are currently running in command mode 1: Joint Position Control Mode
     }

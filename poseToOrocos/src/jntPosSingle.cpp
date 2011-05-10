@@ -95,39 +95,21 @@ int main(int argc, char **argv)
 // %Tag(ROS_OK)%
 // Set the random seed based on actual time
 //  srand ( time(NULL) );
-
-  while (ros::ok())
-  {
-// %EndTag(ROS_OK)%
-    /**
-     * This is a message object. You stuff it with data, and then publish it.
-     */
-// %Tag(FILL_MESSAGE)%
-    sensor_msgs::JointState jntState;
-
-    jntState.position.clear();
-    for(int i=0; i< 7 ; i++ ){
-    	jntState.position.push_back(-3 + 6.0*((double)rand()/(double)RAND_MAX));
-    }
-
-    /**
-     * The publish() function is how you send messages. The parameter
-     * is the message object. The type of this object must agree with the type
-     * given as a template parameter to the advertise<>() call, as was done
-     * in the constructor above.
-     */
-// %Tag(PUBLISH)%
-    posePub.publish(jntState);
-// %EndTag(PUBLISH)%
-
-// %Tag(SPINONCE)%
-    ros::spinOnce();
-// %EndTag(SPINONCE)%
-
-// %Tag(RATE_SLEEP)%
-    loop_rate.sleep();
-// %EndTag(RATE_SLEEP)%
+  sensor_msgs::JointState jntState;
+  jntState.position.clear();
+  jntState.position = std::vector<double>(7,0.0);
+  jntState.position[1] = 3.14159/4;
+  jntState.position[0] = 3.14159/4;
+//  jntState.position[3] = 3.14159/2;
+/*  for(int i=0; i< 7 ; i++ ){
+  	jntState.position.push_back(-2 + 4.0*((double)rand()/(double)RAND_MAX));
   }
+*/
+  // %Tag(PUBLISH)%
+      posePub.publish(jntState);
+      std::cout << "Finished Publishing first msg" << std::endl;
+      ros::spin();
+  // %EndTag(PUBLISH)%
 
 
   return 0;
