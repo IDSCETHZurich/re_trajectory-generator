@@ -99,7 +99,6 @@ bool KukaLWR_Kinematics::fkSolver(std::vector<double> & jntPosDsr, geometry_msgs
     limit[1] = 120.0*PI/180.0;
     limit[3] = 120.0*PI/180.0;
     limit[5] = 120.0*PI/180.0;
-
 	
 	//Check requested angles are within the limits
     for(int i=0; i < (int)jointPositions.size(); i++){
@@ -111,9 +110,6 @@ bool KukaLWR_Kinematics::fkSolver(std::vector<double> & jntPosDsr, geometry_msgs
     }
 
     //Adjust to robot to FK coordinates from coordinates in the joint space
-    jointPositions[1] = -jointPositions[1];
-    jointPositions[3] = -jointPositions[3];
-    jointPositions[5] = -jointPositions[5];
     jointPositions[1] > 0? jointPositions[1]-=PI : jointPositions[1]+=PI;
     jointPositions[3] > 0? jointPositions[3]-=PI : jointPositions[3]+=PI;
     jointPositions[5] > 0? jointPositions[5]-=PI : jointPositions[5]+=PI;
