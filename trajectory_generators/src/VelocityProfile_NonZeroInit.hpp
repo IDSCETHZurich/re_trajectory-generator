@@ -1,9 +1,42 @@
-/*
- * VelocityProfile_NonZeroInit.hpp
+/***************************************************************************
+
+    File:           KukaLWR_Kinematics.hpp
+    Author(s):      Gajamohan Mohanarajah/Francisco Ramos
+    Affiliation:    IDSC - ETH Zurich
+    e-mail:         gajan@ethz.ch/framosde@ethz.ch
+    Start date:	    tth April 2011
+    Last update:	11th May 2011
+
+ ***************************************************************************
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Lesser General Public            *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2.1 of the License, or (at your option) any later version.    *
+ *                                                                         *
+ *   This library is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   Lesser General Public License for more details.                       *
+ *                                                                         *
+ *   You should have received a copy of the GNU Lesser General Public      *
+ *   License along with this library; if not, write to the Free Software   *
+ *   Foundation, Inc., 59 Temple Place,                                    *
+ *   Suite 330, Boston, MA  02111-1307  USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
+/**
+ *  \file
+ *  \par Velocity Profile with non zero initial velocities
+ *   This file extends the VelocityProfile abstract class, generating velocity
+ *   profiles which are time optimal (subjected to maximum accelerations and
+ *   velocities) and may have initial velocities different from zero
  *
- *  Created on: Apr 7, 2011
- *      Author: Gajan
- */
+ *  \authors
+ *      Francisco Ramos, Ph.D., Dipl. Ing., ETH Zurich/UCLM
+ *      Gajamohan Mohanarajah, M.Sc., ETH Zurich
+ *
+ ****************************************************************************/
 
 #ifndef VELOCITYPROFILE_NONZEROINIT_H
 #define VELOCITYPROFILE_NONZEROINIT_H
@@ -17,17 +50,11 @@ namespace trajectory_generators
 {
 
 using namespace RTT;
-using namespace std;
 using namespace KDL;
 
-	/*
-	 * A VelocityProfile with non-zero initial velocity implementation.
+	/**
+	 * \brief A VelocityProfile with non-zero initial velocity implementation.
 	 */
-
-	//TODO: When overriding a function, we keep a function as virtual, being the
-	//new class also abstract ==> You cannot create instances of it
-	//Either the base class needs to be updated or we need to fix to that base class
-	//what imposes creating a new function for including initial velocity as a separated feature
     class VelocityProfile_NonZeroInit : public VelocityProfile
     {
 
@@ -56,8 +83,8 @@ using namespace KDL;
 	    // trajectory.
 
         // We add several interfaces. A non-passed argument is considered 0.0
-	    void SetProfile(double pos1,double pos2, double _inivel, double _initime);
-	    void SetProfile(double pos1,double pos2, double _inivel);
+	    bool SetProfile(double pos1,double pos2, double _inivel, double _initime);
+	    bool SetProfile(double pos1,double pos2, double _inivel);
 	    // And also a new interface for synchronization (TBD)
 	    void SetProfileDuration(double newDuration);
 

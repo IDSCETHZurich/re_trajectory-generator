@@ -7,7 +7,6 @@
 
 #include "VelocityProfile_NonZeroInit.hpp"
 
-// TODO: Can we include these files within KDL namespace instead of our own trajectory_generator?
 namespace trajectory_generators {
 
 VelocityProfile_NonZeroInit::VelocityProfile_NonZeroInit(double _maxvel, double _maxacc):
@@ -36,8 +35,15 @@ void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2)
 
 
 // This definition of SetProfile is added for completeness
-void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _inivel)
+bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _inivel)
 {
+	//Precondition
+	if (_inivel > maxVel)
+	{
+		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << endl;
+		cout << "Profile will not be built" << endl;
+		return false;
+	}
 	initPos = pos1;
 	finalPos = pos2;
 	initVel = _inivel;
@@ -48,17 +54,31 @@ void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 	cout << "------------------------------------------" << endl;
 
 	duration = SubProfileBuilder(finalPos, initPos, initVel, initTime);
+
+	return true;
 }
 
 
 // This is the recommended use for SetProfile function
-void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _inivel, double _initime)
+bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _inivel, double _initime)
 {
+	//Precondition
+	if (_inivel > maxVel)
+	{
+		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << endl;
+		cout << "Profile will not be built" << endl;
+		return false;
+	}else if (_initime < 0)
+	{
+		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial time cannot be negative" << endl;
+		cout << "Profile will not be built" << endl;
+		return false;
+	}
+
     initPos = pos1;
     finalPos = pos2;
     initVel = _inivel;
     initTime = _initime;
-    //TODO: Check if initial velocity is bigger than maximum velocity => the trajectory must be aborted
 	// set Time scale to default
 	timeScale = 1;
     //TODO: Clear no longer needed verbose items when debugged
@@ -67,6 +87,8 @@ void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 	cout << "------------------------------------------" << endl;
 
 	duration = SubProfileBuilder(finalPos, initPos, initVel, initTime); // Initial time set to zero for new trajectories
+
+	return true;
 }
 
 

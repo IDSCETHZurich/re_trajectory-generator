@@ -93,7 +93,7 @@ int main(int argc, char **argv)
    * a unique string for each message.
    */
 // %Tag(ROS_OK)%
-  int count = 0;
+  int count = 0, aux = 0;
   bool newposition = false;
   double x,y,z;
 // Set the random seed based on actual time
@@ -122,11 +122,15 @@ int main(int argc, char **argv)
     pose.position.y = y;
     pose.position.z = z;
 
-    // TODO: Design random values for orientation (quaternions)
-    pose.orientation.x = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    pose.orientation.y = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    pose.orientation.z = 0;//(0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    pose.orientation.w = 1.0;
+    // TODO: Check random values for orientation (quaternions)
+    pose.orientation.x = (1.0-(-1.0))*(double)rand()/(double)RAND_MAX + (-1.0);
+    aux = sqrt(1.0 - pose.orientation.x*pose.orientation.x);
+    pose.orientation.y = (aux-(-aux))*(double)rand()/(double)RAND_MAX + (-aux);
+    aux = sqrt(1.0 - pose.orientation.x*pose.orientation.x - pose.orientation.y*pose.orientation.y);
+    pose.orientation.z = (aux-(-aux))*(double)rand()/(double)RAND_MAX + (-aux);
+    pose.orientation.w = sqrt(1.0 - pose.orientation.x*pose.orientation.x
+    							  - pose.orientation.y*pose.orientation.y
+    							  - pose.orientation.z*pose.orientation.z);
 
     /**
      * The publish() function is how you send messages. The parameter
