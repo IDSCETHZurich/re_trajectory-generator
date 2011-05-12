@@ -32,12 +32,12 @@ namespace trajectory_generators {
 
 // Vector of constants
 const double KukaLWR_Kinematics::JNT_LIMITS [] = {170.0*PI/180.0,
-												  120.0*PI/180.0,
-												  170.0*PI/180.0,
-												  120.0*PI/180.0,
-												  170.0*PI/180.0,
-												  120.0*PI/180.0,
-												  170.0*PI/180.0};
+  120.0*PI/180.0,
+  170.0*PI/180.0,
+  120.0*PI/180.0,
+  170.0*PI/180.0,
+  120.0*PI/180.0,
+  170.0*PI/180.0};
 
 bool KukaLWR_Kinematics::ikSolver(const geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr)
 {

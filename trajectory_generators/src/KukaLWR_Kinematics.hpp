@@ -74,11 +74,13 @@ namespace trajectory_generators {
  */
 class KukaLWR_Kinematics {
 private:
-    //! Denavit Hartenberg relevant parameters
+    // @{
     static const double D3 = 0.400;
     static const double D5 = 0.390;
+	/// Denavit Hartenberg relevant parameters of the robot
     static const double D7 = 0.078;
     static const double ALPHA = PI/2.0; // For joints from 0 to 5 and 0.0 for joint 6
+    // @}
     //! Rotation limits of each joint (in radians)
     static const double JNT_LIMITS [];
 

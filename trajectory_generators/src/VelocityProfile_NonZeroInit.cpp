@@ -204,7 +204,6 @@ void VelocityProfile_NonZeroInit::SetProfileDuration(double newDuration)
 	timeScale = 1; //duration/newDuration;
     if (timeScale > 1)
         return; // Cannot go below time optimal maneuver
-    // TODO: Include scale here in the Profiles parameters, instead of multiplying later
     for (int i=0 ; i < (int)subVelProfiles.size() ; i++ ){
         subVelProfiles[i][0] /= timeScale;
         subVelProfiles[i][2] *= timeScale;
@@ -221,7 +220,6 @@ void VelocityProfile_NonZeroInit::SetProfileDuration(double pos1, double pos2, d
 	timeScale = 1; //duration/newDuration;
     if (timeScale > 1)
         return; // Cannot go below time optimal maneuver
-    // TODO: Include scale here in the Profiles parameters, instead of multiplying later
     for (int i=0 ; i < (int)subVelProfiles.size() ; i++ ){
         subVelProfiles[i][0] /= timeScale;
         subVelProfiles[i][2] *= timeScale;
@@ -246,7 +244,6 @@ double VelocityProfile_NonZeroInit::Duration() const
 
 double VelocityProfile_NonZeroInit::Pos(double time) const
 {
-    //TODO: Check if scale has been properly removed
 	for( int i = 0 ; i < (int)subVelProfiles.size()-1 ; i++ ){
 		if( time > subVelProfiles[i][0] && time <=  subVelProfiles[i+1][0] ){
 			return subVelProfiles[i][1]	+ subVelProfiles[i][2] * (time -  subVelProfiles[i][0]) \
@@ -279,7 +276,6 @@ double VelocityProfile_NonZeroInit::Vel(double time) const
 
 	return  subVelProfiles[last][2] + subVelProfiles[last][3]*(time -  subVelProfiles[last][0]);
 */
-    //TODO: Final velocity should be zero until we implement this functionality
     return 0.0;
 }
 
@@ -296,8 +292,6 @@ double VelocityProfile_NonZeroInit::Acc(double time) const
     return 0.0;
 }
 
-	//TODO: Solve the abstract class issue (see hpp file) to be able to save an object
-	//of class VelocityProfile_NonZeroInit as one of VelocityProfile abstract base class
 
 VelocityProfile* VelocityProfile_NonZeroInit::Clone() const
 {

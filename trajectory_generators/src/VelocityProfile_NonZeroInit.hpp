@@ -31,6 +31,22 @@
  *   This file extends the VelocityProfile abstract class, generating velocity
  *   profiles which are time optimal (subjected to maximum accelerations and
  *   velocities) and may have initial velocities different from zero
+ *   It calculates the coefficients of the second-order polynomials for each
+ *   part of the trajectory (piece-wise, non-symmetric trapezoid velocity
+ *   profile)
+ *   Then it provides functions to obtain the necessary
+ *   position/velocity/acceleration of the trajectory at a certain instant
+ *
+ *   \par Creating a Velocity Profile
+ *   To create the Velocity Profile, two steps must be accomplished:
+ *    * The class constructor should be instantiated
+ *    * The SetProfile function should be called with any the provided
+ *      interfaces
+ *
+ *   \par Subprofiles
+ *   Each profile consists of one or mor subprofile. A subprofile is each of
+ *   the different parts the trajectory is decomposed in. These should be
+ *   transparent to the user
  *
  *  \authors
  *      Francisco Ramos, Ph.D., Dipl. Ing., ETH Zurich/UCLM
@@ -59,47 +75,107 @@ using namespace KDL;
     {
 
     private:
-        // It is a vector of SubProfiles, each of them with the coefficients
-        // of a polynomial corresponding to that piece of the profile
+        /** It is a vector of SubProfiles, each of them with the coefficients
+         *  of a polynomial corresponding to that piece of the profile
+         */
         std::vector< std::vector<double> > subVelProfiles;
+
+        //! Time-optimal calculated duration of maneuver
         double duration;
+        //! Time scale when a longer than time-optimal duration is required (synchronization)
         double timeScale;
 
-        // Specification of the motion profile
+        //! Maximum velocity achievable by the robot
         double maxVel;
+        //! Maximum acceleration achievable by the robot
         double maxAcc;
+        //! Initial position of the joint
         double initPos;
+        //! Desired final position of the joint
         double finalPos;
+        //! Velocity of the joint when maneuver starts
         double initVel;
+        //! Beginning time of the manuever
         double initTime;
 
+        //! Private method for creating the subprofiles of the trajectory
         // Method for creating subprofiles
         double SubProfileBuilder(double finalPos, double initPos, double initVel, double initTime);
 
 
     public:
+        //! Constructs motion profile class with \p _maxvel and \p _maxacc as parameters of the trajectory
         VelocityProfile_NonZeroInit(double _maxvel=0, double _maxacc=0);
-	    // constructs motion profile class with <maxvel> and <maxacc> as parameters of the
-	    // trajectory.
 
         // We add several interfaces. A non-passed argument is considered 0.0
+        /** \brief Complete profile definition.
+         *
+         *  Constraints:
+         *  \param pos1 Initial position of the trajectory (should be actual robot position)
+         *  \param pos2 Final desired position of the trajectory
+         *  \param _inivel Must be smaller than \p _maxvel assigned in the constructor
+         *  \param _initime Must not be negative (and tipically zero)
+         */
 	    bool SetProfile(double pos1,double pos2, double _inivel, double _initime);
+        /** \brief Profile definition. Initial time of trajectory is assumed to be zero.
+         *
+         *  Constraints:
+         *  \param pos1 Initial position of the trajectory (should be actual robot position)
+         *  \param pos2 Final desired position of the trajectory
+         *  \param _inivel Must be smaller than \p _maxvel assigned in the constructor
+         */
 	    bool SetProfile(double pos1,double pos2, double _inivel);
-	    // And also a new interface for synchronization (TBD)
+	    /** \brief Interface for changing the profile duration.
+	     *
+	     *  \param newDuration The new duration assigned to the trajectory must be greater
+	     *  than the optimal time
+	     *  \todo Not implemented yet
+	     */
 	    void SetProfileDuration(double newDuration);
 
 	    // These are added for compatibility with KDL::VelocityProfile
+        /** \brief Profile definition. Initial time and velocity of trajectory are assumed to be zero
+         *
+         *  \note Added for compatibility with VelocityProfile Class
+         */
 	    virtual void SetProfile(double pos1, double pos2);
+        /** \brief Interface for changing the profile duration.
+         *
+         *  \param pos1 Initial position of the trajectory (should be actual robot position)
+         *  \param pos2 Final desired position of the trajectory
+ 	     *  \param newduration The new duration assigned to the trajectory must be greater
+	     *  than the optimal time
+         *  \note Added for compatibility with VelocityProfile Class.
+         *   \p pos1 and \p pos2 are not used. A previous call to SetProfile is required
+         */
 	    virtual void SetProfileDuration(double pos1, double pos2, double newduration);
 
+	    //! Changes the maximum values for velocity and acceleration
 	    virtual void SetMax(double _maxvel,double _maxacc);
+	    /** \brief Returns the calculated duration of the maneuver.
+	     *
+	     *  If a different from optimal duration has been set, it gives back the new set value.
+	     */
 	    virtual double Duration() const;
+	    /** \brief Returns the calculated desired position of the maneuver at a certaint \p time.
+	     *
+	     *  If \p time is higher than \p duration then final desired position is returned.
+	     */
 	    virtual double Pos(double time) const;
+	    /** \brief Returns the calculated desired velocity of the maneuver at a certaint \p time.
+	     *
+	     *  If \p time is higher than \p duration then 0.0 is returned.
+	     */
 	    virtual double Vel(double time) const;
+	    /** \brief Returns the calculated desired acceleration of the maneuver at a certaint \p time.
+	     *
+	     *  If \p time is higher than \p duration then 0.0 is returned.
+	     */
 	    virtual double Acc(double time) const;
+	    //! Writes the kind of trajectory in the stream \p os
 	    virtual void Write(std::ostream& os) const;
+	    //! Returns copy of current VelocityProfile object. (virtual constructor)
 	    virtual VelocityProfile* Clone() const;
-	    // returns copy of current VelocityProfile object. (virtual constructor)
 	    ~VelocityProfile_NonZeroInit();
 
     };

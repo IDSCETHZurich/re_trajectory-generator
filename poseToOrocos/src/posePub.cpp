@@ -95,7 +95,6 @@ int main(int argc, char **argv)
 // %Tag(ROS_OK)%
   int count = 0, aux = 0;
   bool newposition = false;
-  double x,y,z;
 // Set the random seed based on actual time
   srand ( time(NULL) );
 
@@ -110,19 +109,14 @@ int main(int argc, char **argv)
 
     newposition = false;
     while (!newposition) {
-    	x = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    	y = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    	z = (0.7-(0.2))*(double)rand()/(double)RAND_MAX + (0.2);
+    	pose.position.x = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
+    	pose.position.y = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
+    	pose.position.z = (0.7-(0.2))*(double)rand()/(double)RAND_MAX + (0.2);
     	if (x*x+y*y+z*z>=0.50 && x*x+y*y+z*z<=0.70) {
     		newposition = true;
     	}
     }
 
-    pose.position.x = x;
-    pose.position.y = y;
-    pose.position.z = z;
-
-    // TODO: Check random values for orientation (quaternions)
     pose.orientation.x = (1.0-(-1.0))*(double)rand()/(double)RAND_MAX + (-1.0);
     aux = sqrt(1.0 - pose.orientation.x*pose.orientation.x);
     pose.orientation.y = (aux-(-aux))*(double)rand()/(double)RAND_MAX + (-aux);
