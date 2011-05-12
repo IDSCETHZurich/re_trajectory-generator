@@ -4,7 +4,7 @@
     Author(s):      Gajamohan Mohanarajah/Francisco Ramos
     Affiliation:    IDSC - ETH Zurich
     e-mail:         gajan@ethz.ch/framosde@ethz.ch
-    Start date:	    tth April 2011
+    Start date:	    11th April 2011
     Last update:	11th May 2011
 
  ***************************************************************************
@@ -30,12 +30,12 @@
  *  \par Velocity Profile with non zero initial velocities
  *   This file extends the VelocityProfile abstract class, generating velocity
  *   profiles which are time optimal (subjected to maximum accelerations and
- *   velocities) and may have initial velocities different from zero
- *   It calculates the coefficients of the second-order polynomials for each
+ *   velocities) and may have initial velocities different from zero.
+ *   It calculates the coefficients of a second-order polynomial for each
  *   part of the trajectory (piece-wise, non-symmetric trapezoid velocity
  *   profile)
  *   Then it provides functions to obtain the necessary
- *   position/velocity/acceleration of the trajectory at a certain instant
+ *   position/velocity/acceleration of the trajectory at a certain instant.
  *
  *   \par Creating a Velocity Profile
  *   To create the Velocity Profile, two steps must be accomplished:
@@ -44,8 +44,8 @@
  *      interfaces
  *
  *   \par Subprofiles
- *   Each profile consists of one or mor subprofile. A subprofile is each of
- *   the different parts the trajectory is decomposed in. These should be
+ *   Each profile consists of one or more subprofiles. A subprofile is each of
+ *   the different parts the trajectory is divided in, but these are
  *   transparent to the user
  *
  *  \authors
@@ -110,7 +110,6 @@ using namespace KDL;
         // We add several interfaces. A non-passed argument is considered 0.0
         /** \brief Complete profile definition.
          *
-         *  Constraints:
          *  \param pos1 Initial position of the trajectory (should be actual robot position)
          *  \param pos2 Final desired position of the trajectory
          *  \param _inivel Must be smaller than \p _maxvel assigned in the constructor
@@ -119,7 +118,6 @@ using namespace KDL;
 	    bool SetProfile(double pos1,double pos2, double _inivel, double _initime);
         /** \brief Profile definition. Initial time of trajectory is assumed to be zero.
          *
-         *  Constraints:
          *  \param pos1 Initial position of the trajectory (should be actual robot position)
          *  \param pos2 Final desired position of the trajectory
          *  \param _inivel Must be smaller than \p _maxvel assigned in the constructor

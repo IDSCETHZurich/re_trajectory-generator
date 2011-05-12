@@ -9,6 +9,6 @@
 	<!--<remap from="joint_states" to="joint_positions"/>-->
   </node>  
 
-  <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d launch/kuka.vcg" />
+  <node pkg="rviz" type="rviz" output="screen" name="rviz" />
 </launch>
 

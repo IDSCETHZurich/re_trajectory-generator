@@ -10,12 +10,10 @@ namespace trajectory_generators
     using namespace KDL;
     using namespace std;
 
-    TrajectoryGenerator::TrajectoryGenerator(string name)
+    TrajectoryGenerator::TrajectoryGenerator(std::string name)
         : TaskContext(name,PreOperational)
     {
         //Creating TaskContext
-    	is_moving = false;
-    	toROS = true;
 
         //Adding InputPorts
         this->addEventPort("CartesianPoseInput",input_cartPosPort, boost::bind(&TrajectoryGenerator::generateNewVelocityProfilesCartPosInput, this, _1));
@@ -35,14 +33,6 @@ namespace trajectory_generators
 
         lastCommndedPoseJntPos = std::vector<double>(7,0.0);
         jntVel = std::vector<double>(7,0.0);
-
-        this->addOperation("moveTo",&TrajectoryGenerator::moveTo,this,OwnThread)
-        	  .doc("Set the position setpoint")
-        	  .arg("setpoint", "position setpoint for end effector")
-        	  .arg("time", "minimum time to execute trajectory" );
-
-        //Adding Methods
-        this->addOperation( "resetPosition",&TrajectoryGenerator::resetPosition,this,OwnThread).doc("Reset generator's position" );
 
         jntState.header.frame_id = "arm_0_link";
         jntState.name.push_back("arm_1_joint");
@@ -213,7 +203,7 @@ namespace trajectory_generators
 
     }
 
-    void TrajectoryGenerator::TrajectoryGenerator::updateHook()
+    void TrajectoryGenerator::updateHook()
     {
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
     	//Execute current velocity profile
@@ -236,17 +226,9 @@ namespace trajectory_generators
 
     void TrajectoryGenerator::cleanupHook()
     {
+
     }
 
-    bool TrajectoryGenerator::moveTo(std::vector<double> position, double time)
-    {
-	  return true;
-    }
-
-    void TrajectoryGenerator::resetPosition()
-    {
-    	//This function is really not necessary since we are currently running in command mode 1: Joint Position Control Mode
-    }
 
 }//namespace
 

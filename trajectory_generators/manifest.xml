@@ -2,10 +2,10 @@
   <description brief="trajectory_generators">
      trajectory_generators
   </description>
-  <author>rsmits</author>
+  <author>Gajamohan Mohanarajah/Francisco Ramos</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/trajectory_generators</url>
+  <url></url>
 
   <depend package="rtt"/>
   <depend package="ocl"/>

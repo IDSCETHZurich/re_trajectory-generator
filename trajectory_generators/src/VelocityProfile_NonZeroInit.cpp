@@ -2,20 +2,20 @@
  * VelocityProfile_NonZeroInit.cpp
  *
  *  Created on: Apr 7, 2011
- *      Author: demo
+ *     Authors: Francisco Ramos
+ *              Gajamohan Mohanarajah
  */
 
 #include "VelocityProfile_NonZeroInit.hpp"
 
 namespace trajectory_generators {
 
+// constructs motion profile class with <maxvel> and <maxacc> as parameters of the trajectory.
 VelocityProfile_NonZeroInit::VelocityProfile_NonZeroInit(double _maxvel, double _maxacc):
         duration(0), timeScale(0), maxVel(_maxvel), maxAcc(_maxacc),
         initPos(0), finalPos(0), initVel(0), initTime(0)
 
 {}
-		// constructs motion profile class with <maxvel> and <maxacc> as parameters of the
-		// trajectory.
 
 
 // This definition of SetProfile function is needed for compatibility with the VelocityProfile interface

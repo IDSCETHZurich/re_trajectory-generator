@@ -27,24 +27,17 @@
 
 /**
  *  \file
- *  \par Optimal time Trajectory Generator with velocity and acceleration constraints
- *   This file defines an OROCOS component which generates velocity profiles
- *   using the VelocityProfile_NonZeroInit class. This component listen to a port
- *   in which a ROS
- *   \par Creating a Velocity Profile
- *   To create the Velocity Profile, two steps must be accomplished:
- *    * The class constructor should be instantiated
- *    * The SetProfile function should be called with any the provided
- *      interfaces
+ *  \par Time optimal Trajectory Generator with velocity and acceleration constraints
+ *   This component implements two event ports
+ *   which listens on commanded Cartesian positions or joint angles of the Robot.
+ *   Based on the commands and the current state (position,velocity) of the Robot
+ *   a time optimal velocity profile is created using the VelocityProfile_NonZeroInit class and
+ *   sent out on an outputPort.
  *
- *   \par Subprofiles
- *   Each profile consists of one or mor subprofile. A subprofile is each of
- *   the different parts the trajectory is decomposed in. These should be
- *   transparent to the user
  *
  *  \authors
- *      Francisco Ramos, Ph.D., Dipl. Ing., ETH Zurich/UCLM
  *      Gajamohan Mohanarajah, M.Sc., ETH Zurich
+ *      Francisco Ramos, Ph.D., Dipl. Ing., ETH Zurich/UCLM
  *
  ****************************************************************************/
 
@@ -76,25 +69,27 @@
 #include <std_msgs/Float64.h>
 
 
-
 #include "VelocityProfile_NonZeroInit.hpp"
 #include "KukaLWR_Kinematics.hpp"
 
 namespace trajectory_generators
 {
     /**
-     * The description goes here
+     * \brief Trajectory Generator OROCOS component extends TaskContext from RTT
      *
      */
     class TrajectoryGenerator : public RTT::TaskContext
     {
     public:
         /**
-         * Constructor of the class.
+         * \brief Constructor of the TrajectoryGenerator class.
          *
          * @param name name of the TaskContext
          */
         TrajectoryGenerator(std::string name);
+        /**
+         * \brief Destructor of the TrajectoryGenerator class.
+         */
         virtual ~TrajectoryGenerator();
 
         virtual bool configureHook();
@@ -104,34 +99,54 @@ namespace trajectory_generators
         virtual void cleanupHook();
 
     private:
-      bool moveTo(std::vector<double> position, double time=0);
-      bool moveFinished() const;
-      void resetPosition();
 
+      /** \brief function handle for the input_cartPosPort
+		*
+		*  \param portInterface
+		*/
       bool generateNewVelocityProfilesCartPosInput(RTT::base::PortInterface* portInterface);
+      /** \brief function handle for the input_jntPosPort
+      	*
+      	*  \param portInterface
+      	*/
       bool generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface);
 
       unsigned int num_axes;
-      std::vector<double> p_m, p_d, v_d;
-      std::vector<double> v_max, a_max, p_max, p_min;
-      //TODO: Question: Should this be a vector<VelocityProfile> (without the NonZero Init)???
+
+      ///@{
+      /**
+       * @brief Maximum velocity, acceleration and the position range of each rotational joint of the Robot
+       */
+           std::vector<double> v_max, a_max, p_max, p_min;
+      ///@}
+
       std::vector<VelocityProfile_NonZeroInit> motionProfile;
 
       RTT::os::TimeService::ticks	time_begin;
       RTT::os::TimeService::Seconds	time_passed;
 
-      geometry_msgs::Pose lastCommandedPose;
-      std::vector<double> lastCommndedPoseJntPos;
+      ///@{
+      /**
+       * @brief Commands from the event(input) port
+       */
       std::vector<double> jntPosCmd;
+      sensor_msgs::JointState cmdJntState;
+      ///@}
+
+      ///@{
+      /**
+       * @brief intermediate command variables
+       */
+      std::vector<double> lastCommndedPoseJntPos;
+      geometry_msgs::Pose lastCommandedPose;
+      ///@}
+
+      /// Initial joint velocities of each rotational joint of the Robot
       std::vector<double> jntVel;
 
-      sensor_msgs::JointState jntState, cmdJntState; // to/fromROS
+      /// joint state going out on output_jntPosPort_toROS port
+      sensor_msgs::JointState jntState;
 
-      double max_duration;
-      bool is_moving;
-      bool toROS;
-
-      ///Robot specific data
 
     protected:
       /// Dataport containing commanded Cartesian pose
