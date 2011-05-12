@@ -2,6 +2,13 @@
 <!DOCTYPE properties SYSTEM "cpf.dtd">
 <properties>
   <simple name="local_port" type="long"><description>local port</description><value>49938</value></simple>
-  <simple name="control_mode" type="long"><description>selected control mode, (1
-: position control,2 : velocity control, 3 : torque control, 4 : cartesian position control, 5 : cartesian TCP wrench control</description><value>1</value></simple>
+  <simple name="control_mode" type="long"><description>
+	selected control mode:
+		1.Joint Position [cmd_flag: cmd.data.jntPos]
+		2.Joint Velocity (velocity integrated → position) [cmd_flag: cmd.data.jntPos]
+		3.Joint Torque [cmd_flag: cmd.data.addJntTrq]
+		4.Cartesian Position [cmd_flag: cmd.data.cartPos]
+		5.Cartesian Force [cmd_flag: cmd.data.addTcpFT]
+		6.Cartesian Twist [cmd_flag: cmd.data.cartPos]</description><value>1</value></simple>
 </properties>
+

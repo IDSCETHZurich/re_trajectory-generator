@@ -1,3 +1,53 @@
+/***************************************************************************
+
+    File:           TrajectoryGenerator.hpp
+    Author(s):      Gajamohan Mohanarajah/Francisco Ramos
+    Affiliation:    IDSC - ETH Zurich
+    e-mail:         gajan@ethz.ch/framosde@ethz.ch
+    Start date:	    7th April 2011
+    Last update:    11th May 2011
+
+ ***************************************************************************
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Lesser General Public            *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2.1 of the License, or (at your option) any later version.    *
+ *                                                                         *
+ *   This library is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   Lesser General Public License for more details.                       *
+ *                                                                         *
+ *   You should have received a copy of the GNU Lesser General Public      *
+ *   License along with this library; if not, write to the Free Software   *
+ *   Foundation, Inc., 59 Temple Place,                                    *
+ *   Suite 330, Boston, MA  02111-1307  USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
+/**
+ *  \file
+ *  \par Optimal time Trajectory Generator with velocity and acceleration constraints
+ *   This file defines an OROCOS component which generates velocity profiles
+ *   using the VelocityProfile_NonZeroInit class. This component listen to a port
+ *   in which a ROS
+ *   \par Creating a Velocity Profile
+ *   To create the Velocity Profile, two steps must be accomplished:
+ *    * The class constructor should be instantiated
+ *    * The SetProfile function should be called with any the provided
+ *      interfaces
+ *
+ *   \par Subprofiles
+ *   Each profile consists of one or mor subprofile. A subprofile is each of
+ *   the different parts the trajectory is decomposed in. These should be
+ *   transparent to the user
+ *
+ *  \authors
+ *      Francisco Ramos, Ph.D., Dipl. Ing., ETH Zurich/UCLM
+ *      Gajamohan Mohanarajah, M.Sc., ETH Zurich
+ *
+ ****************************************************************************/
+
 #ifndef __CARTESIAN_GENERATOR_POS_H__
 #define __CARTESIAN_GENERATOR_POS_H__
 
