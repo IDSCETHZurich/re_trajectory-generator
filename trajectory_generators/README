@@ -1,1 +1,53 @@
-README TEXT GOES HERE
+/**************************************************************************
+ * OROCOS COMPONENT FOR TIME OPTIMAL INTERRUPTIBLE TRAJECTORY GENERATION
+ * =====================================================================
+ *
+ * Authors:         Mohanarajah Gajamohan / Francisco Ramos
+ * Version:         v0.1
+ * Release date:    Friday, 13th May 2011
+ * Last update:     Friday, 13th May 2011
+ *
+ **************************************************************************/
+
+
+Elements of the release
+=======================
+
+TrajectoryGenerator
+-------------------
+ *   This component implements two event ports which listen to commanded
+ *   Cartesian positions and/or joint angles of a robot.
+ *   Based on the commands and the current state (position, VELOCITY) of the
+ *   robot a time optimal velocity profile is created, using the
+ *   VelocityProfile_NonZeroInit class, and the joint positions are sequentially
+ *   sent out on an outputPort.
+ *   The provided working example makes use of the kinematic solver given by
+ *   in the KUKALWR_Kinematics class. However, by selectin an appropriate
+ *   kinematics Solver, the component can be used to control any other robotic
+ *   manipulator.
+
+VelocityProfile_NonZeroInit
+---------------------------
+ *   This class extends the VelocityProfile abstract class, generating velocity
+ *   profiles which are time optimal (subjected to maximum accelerations and
+ *   velocities) and may have non-zero initial velocities.
+ *   It calculates the polynomials of piece-wise linear velocity profiles and
+ *   the corresponding position and acceleration profiles.
+ *   Then it provides functions to obtain position/velocity/acceleration
+ *   of the trajectory at a certain time instant.
+
+KUKALWR_Kinematics
+------------------
+ *   This class defines the kinematic transformations on the KUKA LWR Robot
+ *
+ *   The Forward Kinematics transformation considers the whole 7 DOF of the
+ *   robot, while the Inverse Kinematics only calculates 6 Joints, setting
+ *   the extra DOF to zero. This allows us to obtain a closed-form solution
+ *   for the inverse kinematics.
+ *
+ *   The equations of this closed-form solution are based on the IK of an
+ *   anthropomorphic arm with a spherical wrist given in the book
+ *   "Robotics - Modelling, Planning and Control", by Siciliano et al. (2010)
+ *   Only one of the four possible solutions for the kinematic
+ *   chain is calculated. Specifically, the right-shoulder elbow-up one.
+

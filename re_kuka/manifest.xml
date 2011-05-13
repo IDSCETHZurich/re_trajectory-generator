@@ -1,13 +1,13 @@
 <package>
   <description brief="re_kuka">
 
-     re_kuka
+     re_kuka: Adapted from http://www.ros.org/browse/details.php?name=cob_description
 
   </description>
-  <author>rob</author>
+  <author>Rob Janssen / Gajamohan Mohanarajah</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/re_kuka</url>
+  <url></url>
   
   <depend package="roscpp" />
   <depend package="rospy"/>
