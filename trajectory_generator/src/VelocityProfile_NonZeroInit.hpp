@@ -62,7 +62,7 @@
 #include <ocl/OCL.hpp>
 #include <kdl/velocityprofile.hpp>
 
-namespace trajectory_generators
+namespace trajectory_generator
 {
 
 using namespace RTT;

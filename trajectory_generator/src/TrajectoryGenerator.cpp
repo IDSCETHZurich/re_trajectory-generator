@@ -2,9 +2,9 @@
 #include "TrajectoryGenerator.hpp"
 #include <ocl/Component.hpp>
 
-ORO_CREATE_COMPONENT( trajectory_generators::TrajectoryGenerator);
+ORO_CREATE_COMPONENT( trajectory_generator::TrajectoryGenerator);
 
-namespace trajectory_generators
+namespace trajectory_generator
 {
     using namespace RTT;
     using namespace KDL;

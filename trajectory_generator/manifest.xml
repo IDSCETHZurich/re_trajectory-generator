@@ -1,6 +1,6 @@
 <package>
-  <description brief="trajectory_generators">
-     trajectory_generators
+  <description brief="trajectory_generator">
+     trajectory_generator
   </description>
   <author>Gajamohan Mohanarajah/Francisco Ramos/Nico Huebel</author>
   <license>BSD</license>

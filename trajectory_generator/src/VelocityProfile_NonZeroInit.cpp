@@ -8,7 +8,7 @@
 
 #include "VelocityProfile_NonZeroInit.hpp"
 
-namespace trajectory_generators {
+namespace trajectory_generator {
 
 // constructs motion profile class with <maxvel> and <maxacc> as parameters of the trajectory.
 VelocityProfile_NonZeroInit::VelocityProfile_NonZeroInit(double _maxvel, double _maxacc):

@@ -28,7 +28,7 @@
 
 #include "KukaLWR_Kinematics.hpp"
 
-namespace trajectory_generators {
+namespace trajectory_generator {
 
 // Vector of constants
 const double KukaLWR_Kinematics::JNT_LIMITS [] = {170.0*PI/180.0,

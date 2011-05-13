@@ -72,7 +72,7 @@
 #include "VelocityProfile_NonZeroInit.hpp"
 #include "KukaLWR_Kinematics.hpp"
 
-namespace trajectory_generators
+namespace trajectory_generator
 {
     /**
      * \brief Trajectory Generator OROCOS component extends TaskContext from RTT

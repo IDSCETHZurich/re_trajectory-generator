@@ -4,8 +4,8 @@ Generate typekit using the following command:
 typegen -o kuka_typekit kuka_typekit lwr_fri/include/friComm.h  -t mqueue
 We assume that you put your friComm.h header file inside lwr_fri/include.
 
-Documentation can be generated using rosdoc in the trajectory_generators directory
-rosrun rosdoc rosdoc trajectory_generators
+Documentation can be generated using rosdoc in the trajectory_generator directory
+rosrun rosdoc rosdoc trajectory_generator
 
 About the use of the TrajectoryGenerator component
 ==================================================
@@ -15,8 +15,8 @@ Run the TrajectoryGenerator and visualize the robot maneuvers in rviz
 ROS package without connecting it to the real robot.
 Procedure:
 * roscore
-* roslaunch trajectory_generators visualize.launch
-* cd trajectory_generators/deploy
+* roslaunch trajectory_generator visualize.launch
+* cd trajectory_generator/deploy
 * ./runSolo.sh
 Then you can run
 * rosrun poseToOrocos poseSingle (poseLoop. jntPosSingle, jntPosLoop)
@@ -29,8 +29,8 @@ Run the TrajectoryGenerator and visualize the robot maneuvers in rviz
 ROS package while sending commands to the real robot via FRIComponent.
 Procedure:
 * roscore
-* roslaunch trajectory_generators visualize.launch
-* cd trajectory_generators/deploy
+* roslaunch trajectory_generator visualize.launch
+* cd trajectory_generator/deploy
 * ./runFRI.sh
 Then you can run
 * rosrun poseToOrocos poseSingle (poseLoop. jntPosSingle, jntPosLoop)
