@@ -68,9 +68,7 @@
 
 #include <std_msgs/Float64.h>
 
-
 #include "VelocityProfile_NonZeroInit.hpp"
-#include "KukaLWR_Kinematics.hpp"
 
 namespace trajectory_generator
 {
@@ -98,13 +96,7 @@ namespace trajectory_generator
         virtual void stopHook();
         virtual void cleanupHook();
 
-    private:
 
-      /** \brief function handle for the input_cartPosPort
-		*
-		*  \param portInterface
-		*/
-      bool generateNewVelocityProfilesCartPosInput(RTT::base::PortInterface* portInterface);
       /** \brief function handle for the input_jntPosPort
       	*
       	*  \param portInterface

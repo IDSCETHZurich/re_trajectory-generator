@@ -11,6 +11,7 @@
 	<simple name="Import" type="string"><value>rtt_ros_integration_sensor_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_geometry_msgs</value></simple>
 	
+	
 	<struct name="ROSConPoseIn" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple><!-- type of connection: 0 means Data -->
   		<simple name="size" type="short"><value>1</value></simple><!-- buffer size -->

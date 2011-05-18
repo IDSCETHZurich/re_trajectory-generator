@@ -1,4 +1,3 @@
-
 #include "TrajectoryGenerator.hpp"
 #include <ocl/Component.hpp>
 
@@ -16,7 +15,7 @@ namespace trajectory_generator
         //Creating TaskContext
 
         //Adding InputPorts
-        this->addEventPort("CartesianPoseInput",input_cartPosPort, boost::bind(&TrajectoryGenerator::generateNewVelocityProfilesCartPosInput, this, _1));
+
         this->addEventPort("JointPositionInput",input_jntPosPort, boost::bind(&TrajectoryGenerator::generateNewVelocityProfilesJntPosInput, this, _1));
         this->addPort("JointPositionMsr",msr_jntPosPort);
 
@@ -87,23 +86,6 @@ namespace trajectory_generator
     	}
     	cout << endl;
 
-    	//Do FK and check if z value is within the limits
-    	//TODO: Think of a more clever way (not hardcoded) to implement this restriction
-    	if (!(KukaLWR_Kinematics::fkSolver(lastCommndedPoseJntPos, lastCommandedPose))){
-    		cout << "lastCommandedPose cannot be achieved, Destination point modified" << endl;
-    	}
-
-    	//Show results
-		cout << "Coordinate x : " << lastCommandedPose.position.x << endl;
-		cout << "Coordinate y : " << lastCommandedPose.position.y << endl;
-		cout << "Coordinate z : " << lastCommandedPose.position.z << endl;
-
-    	if (lastCommandedPose.position.z < 0.2)
-    	{
-    		cout << "lastCommandedPose out of safety zone, Destination point modified" << endl;
-    		lastCommndedPoseJntPos = std::vector<double>(7,0.0);
-    	}
-
     	//Create joint specific velocity profiles
     	double maxDuration = 0.0;
     	std::vector<double> jntPos = std::vector<double>(7,0.0);
@@ -146,62 +128,7 @@ namespace trajectory_generator
 
     }
 
-    bool TrajectoryGenerator::generateNewVelocityProfilesCartPosInput(RTT::base::PortInterface* portInterface){
-    	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-    	log(Info) << "a new joint position arrived from ROS" << endlog();
-    	cout << "a new joint position arrived from ROS" << endl;
 
-    	input_cartPosPort.read(lastCommandedPose);
-    	cout << "Pose.position.x  = " << lastCommandedPose.position.x << endl;
-    	cout << "Pose.position.y  = " << lastCommandedPose.position.y << endl;
-    	cout << "Pose.position.z  = " << lastCommandedPose.position.z << endl;
-
-    	//Do IK and reset velocity profiles
-    	if (!(KukaLWR_Kinematics::ikSolver(lastCommandedPose, lastCommndedPoseJntPos))){
-    		cout << "lastCommandedPose cannot be achieved, Destination point modified" << endl;
-    	}
-
-    	//Create joint specific velocity profiles
-    	double maxDuration = 0.0;
-    	std::vector<double> jntPos = std::vector<double>(7,0.0);
-
-    	msr_jntPosPort.read(jntPos);
-
-
-    	if ((int)motionProfile.size() == 0){//Only for the first run
-    		for(int i = 0; i < (int)num_axes; i++)
-			{
-    			jntVel[i] = 0.0;
-    		}
-    	}else{
-    		for(int i = 0; i < (int)motionProfile.size(); i++)
-    		{
-    			jntVel[i] = motionProfile[i].Vel(time_passed);
-    			jntPos[i] = motionProfile[i].Pos(time_passed);
- 	   		}
-     	}
-
-    	motionProfile.clear();
-
-    	//TODO: Check dimensions
-    	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile.push_back(VelocityProfile_NonZeroInit(v_max[i], a_max[i]));
-    		motionProfile[i].SetProfile (jntPos[i], lastCommndedPoseJntPos[i], jntVel[i]);
-    		if(motionProfile[i].Duration() > maxDuration )
-    			maxDuration = motionProfile[i].Duration();
-    	}
-
-    	//Do sync
-    	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile[i].SetProfileDuration(maxDuration);
-    	}
-
-    	//Set times
-    	time_begin = os::TimeService::Instance()->getTicks();
-    	cout << "A new set of motion profiles were successfully created." << endl;
-    	return true;
-
-    }
 
     void TrajectoryGenerator::updateHook()
     {

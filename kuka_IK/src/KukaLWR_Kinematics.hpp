@@ -66,7 +66,7 @@
 #define PI 3.14159
 
 
-namespace trajectory_generator {
+namespace kuka_IK {
 
 /**
  * \brief A concrete and limited implementation of the KUKA_LWR Kinematics both

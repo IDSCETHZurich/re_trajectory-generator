@@ -9,6 +9,7 @@
 	<simple name="Import" type="string"><value>rtt_ros_integration_std_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_sensor_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_geometry_msgs</value></simple>
+	<simple name="Import" type="string"><value>kuka_IK</value></simple>
 	
 	<struct name="ROSConPoseIn" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple><!-- type of connection: 0 means Data -->
@@ -31,6 +32,19 @@
   		<simple name="name_id" type="string"><value>joint_states</value></simple>
 	</struct>
 	
+	<struct name="kukaIKComponent" type="kuka_IK::kuka_IK">
+		<struct name="Activity" type="NonPeriodicActivity">
+			<simple name="Priority" type="short"><value>1</value></simple>
+			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
+		<simple name="AutoConf" type="boolean"><value>1</value></simple>
+		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGeneratorPos.cpf</value></simple>
+		<struct name="Ports" type="PropertyBag">
+    			<simple name="CartesianPoseInput" type="string"><value>ROSConPoseIn</value></simple>
+    			<simple name="JointPositionInput" type="string"><value>JntPosIn</value></simple>
+  		</struct>
+	</struct>	
+	
 	<struct name="trajectoryGeneratorJntPos" type="trajectory_generator::TrajectoryGenerator">
 		<struct name="Activity" type="PeriodicActivity">
 			<simple name="Period" type="double"><value>0.005</value></simple>
@@ -41,8 +55,7 @@
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
 		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGeneratorPos.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
-    			<simple name="CartesianPoseInput" type="string"><value>ROSConPoseIn</value></simple>
-    			<simple name="JointPositionInput" type="string"><value>ROSConJntPosIn</value></simple>
+    			<simple name="JointPositionInput" type="string"><value>JntPosIn</value></simple>
     			<simple name="JointPositionDesToROS" type="string"><value>ROSConJntPosOut</value></simple>
   		</struct>
 	</struct>

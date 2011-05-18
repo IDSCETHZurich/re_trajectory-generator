@@ -1,0 +1,17 @@
+# Rationale:
+# - The prefix is equal to the package directory.
+# - The libdir is where the libraries were built, ie, package/lib
+# - The include dir in cflags allows top-level headers and in package/include/package/header.h
+# - If this doesn't fit your package layout, don't use orocos_generate_package() and write the .pc file yourself
+
+prefix=/home/demo/ros/stacks/demoLocal/kuka_IK
+libdir=${prefix}/lib
+includedir=${prefix}/include
+orocos_libdir=${libdir}/orocos/gnulinux
+
+Name: kuka_ik-gnulinux
+Description: kuka_ik-gnulinux package for Orocos
+Requires: orocos-rtt-gnulinux
+Version: 1.0
+Libs:  -L${libdir}  -lkuka_IK-gnulinux -L${orocos_libdir}  -lkuka_IK-gnulinux
+Cflags: -I${includedir} -I${prefix}/..

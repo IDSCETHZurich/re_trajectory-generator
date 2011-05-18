@@ -9,6 +9,7 @@
 
   <depend package="rtt"/>
   <depend package="ocl"/>
+  <depend package="kuka_IK">
   <!--<depend package="brics_actuator"/>-->
   <depend package="orocos_kdl"/>
   <depend package="geometry_msgs"/>
