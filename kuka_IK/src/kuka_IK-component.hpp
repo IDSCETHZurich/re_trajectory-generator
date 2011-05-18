@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include <geometry_msgs/Pose.h>
+#include <sensor_msgs/JointState.h>
 #include "KukaLWR_Kinematics.hpp"
 
 namespace kuka_IK{
@@ -38,7 +39,7 @@ class kuka_IK
        /// Dataport containing commanded Cartesian pose
        RTT::InputPort< geometry_msgs::Pose > input_cartPosPort;
        /// Dataport containing the command in joint angles
-       RTT::OutputPort< std::vector<double> > output_jntPosPort;
+       RTT::OutputPort< sensor_msgs::JointState > output_jntPosPort;
 };
 }//end of name space
 #endif

@@ -25,7 +25,14 @@ namespace kuka_IK{
     	if (!(KukaLWR_Kinematics::ikSolver(commandedPose, commndedPoseJntPos))){
     		cout << "lastCommandedPose cannot be achieved, Destination point modified" << endl;
     	}
-    	output_jntPosPort.write(commndedPoseJntPos);
+        
+        sensor_msgs::JointState tmpJntState;
+        tmpJntState.position.clear();
+        for(int i=0; i < 7; i++){
+    		tmpJntState.position.push_back(commndedPoseJntPos[i]);
+    	}
+
+    	output_jntPosPort.write(tmpJntState);
     	return true;
 
     }

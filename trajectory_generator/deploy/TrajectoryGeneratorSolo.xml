@@ -12,18 +12,18 @@
 	<simple name="Import" type="string"><value>kuka_IK</value></simple>
 	
 	<struct name="ROSConPoseIn" type="ConnPolicy">
-  		<simple name="type" type="short"><value>0</value></simple><!-- type of connection: 0 means Data -->
-  		<simple name="size" type="short"><value>1</value></simple><!-- buffer size -->
-  		<simple name="transport" type="short"><value>3</value></simple><!--3 means ROS-->
-  		<simple name="name_id" type="string"><value>poseDsr</value></simple><!-- topic name -->
+  		<simple name="type" type="short"><value>0</value></simple>
+  		<simple name="size" type="short"><value>1</value></simple>
+  		<simple name="transport" type="short"><value>3</value></simple>
+  		<simple name="name_id" type="string"><value>poseDsr</value></simple>
 	</struct>
 	
-	<struct name="ROSConJntPosIn" type="ConnPolicy">
+	<!--<struct name="ROSConJntPosIn" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple>
   		<simple name="size" type="short"><value>1</value></simple>
   		<simple name="transport" type="short"><value>3</value></simple>
   		<simple name="name_id" type="string"><value>jntPosDsr</value></simple>
-	</struct>
+	</struct>-->
 	
 	<struct name="ROSConJntPosOut" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple>
@@ -36,14 +36,14 @@
 		<struct name="Activity" type="NonPeriodicActivity">
 			<simple name="Priority" type="short"><value>1</value></simple>
 			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
+        </struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGeneratorPos.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
     			<simple name="CartesianPoseInput" type="string"><value>ROSConPoseIn</value></simple>
-    			<simple name="JointPositionInput" type="string"><value>JntPosIn</value></simple>
+    			<simple name="JointPositionDes" type="string"><value>JntPosIn</value></simple>
   		</struct>
-	</struct>	
+	</struct>
 	
 	<struct name="trajectoryGeneratorJntPos" type="trajectory_generator::TrajectoryGenerator">
 		<struct name="Activity" type="PeriodicActivity">
