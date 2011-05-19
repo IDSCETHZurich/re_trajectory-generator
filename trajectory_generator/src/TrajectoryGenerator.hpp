@@ -28,8 +28,8 @@
 /**
  *  \file
  *  \par Time optimal Trajectory Generator with velocity and acceleration constraints
- *   This component implements two event ports
- *   which listens on commanded Cartesian positions or joint angles of the Robot.
+ *   This component implements an event port
+ *   which listens on commanded joint angles of the Robot.
  *   Based on the commands and the current state (position,velocity) of the Robot
  *   a time optimal velocity profile is created using the VelocityProfile_NonZeroInit class and
  *   sent out on an outputPort.

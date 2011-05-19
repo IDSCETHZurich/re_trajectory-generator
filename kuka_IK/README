@@ -1,5 +1,5 @@
 /**************************************************************************
- * OROCOS COMPONENT FOR TIME OPTIMAL INTERRUPTIBLE TRAJECTORY GENERATION
+ * OROCOS COMPONENT FOR KUKA KINEMATICS
  * =====================================================================
  *
  * Authors:         Mohanarajah Gajamohan / Francisco Ramos
@@ -12,25 +12,6 @@
 
 Elements of the release
 =======================
-
-TrajectoryGenerator
--------------------
- *   This component implements an event ports which listens on 
- *   commanded joint angles of a robot.
- *   Based on the commands and the current state (position, VELOCITY) of the
- *   robot a time optimal velocity profile is created, using the
- *   VelocityProfile_NonZeroInit class, and the joint positions are sequentially
- *   sent out on an outputPort.
-
-VelocityProfile_NonZeroInit
----------------------------
- *   This class extends the VelocityProfile abstract class, generating velocity
- *   profiles which are time optimal (subjected to maximum accelerations and
- *   velocities) and may have non-zero initial velocities.
- *   It calculates the polynomials of piece-wise linear velocity profiles and
- *   the corresponding position and acceleration profiles.
- *   Then it provides functions to obtain position/velocity/acceleration
- *   of the trajectory at a certain time instant.
 
 KUKALWR_Kinematics
 ------------------
