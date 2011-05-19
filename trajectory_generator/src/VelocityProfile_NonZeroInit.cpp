@@ -1,10 +1,29 @@
-/*
- * VelocityProfile_NonZeroInit.cpp
- *
- *  Created on: Apr 7, 2011
- *     Authors: Francisco Ramos
- *              Gajamohan Mohanarajah
- */
+/***************************************************************************
+
+    File:           KukaLWR_Kinematics.cpp
+    Author(s):      Gajamohan Mohanarajah/Francisco Ramos
+    Affiliation:    IDSC - ETH Zurich
+    e-mail:         gajan@ethz.ch/framosde@ethz.ch
+    Start date:	    11th April 2011
+    Last update:	11th May 2011
+
+ ***************************************************************************
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Lesser General Public            *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2.1 of the License, or (at your option) any later version.    *
+ *                                                                         *
+ *   This library is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   Lesser General Public License for more details.                       *
+ *                                                                         *
+ *   You should have received a copy of the GNU Lesser General Public      *
+ *   License along with this library; if not, write to the Free Software   *
+ *   Foundation, Inc., 59 Temple Place,                                    *
+ *   Suite 330, Boston, MA  02111-1307  USA                                *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "VelocityProfile_NonZeroInit.hpp"
 
@@ -104,7 +123,7 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 	if (fPos -  iPos < 0)
 		trajSign = -1.0;
 
-	if(abs(fPos-iPos) < 0.0001 && abs(iVel) < 0.0001 ){
+	if(abs(fPos-iPos) < epsilon && abs(iVel) < epsilon ){
 		std::vector<double> sp1;
 		sp1.push_back(iTime);
 		sp1.push_back(iPos);
@@ -113,7 +132,7 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 
 		subVelProfiles.push_back(sp1);
 
-		tmpDuration = 0.0001;
+		tmpDuration = epsilon;
 		return tmpDuration;
 	}
 

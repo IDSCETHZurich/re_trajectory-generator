@@ -75,6 +75,9 @@ using namespace KDL;
     {
 
     private:
+        //! Tolerence used to detect null trajectories        
+        static const double epsilon  = 0.0001;
+        
         /** It is a vector of SubProfiles, each of them with the coefficients
          *  of a polynomial corresponding to that piece of the profile
          */
