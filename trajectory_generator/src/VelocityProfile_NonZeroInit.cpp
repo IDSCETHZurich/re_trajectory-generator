@@ -31,7 +31,7 @@ namespace trajectory_generator {
 
 // constructs motion profile class with <maxvel> and <maxacc> as parameters of the trajectory.
 VelocityProfile_NonZeroInit::VelocityProfile_NonZeroInit(double _maxvel, double _maxacc):
-        duration(0), timeScale(0), maxVel(_maxvel), maxAcc(_maxacc),
+        duration(0), timeScale(1), maxVel(_maxvel), maxAcc(_maxacc),
         initPos(0), finalPos(0), initVel(0), initTime(0)
 
 {}
