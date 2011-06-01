@@ -264,7 +264,7 @@ double VelocityProfile_NonZeroInit::Duration() const
 double VelocityProfile_NonZeroInit::Pos(double time) const
 {
 	for( int i = 0 ; i < (int)subVelProfiles.size()-1 ; i++ ){
-		if( time > subVelProfiles[i][0] && time <=  subVelProfiles[i+1][0] ){
+		if( time >= subVelProfiles[i][0] && time <  subVelProfiles[i+1][0] ){
 			return subVelProfiles[i][1]	+ subVelProfiles[i][2] * (time -  subVelProfiles[i][0]) \
 					+ 0.5 * subVelProfiles[i][3]*(time -  subVelProfiles[i][0])*(time -  subVelProfiles[i][0]);
 		}
@@ -283,7 +283,7 @@ double VelocityProfile_NonZeroInit::Pos(double time) const
 double VelocityProfile_NonZeroInit::Vel(double time) const
 {
 	for( int i = 0 ; i < (int)subVelProfiles.size()-1 ; i++ ){
-		if(time > subVelProfiles[i][0] && time <=  subVelProfiles[i+1][0] ){
+		if(time >= subVelProfiles[i][0] && time <  subVelProfiles[i+1][0] ){
 			return subVelProfiles[i][2] + subVelProfiles[i][3]*(time -  subVelProfiles[i][0]);
 		}
 
@@ -302,7 +302,7 @@ double VelocityProfile_NonZeroInit::Vel(double time) const
 double VelocityProfile_NonZeroInit::Acc(double time) const
 {
 	for( int i = 0 ; i < (int)subVelProfiles.size() ; i++ ){
-		if(time > subVelProfiles[i][0] && time <=  subVelProfiles[i+1][0] ){
+		if(time >= subVelProfiles[i][0] && time <  subVelProfiles[i+1][0] ){
 			return subVelProfiles[i][3];
 		}
 
