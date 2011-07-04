@@ -45,7 +45,7 @@ void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2)
 	initVel = 0.0;
 	initTime = 0.0;
     //TODO: Clear no longer needed verbose items when debugged
-	cout << "Building Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
+	cout << "2 Parameters Constructor/n Building Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
 			initPos << ") initVel(" << initVel << ") " << endl;
 	cout << "------------------------------------------" << endl;
 
@@ -68,7 +68,7 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 	initVel = _inivel;
 	initTime = 0.0;
     //TODO: Clear no longer needed verbose items when debugged
-	cout << "Building Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
+	cout << "3 Parameters Constructor/nBuilding Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
 			initPos << ") initVel(" << initVel << ") " << endl;
 	cout << "------------------------------------------" << endl;
 
@@ -101,7 +101,7 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 	// set Time scale to default
 	timeScale = 1;
     //TODO: Clear no longer needed verbose items when debugged
-	cout << "Building Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
+	cout << "4 Parameters Constructor/nBuilding Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
 			initPos << ") initVel(" << initVel << ") " << endl;
 	cout << "------------------------------------------" << endl;
 
@@ -289,13 +289,11 @@ double VelocityProfile_NonZeroInit::Vel(double time) const
 
 	}
 	// if we are here, time is in the last piece or higher than duration so we set the output to the final velocity
-/*	int last = subVelProfiles.size()-1;
+	int last = subVelProfiles.size()-1;
 	if (time > duration/timeScale)
         time = duration/timeScale;
 
 	return  subVelProfiles[last][2] + subVelProfiles[last][3]*(time -  subVelProfiles[last][0]);
-*/
-    return 0.0;
 }
 
 
