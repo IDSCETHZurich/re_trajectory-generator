@@ -299,14 +299,18 @@ double VelocityProfile_NonZeroInit::Vel(double time) const
 
 double VelocityProfile_NonZeroInit::Acc(double time) const
 {
-	for( int i = 0 ; i < (int)subVelProfiles.size() ; i++ ){
+	for( int i = 0 ; i < (int)subVelProfiles.size()-1 ; i++ ){
 		if(time >= subVelProfiles[i][0] && time <  subVelProfiles[i+1][0] ){
 			return subVelProfiles[i][3];
 		}
 
 	}
 	// if we are here, time is in the last piece or higher than duration so we set the output to the final acceleration (0.0)
-    return 0.0;
+	int last = subVelProfiles.size()-1;
+	if (time < duration/timeScale)
+		return  subVelProfiles[last][3];
+
+	return 0.0;
 }
 
 
