@@ -44,11 +44,11 @@ void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2)
 	finalPos = pos2;
 	initVel = 0.0;
 	initTime = 0.0;
-    //TODO: Clear no longer needed verbose items when debugged
+#if DEBUG
 	cout << "2 Parameters Constructor/n Building Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
 			initPos << ") initVel(" << initVel << ") " << endl;
 	cout << "------------------------------------------" << endl;
-
+#endif
 	duration = SubProfileBuilder(finalPos, initPos, initVel, initTime);
 }
 
@@ -67,11 +67,11 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 	finalPos = pos2;
 	initVel = _inivel;
 	initTime = 0.0;
-    //TODO: Clear no longer needed verbose items when debugged
+#if DEBUG
 	cout << "3 Parameters Constructor/nBuilding Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
 			initPos << ") initVel(" << initVel << ") " << endl;
 	cout << "------------------------------------------" << endl;
-
+#endif
 	duration = SubProfileBuilder(finalPos, initPos, initVel, initTime);
 
 	return true;
@@ -100,11 +100,11 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
     initTime = _initime;
 	// set Time scale to default
 	timeScale = 1;
-    //TODO: Clear no longer needed verbose items when debugged
+#if DEBUG
 	cout << "4 Parameters Constructor/nBuilding Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
 			initPos << ") initVel(" << initVel << ") " << endl;
 	cout << "------------------------------------------" << endl;
-
+#endif
 	duration = SubProfileBuilder(finalPos, initPos, initVel, initTime); // Initial time set to zero for new trajectories
 
 	return true;

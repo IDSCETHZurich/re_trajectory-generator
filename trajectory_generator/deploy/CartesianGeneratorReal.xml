@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "cpf.dtd">
+<properties>
+
+ 	<simple name="Import" type="string"><value>kdl_typekit</value></simple>
+	<simple name="Import" type="string"><value>lwr_fri</value></simple>
+  	<simple name="Import" type="string"><value>rtt_ros_integration</value></simple>
+	<simple name="Import" type="string"><value>trajectory_generator</value></simple>
+	<simple name="Import" type="string"><value>rtt_ros_integration_std_msgs</value></simple>
+	<simple name="Import" type="string"><value>rtt_ros_integration_sensor_msgs</value></simple>
+	<simple name="Import" type="string"><value>rtt_ros_integration_geometry_msgs</value></simple>>
+	
+	<struct name="ROSConPoseIn" type="ConnPolicy">
+  		<simple name="type" type="short"><value>0</value></simple>
+  		<simple name="size" type="short"><value>1</value></simple>
+  		<simple name="transport" type="short"><value>3</value></simple>
+  		<simple name="name_id" type="string"><value>poseDsr</value></simple>
+	</struct>
+	
+	<struct name="cartesianGenerator" type="trajectory_generator::CartesianGenerator">
+		<struct name="Activity" type="PeriodicActivity">
+			<simple name="Period" type="double"><value>0.02</value></simple>
+			<simple name="Priority" type="short"><value>1</value></simple>
+    			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
+  		</struct>
+		<simple name="AutoConf" type="boolean"><value>1</value></simple>
+		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+		<simple name="PropertyFile" type="string"><value>cpf/cartesianGeneratorPos.cpf</value></simple>
+		<struct name="Ports" type="PropertyBag">
+    			<simple name="cmdCartPose" type="string"><value>ROSConPoseIn</value></simple>
+    			<simple name="CartesianPoseMsr" type="string"><value>MsrCartPos</value></simple>
+    			<simple name="CartesianPoseDes" type="string"><value>DesCartesianPose</value></simple>
+  		</struct>
+	</struct>
+
+	<struct name="FRIServer" type="lwr_fri::FRIComponent">
+ 		<struct name="Activity" type="NonPeriodicActivity">
+			<simple name="Priority" type="short"><value>1</value></simple>
+			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
+		</struct>
+	    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
+		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+		<simple name="LoadProperties" type="string"><value>cpf/FRIServer.cpf</value></simple>
+		<struct name="Ports" type="PropertyBag">
+			<simple name="desCartPos" type="string"><value>DesCartesianPose</value></simple>
+			<simple name="msrCartPos" type="string"> <value>MsrCartPos</value></simple>
+		</struct>
+	</struct>
+	
+	<struct name="Reporter" type="OCL::FileReporting">
+    		<struct name="Activity" type="PeriodicActivity">
+			<simple name="Period" type="double"><value>0.02</value></simple>
+			<simple name="Priority" type="short"><value>0</value></simple>
+			<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
+    		</struct>
+    		<simple name="AutoConf" type="boolean"><value>1</value></simple>
+    		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+    		<simple name="AutoSave" type="boolean"><value>1</value></simple>
+    		<simple name="LoadProperties" type="string"><value>reportingFRI.cpf</value></simple>
+    		<struct name="Peers" type="PropertyBag">
+    			<simple type="string"><value>FRIServer</value></simple>
+    		</struct>
+    	</struct>
+</properties>

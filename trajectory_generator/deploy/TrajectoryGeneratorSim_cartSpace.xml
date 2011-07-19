@@ -18,13 +18,6 @@
   		<simple name="name_id" type="string"><value>poseDsr</value></simple>
 	</struct>
 	
-	<!--<struct name="ROSConJntPosIn" type="ConnPolicy">
-  		<simple name="type" type="short"><value>0</value></simple>
-  		<simple name="size" type="short"><value>1</value></simple>
-  		<simple name="transport" type="short"><value>3</value></simple>
-  		<simple name="name_id" type="string"><value>jntPosDsr</value></simple>
-	</struct>-->
-	
 	<struct name="ROSConJntPosOut" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple>
   		<simple name="size" type="short"><value>1</value></simple>
@@ -41,22 +34,24 @@
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
 		<struct name="Ports" type="PropertyBag">
     			<simple name="CartesianPoseInput" type="string"><value>ROSConPoseIn</value></simple>
-    			<simple name="JointPositionDes" type="string"><value>JntPosIn</value></simple>
+    			<simple name="JointPositionDes" type="string"><value>jntPosIK2TG</value></simple>
+    			<simple name="JointPositionMsr" type="string"><value>jntPosTG2IK</value></simple>
   		</struct>
 	</struct>
 	
-	<struct name="trajectoryGeneratorJntPos" type="trajectory_generator::TrajectoryGenerator">
+	<struct name="trajectoryGenerator" type="trajectory_generator::TrajectoryGenerator">
 		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.005</value></simple>
+			<simple name="Period" type="double"><value>0.01</value></simple>
 			<simple name="Priority" type="short"><value>1</value></simple>
     			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGeneratorPos.cpf</value></simple>
+		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGenerator.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
-    			<simple name="JointPositionInput" type="string"><value>JntPosIn</value></simple>
+    			<simple name="JointPositionInput" type="string"><value>jntPosIK2TG</value></simple>
     			<simple name="JointPositionDesToROS" type="string"><value>ROSConJntPosOut</value></simple>
+    			<simple name="JointPositionDes" type="string"><value>jntPosTG2IK</value></simple>
   		</struct>
 	</struct>
 
@@ -69,10 +64,10 @@
     		<simple name="AutoConf" type="boolean"><value>1</value></simple>
     		<simple name="AutoStart" type="boolean"><value>1</value></simple>
     		<simple name="AutoSave" type="boolean"><value>1</value></simple>
-    		<simple name="LoadProperties" type="string"><value>reportingSolo.cpf</value></simple>
+    		<simple name="LoadProperties" type="string"><value>cpf/reportingSim.cpf</value></simple>
     		<!-- List all peers (uni-directional) -->
     		<struct name="Peers" type="PropertyBag">
-    			<simple type="string"><value>trajectoryGeneratorJntPos</value></simple>
+    			<simple type="string"><value>trajectoryGenerator</value></simple>
     		</struct>
     	</struct>
 </properties>

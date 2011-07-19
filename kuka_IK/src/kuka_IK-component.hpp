@@ -60,13 +60,23 @@ class kuka_IK
     */
    std::vector<double> commndedPoseJntPos;
    geometry_msgs::Pose commandedPose;
+   std::vector<double> jntPos;
    ///@}
+
+   ///Dimensionality reduction: Grid parameters
+   int xI,yI,y_inc;
+   ///Dimensionality reduction: logFile
+   ofstream logFile;
 
  protected:
        /// Dataport containing commanded Cartesian pose
        RTT::InputPort< geometry_msgs::Pose > input_cartPosPort;
        /// Dataport containing the command in joint angles
        RTT::OutputPort< sensor_msgs::JointState > output_jntPosPort;
+       /// Dataport containing the measured joint angles from the Robot
+       RTT::InputPort< std::vector<double> > msr_jntPosPort;
+       /// Dataport containing the measured Cartesian position from the Robot
+       RTT::InputPort<geometry_msgs::Pose> cartPosPort;
 };
 }//end of name space
 #endif

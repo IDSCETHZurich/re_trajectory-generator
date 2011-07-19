@@ -36,13 +36,10 @@
  *
  *
  *  \authors
- *      Gajamohan Mohanarajah, M.Sc., ETH Zurich
+ *      Gajamohan Mohanarajah, M.Eng., ETH Zurich
  *      Francisco Ramos, Ph.D., Dipl. Ing., ETH Zurich/UCLM
  *
  ****************************************************************************/
-
-#ifndef __CARTESIAN_GENERATOR_POS_H__
-#define __CARTESIAN_GENERATOR_POS_H__
 
 #include <rtt/RTT.hpp>
 
@@ -154,5 +151,3 @@ namespace trajectory_generator
 
   }; // class
 }//namespace
-
-#endif // __CARTESIAN_GENERATOR_POS_H__

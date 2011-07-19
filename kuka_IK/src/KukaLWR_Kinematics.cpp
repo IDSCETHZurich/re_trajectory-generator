@@ -25,8 +25,9 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "KukaLWR_Kinematics.hpp"
+using namespace std;
+using namespace KDL;
 
 namespace kuka_IK {
 
@@ -39,7 +40,7 @@ const double KukaLWR_Kinematics::JNT_LIMITS [] = {170.0*PI/180.0,
   120.0*PI/180.0,
   170.0*PI/180.0};
 
-bool KukaLWR_Kinematics::ikSolver(const geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr)
+bool KukaLWR_Kinematics::ikSolver(std::vector<double> & jntPosMsr, geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr)
 {
 	// Returning value
 	bool output = true;
@@ -108,12 +109,86 @@ bool KukaLWR_Kinematics::ikSolver(const geometry_msgs::Pose & poseDsr, std::vect
     		jntPosDsr[i] > 0? jntPosDsr[i] = JNT_LIMITS[i] : jntPosDsr[i] = -JNT_LIMITS[i];
     		cout << "Warning!!! IK gives values out of bounds for joint " << i << endl;
     	}
+#if DEBUG
     	cout << i << ":" << jntPosDsr[i] << endl;
+#endif
     }
 
     return output;
 }
 
+bool KukaLWR_Kinematics::ikSolverIterative7DOF(std::vector<double> & jntPosMsr, geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr) {
+	// Define chain
+	KDL::Chain chain = Chain();
+	chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.31))));
+	chain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.2))));
+	chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.2))));
+	chain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.2))));
+	chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.19))));
+	chain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI))));
+	chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.078))));
+
+	//Creation of joint arrays:
+	int nj = chain.getNrOfJoints();
+	JntArray q(nj);
+	JntArray q_init(nj);
+
+	JntArray q_min(nj);
+  	JntArray q_max(nj);
+  	for(int i = 0; i < nj; i++) {
+  		q_min(i) = -JNT_LIMITS[i];
+  		q_max(i) = JNT_LIMITS[i];
+  	}
+
+  	// Create the solvers
+  	ChainFkSolverPos_recursive fksolver1(chain); //Forward position solver
+  	ChainIkSolverVel_pinv iksolver1v(chain); //Inverse velocity solver
+  	//ChainIkSolverVel_wdls iksolver1v(chain);
+  	ChainIkSolverPos_NR_JL iksolver1(chain, q_min, q_max, fksolver1, iksolver1v, 1000, 1e-4); // Newton-Raphson with Joint Limits
+  	//ChainIkSolverPos_NR iksolver1(chain, fksolver1, iksolver1v, 1000, 1e-3); // Newton-Raphson without Joint Limits
+
+  	// Load initial values
+  	for(int i = 0; i < nj; i++) {
+  		q_init(i) = jntPosMsr[i];
+#if DEBUG
+  		cout << q_init(i) << " ";
+#endif
+  	}
+
+  	// Convert request to KDL
+	Frame F_dest;
+	tf::PoseMsgToKDL(poseDsr, F_dest);
+
+	// Call solver
+	int ret = iksolver1.CartToJnt(q_init, F_dest, q);
+#if DEBUG
+	std::cout << " q_init:  " ;
+	for(int i=0; i<7; i++) {
+		std::cout <<  q_init(i) << " "  ;
+	}
+	std::cout  << std::endl;
+
+	std::cout << " q: " ;
+		for(int i=0; i<7; i++) {
+			std::cout <<  q(i) << " "  ;
+		}
+	std::cout  << std::endl;
+
+	std::cout << "RET:"<< ret << std::endl;
+#endif
+
+	// Interprete results
+	if (ret < 0) {
+		for(int i = 0; i < nj; i++)
+			jntPosDsr[i] = q_init(i);
+		return false;
+	} else {
+		for(int i = 0; i < nj; i++) {
+			jntPosDsr[i] = q(i);
+		}
+		return true;
+	}
+}
 
 
 bool KukaLWR_Kinematics::fkSolver(const std::vector<double> & jntPosDsr, geometry_msgs::Pose & poseDsr)

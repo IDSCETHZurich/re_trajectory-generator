@@ -54,13 +54,23 @@
  ****************************************************************************/
 #ifndef KUKALWR_KINEMATICS_HPP_
 #define KUKALWR_KINEMATICS_HPP_
+#define DEBUG 0
 
 #include <rtt/RTT.hpp>
+#include <tf_conversions/tf_kdl.h>
 
 #include <geometry_msgs/Pose.h>
 
 #include <kdl/kdl.hpp>
 #include <kdl/frames.hpp>
+#include <kdl/chain.hpp>
+#include <kdl/chainfksolver.hpp>
+#include <kdl/chainfksolverpos_recursive.hpp>
+#include <kdl/chainiksolvervel_pinv.hpp>
+#include <kdl/chainiksolvervel_wdls.hpp>
+#include <kdl/chainiksolverpos_nr.hpp>
+#include <kdl/chainiksolverpos_nr_jl.hpp>
+#include <kdl/frames_io.hpp>
 
 // Constant definition
 #define PI 3.14159
@@ -86,7 +96,9 @@ private:
 
 public:
     //! Inverse kinematics of the KUKA LWR Robot (6 dof). Returns 1 if the requested position is reachable
-	static bool ikSolver(const geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr);
+    static bool ikSolver(std::vector<double> & jntPosMsr, geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr);
+	//! Inverse kinematics of the KUKA LWR Robot (7 dof). Returns 1 if the requested position is reachable
+	static bool ikSolverIterative7DOF(std::vector<double> & jntPosMsr, geometry_msgs::Pose & poseDsr, std::vector<double> & jntPosDsr);
     //! Forward kinematics of the KUKA LWR Robot (7 dof). Returns 1 if the requested position is reachable
 	static bool fkSolver(const std::vector<double> & jntPosDsr, geometry_msgs::Pose & poseDsr);
 };

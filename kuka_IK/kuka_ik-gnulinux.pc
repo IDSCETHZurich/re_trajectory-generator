@@ -4,7 +4,7 @@
 # - The include dir in cflags allows top-level headers and in package/include/package/header.h
 # - If this doesn't fit your package layout, don't use orocos_generate_package() and write the .pc file yourself
 
-prefix=/home/ferraraf/ros/stacks/trajectory-generator/kuka_IK
+prefix=/home/demo/ros/stacks/trajectory-generator/kuka_IK
 libdir=${prefix}/lib
 includedir=${prefix}/include
 orocos_libdir=${libdir}/orocos/gnulinux

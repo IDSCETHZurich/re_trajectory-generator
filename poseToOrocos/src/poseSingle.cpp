@@ -81,11 +81,10 @@ int main(int argc, char **argv)
    * buffer up before throwing some away.
    */
 // %Tag(PUBLISHER)%
-  ros::Publisher posePub = n.advertise<geometry_msgs::Pose>("poseDsr", 2, true);
+  ros::Publisher posePub = n.advertise<geometry_msgs::Pose>("poseDsr", 1, true);
 // %EndTag(PUBLISHER)%
 
 // %Tag(LOOP_RATE)%
-  ros::Rate loop_rate(1);
 // %EndTag(LOOP_RATE)%
 
   /**
@@ -93,43 +92,21 @@ int main(int argc, char **argv)
    * a unique string for each message.
    */
 // %Tag(ROS_OK)%
-  int count = 0, aux = 0;
-  bool newposition = false;
-  double x=0.0, y=0.0, z=0.0;
-// Set the random seed based on actual time
-  srand ( time(NULL) );
 
-  while (ros::ok())
-  {
 // %EndTag(ROS_OK)%
     /**
      * This is a message object. You stuff it with data, and then publish it.
      */
 // %Tag(FILL_MESSAGE)%
     geometry_msgs::Pose pose;
+    pose.position.x = 0.0;
+    pose.position.y = 0.3;
+    pose.position.z = 1.0; 
 
-    newposition = false;
-    while (!newposition) {
-    	x = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    	y = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    	z = (0.7-(0.2))*(double)rand()/(double)RAND_MAX + (0.2);
-    	if (x*x+y*y+z*z>=0.50 && x*x+y*y+z*z<=0.70) {
-    		newposition = true;
-    	}
-    }
-
-    pose.position.x = x;
-    pose.position.y = y;
-    pose.position.z = z;
-
-    pose.orientation.x = (1.0-(-1.0))*(double)rand()/(double)RAND_MAX + (-1.0);
-    aux = sqrt(1.0 - pose.orientation.x*pose.orientation.x);
-    pose.orientation.y = (aux-(-aux))*(double)rand()/(double)RAND_MAX + (-aux);
-    aux = sqrt(1.0 - pose.orientation.x*pose.orientation.x - pose.orientation.y*pose.orientation.y);
-    pose.orientation.z = (aux-(-aux))*(double)rand()/(double)RAND_MAX + (-aux);
-    pose.orientation.w = sqrt(1.0 - pose.orientation.x*pose.orientation.x
-    							  - pose.orientation.y*pose.orientation.y
-    							  - pose.orientation.z*pose.orientation.z);
+    pose.orientation.x = 0.0;
+    pose.orientation.y = 0.0; 
+    pose.orientation.z = 0.0;
+    pose.orientation.w = 1.0;
 
     /**
      * The publish() function is how you send messages. The parameter
@@ -139,18 +116,9 @@ int main(int argc, char **argv)
      */
 // %Tag(PUBLISH)%
     posePub.publish(pose);
+    std::cout << "Finished Publishing first msg" << std::endl;
+    ros::spin(); 
 // %EndTag(PUBLISH)%
-
-// %Tag(SPINONCE)%
-    ros::spinOnce();
-// %EndTag(SPINONCE)%
-
-// %Tag(RATE_SLEEP)%
-    loop_rate.sleep();
-// %EndTag(RATE_SLEEP)%
-    ++count;
-  }
-
 
   return 0;
 }

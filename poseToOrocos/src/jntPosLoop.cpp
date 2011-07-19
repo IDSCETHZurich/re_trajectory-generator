@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 
     jntState.position.clear();
     for(int i=0; i< 7 ; i++ ){
-    	jntState.position.push_back(-3 + 6.0*((double)rand()/(double)RAND_MAX));
+    	jntState.position.push_back(-1.00 + 2*1.00*((double)rand()/(double)RAND_MAX)); // 1.0 to not hit the table
     }
 
     /**

@@ -31,12 +31,30 @@
    <simple name="Element6" type="double"><description>Axis 7</description><value>1.5</value></simple>
 </struct>
 <struct name="max_acc" type="float64[]"><description>The maximum acceleration in trajectory</description> 
-   <simple name="Element0" type="double"><description>Axis 1</description><value>3.0</value></simple>
-   <simple name="Element1" type="double"><description>Axis 2</description><value>3.0</value></simple>
-   <simple name="Element2" type="double"><description>Axis 3</description><value>3.0</value></simple>
-   <simple name="Element3" type="double"><description>Axis 4</description><value>3.0</value></simple>
-   <simple name="Element4" type="double"><description>Axis 5</description><value>3.0</value></simple>
-   <simple name="Element5" type="double"><description>Axis 6</description><value>3.0</value></simple>
-   <simple name="Element6" type="double"><description>Axis 7</description><value>3.0</value></simple>
+   <simple name="Element0" type="double"><description>Axis 1</description><value>3</value></simple>
+   <simple name="Element1" type="double"><description>Axis 2</description><value>3</value></simple>
+   <simple name="Element2" type="double"><description>Axis 3</description><value>3</value></simple>
+   <simple name="Element3" type="double"><description>Axis 4</description><value>3</value></simple>
+   <simple name="Element4" type="double"><description>Axis 5</description><value>3</value></simple>
+   <simple name="Element5" type="double"><description>Axis 6</description><value>3</value></simple>
+   <simple name="Element6" type="double"><description>Axis 7</description><value>3</value></simple>
 </struct>
+<!--<struct name="max_vel" type="float64[]">  <description>The maximum velocity in trajectory</description> 
+   <simple name="Element0" type="double"><description>Axis 1</description><value>0.1</value></simple>
+   <simple name="Element1" type="double"><description>Axis 2</description><value>0.1</value></simple>
+   <simple name="Element2" type="double"><description>Axis 3</description><value>0.1</value></simple>
+   <simple name="Element3" type="double"><description>Axis 4</description><value>0.1</value></simple>
+   <simple name="Element4" type="double"><description>Axis 5</description><value>0.1</value></simple>
+   <simple name="Element5" type="double"><description>Axis 6</description><value>0.1</value></simple>
+   <simple name="Element6" type="double"><description>Axis 7</description><value>0.1</value></simple>
+</struct>
+<struct name="max_acc" type="float64[]"><description>The maximum acceleration in trajectory</description> 
+   <simple name="Element0" type="double"><description>Axis 1</description><value>0.005</value></simple>
+   <simple name="Element1" type="double"><description>Axis 2</description><value>0.005</value></simple>
+   <simple name="Element2" type="double"><description>Axis 3</description><value>0.005</value></simple>
+   <simple name="Element3" type="double"><description>Axis 4</description><value>0.005</value></simple>
+   <simple name="Element4" type="double"><description>Axis 5</description><value>0.005</value></simple>
+   <simple name="Element5" type="double"><description>Axis 6</description><value>0.005</value></simple>
+   <simple name="Element6" type="double"><description>Axis 7</description><value>0.005</value></simple>
+</struct>-->
 </properties>

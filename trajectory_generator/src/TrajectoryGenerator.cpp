@@ -28,7 +28,8 @@
 #include "TrajectoryGenerator.hpp"
 #include <ocl/Component.hpp>
 
-ORO_CREATE_COMPONENT( trajectory_generator::TrajectoryGenerator);
+ORO_CREATE_COMPONENT_TYPE();
+ORO_LIST_COMPONENT_TYPE(trajectory_generator::TrajectoryGenerator);
 
 namespace trajectory_generator
 {
@@ -91,27 +92,33 @@ namespace trajectory_generator
 
     bool TrajectoryGenerator::startHook()
     {
+    	std::cout << "TrajectoryGenerator::Trajectory generator running" << std::endl;
     	return true;
     }
 
     bool TrajectoryGenerator::generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface){
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-    	log(Info) << "a new Pose arrived from ROS" << endlog();
-    	cout << "a new Pose arrived from ROS" << endl;
-
+    	log(Info) << "a new jnt pose arrived" << endlog();
+#if DEBUG
+    	cout << "a new jnt pose arrived" << endl;
+#endif
     	input_jntPosPort.read(cmdJntState);
     	lastCommndedPoseJntPos = cmdJntState.position;
 
     	for(int i=0; i < 7; i++){
+#if DEBUG
     		cout << "Joint " << i << " : " << lastCommndedPoseJntPos[i] << " /// ";
+#endif
     		if(lastCommndedPoseJntPos[i]<p_min[i] || lastCommndedPoseJntPos[i]>p_max[i]){
     			log(Info) << "Commanded joint position out of bounds" << endlog();
-    			cout << "Commanded joint position out of bounds" << endl;
+    			cout << "Commanded joint position out of bounds" << lastCommndedPoseJntPos[i] << endl;
     			return false;
     		}
 
     	}
+#if DEBUG
     	cout << endl;
+#endif
 
     	//Create joint specific velocity profiles
     	double maxDuration = 0.0;
@@ -150,7 +157,9 @@ namespace trajectory_generator
 
     	//Set times
     	time_begin = os::TimeService::Instance()->getTicks();
+#if DEBUG
     	cout << "A new set of motion profiles were successfully created." << endl;
+#endif
     	return true;
 
     }

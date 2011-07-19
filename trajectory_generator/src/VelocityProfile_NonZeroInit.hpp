@@ -56,6 +56,7 @@
 
 #ifndef VELOCITYPROFILE_NONZEROINIT_H
 #define VELOCITYPROFILE_NONZEROINIT_H
+#define DEBUG 0
 
 #include <rtt/RTT.hpp>
 #include <rtt/TaskContext.hpp>

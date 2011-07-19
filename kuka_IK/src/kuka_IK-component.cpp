@@ -38,18 +38,88 @@ namespace kuka_IK{
     {
     	 this->addEventPort("CartesianPoseInput",input_cartPosPort, boost::bind(&kuka_IK::cartPosInputHandle, this, _1));
     	 this->addPort("JointPositionDes",output_jntPosPort);
+    	 this->addPort("JointPositionMsr",msr_jntPosPort);
+    	 this->addPort("msrCartPosPort", cartPosPort);
+    	 jntPos = std::vector<double>(7,0.0);
     }
 
     bool kuka_IK::cartPosInputHandle(RTT::base::PortInterface* portInterface){
-
     	input_cartPosPort.read(commandedPose);
-    	cout << "Pose.position.x  = " << commandedPose.position.x << endl;
+#if DEBUG
+    	cout << endl << "Pose.position.x  = " << commandedPose.position.x << endl;
     	cout << "Pose.position.y  = " << commandedPose.position.y << endl;
     	cout << "Pose.position.z  = " << commandedPose.position.z << endl;
+#endif
+    	// Read out the robot joint position
+    	msr_jntPosPort.read(jntPos);
 
+
+#if DEBUG
+    	std::cout << " kuka-IK-component.cpp: jntPos" << std::endl;
+   		for(int i = 0; i < 7; i++)  std::cout << jntPos[i] << " " ;
+#endif
     	//Do IK and reset velocity profiles
-    	if (!(KukaLWR_Kinematics::ikSolver(commandedPose, commndedPoseJntPos))){
-    		cout << "lastCommandedPose cannot be achieved, Destination point modified" << endl;
+    	commndedPoseJntPos = std::vector<double>(7,0.0);
+
+#if DEBUG
+    	cout <<  endl << endl;
+    	cout << "Beginning of Super Debugging" << endl;
+    	geometry_msgs::Pose tmpPose;
+    	cartPosPort.read(tmpPose);
+    	Frame tmpFrame;
+    	tf::PoseMsgToKDL(tmpPose, tmpFrame);
+
+    	cout << "Frame from Robot" << endl << tmpFrame << endl;
+
+    	//Debugging Iterative IK
+		KDL::Chain chain = Chain();
+		chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.31))));
+		chain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.2))));
+		chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.2))));
+		chain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.2))));
+		chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.19))));
+		chain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI))));
+		chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.078))));
+
+		ChainFkSolverPos_recursive fksolver(chain);
+
+		// Create joint array
+		unsigned int nj = chain.getNrOfJoints();
+		KDL::JntArray jointpositions = JntArray(nj);
+
+		// Assign some values to the joint positions
+		std::cout << "jntPos: ";
+		for(unsigned int i=0;i<nj;i++){
+			jointpositions(i)=jntPos[i];
+			std::cout << jntPos[i] << " ";
+		}
+		std::cout << std::endl;
+
+		// Create the frame that will contain the results
+		KDL::Frame cartpos;
+
+		// Calculate forward position kinematics
+		bool kinematics_status;
+		kinematics_status = fksolver.JntToCart(jointpositions,cartpos);
+		if(kinematics_status>=0){
+			std::cout << cartpos <<std::endl;
+			printf("%s \n","Success, thanks KDL!");
+		}else{
+			printf("%s \n","Error: could not calculate forward kinematics");
+			std::cout << cartpos <<std::endl;
+		}
+
+		cout << "End of Super Debugging" << endl << endl;
+
+		//End of Super Debugging
+#endif
+
+
+    	//if (!(KukaLWR_Kinematics::ikSolver(jntPos, commandedPose, commndedPoseJntPos))){
+    	if (!(KukaLWR_Kinematics::ikSolverIterative7DOF(jntPos, commandedPose, commndedPoseJntPos))){
+    		cout << "lastCommandedPose cannot be achieved" << endl;
+    		for(int i = 0; i < 7; i++)  std::cout << commndedPoseJntPos[i] << " " ;
+    		std::cout << std::endl;
     	}
         
         sensor_msgs::JointState tmpJntState;
@@ -64,8 +134,73 @@ namespace kuka_IK{
     }
 
     bool kuka_IK::configureHook(){return true;}
-    bool kuka_IK::startHook(){return true;}
-    void kuka_IK::updateHook(){}
+    bool kuka_IK::startHook(){
+#if 0
+    	std::cout << "Dimensionality Reduction - data acquisition STARTED" << std::endl;
+    	xI=0;yI=0;y_inc=1;
+    	logFile.open ("log.txt");
+    	logFile << "Dimensionality Reduction LOGS\n";
+#endif
+    	return true;}
+    void kuka_IK::updateHook(){
+#if 0
+    	//Dimensionality Reduction - data acquisition
+    	int gridSize = 20;
+    	if(xI < gridSize && yI < gridSize){
+    		std::cout << std::endl << "============= xI=" << xI << ", yI = " << yI <<" ==============" << std::endl;
+			//Generate Pose on Horizontal Grid
+			geometry_msgs::Pose gridPointPose;
+			gridPointPose.orientation.x = 0.0;
+			gridPointPose.orientation.y = 0.0;
+			gridPointPose.orientation.z = 0.0;
+			gridPointPose.orientation.w = 1.0;
+
+			gridPointPose.position.z = 0.77;
+			gridPointPose.position.x = -0.55 + xI*0.01;
+			gridPointPose.position.y = -0.15 + yI*0.01;
+
+			msr_jntPosPort.read(jntPos);
+			//std::cout << " KUKA-IK-component.cpp: jntPos" << std::endl;
+			//for(int i = 0; i < 7; i++)  std::cout << jntPos[i] << " " ; std::cout << std::endl;
+			std::cout << " KUKA-IK-component.cpp: commndedCartPos" << std::endl;
+			std::cout << gridPointPose.position.x << " " << gridPointPose.position.y << " " << gridPointPose.position.z << std::endl;
+			logFile << gridPointPose.position.x << "," << gridPointPose.position.y << "," << gridPointPose.position.z  << ", ";
+
+			commndedPoseJntPos = std::vector<double>(7,0.0);
+
+			if (!(KukaLWR_Kinematics::ikSolverIterative7DOF(jntPos, gridPointPose, commndedPoseJntPos))){
+				cout << "lastCommandedPose cannot be achieved" << endl;
+				for(int i = 0; i < 7; i++) {
+					std::cout << commndedPoseJntPos[i] << " " ;
+				}
+				std::cout << std::endl;
+				logFile << "IK Solver failed \n";
+			}
+
+			for(int i = 0; i < 7; i++)	logFile << commndedPoseJntPos[i] << "," ;
+			logFile << "\n";
+
+			//Sending out to trajectory_generator
+			sensor_msgs::JointState tmpJntState;
+			tmpJntState.position.clear();
+			for(int i=0; i < 7; i++){
+				tmpJntState.position.push_back(commndedPoseJntPos[i]);
+			}
+			//output_jntPosPort.write(tmpJntState);
+
+
+
+			if ((yI == gridSize-1 && y_inc==1) || (yI == 0 && y_inc == -1) ) { y_inc=y_inc*-1;  xI++; }
+			else yI = yI + y_inc;
+
+
+    	}else{
+    		std::cout << "Grid Scanning Done. Calling stopHook()" << std::endl;
+    		logFile.close();
+    		this->stop();
+    	}
+#endif
+    }
     void kuka_IK::stopHook(){}
     void kuka_IK::cleanupHook(){}
 
