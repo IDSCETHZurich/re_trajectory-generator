@@ -37,6 +37,8 @@
 
 #include <Eigen/Dense>
 
+#define DEBUG 1
+
 //#include "VelocityProfile_NonZeroInit.hpp"
 using namespace Eigen;
 using namespace std;
@@ -84,7 +86,8 @@ namespace trajectory_generator
       RTT::os::TimeService::Seconds					m_time_passed;
       double										m_max_duration;
 
-      vector3d	currentRotationalAxis;
+      Vector3d										currentRotationalAxis;
+      double										deltaTheta;
 
       //bool                                        m_is_moving,m_once;
 
