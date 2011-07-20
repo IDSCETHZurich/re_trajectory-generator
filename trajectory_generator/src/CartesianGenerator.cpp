@@ -3,7 +3,7 @@
 
 #include "CartesianGenerator.hpp"
 #include <ocl/Component.hpp>
-
+#define SIMULATION 1
 ORO_LIST_COMPONENT_TYPE(trajectory_generator::CartesianGenerator);
 //ORO_CREATE_COMPONENT(trajectory_generator::CartesianGenerator);
 
@@ -23,7 +23,6 @@ namespace trajectory_generator
         this->addPort("CartesianPoseMsr",m_position_meas_port);
         this->addPort("CartesianPoseDes",m_position_desi_port);
         this->addPort("CartesianPoseDes2ROS",m_position_desi_port2ROS);
-        this->addPort("CartesianTwistDes",m_velocity_desi_port);
 		this->addEventPort("cmdCartPose",cmdCartPose, boost::bind(&CartesianGenerator::generateNewVelocityProfiles, this, _1));        
 
         //Adding Properties
@@ -53,15 +52,6 @@ namespace trajectory_generator
 		geometry_msgs::Pose pose;
 		m_position_meas_port.read(pose);
 		m_position_desi_port.write(pose);
-		geometry_msgs::Twist twist;
-		SetToZero(m_velocity_desi_local);
-		twist.linear.x=m_velocity_desi_local.vel.x();
-		twist.linear.y=m_velocity_desi_local.vel.y();
-		twist.linear.z=m_velocity_desi_local.vel.z();
-		twist.angular.x=m_velocity_desi_local.rot.x();
-		twist.angular.y=m_velocity_desi_local.rot.y();
-		twist.angular.z=m_velocity_desi_local.rot.z();
-		m_velocity_desi_port.write(twist);
 		return true;
     }
 
@@ -69,19 +59,28 @@ namespace trajectory_generator
     {
 
 		m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
-		if ( m_time_passed > m_max_duration ){
-			// set end position
-			m_position_desi_local = m_traject_end;
-		}else{
-			// position
-
+		if(motionProfile.size()==(int)3){
 			geometry_msgs::Pose pose;
-			pose.position.x=m_motion_profile[0].Pos(m_time_passed);
-			pose.position.y=m_motion_profile[1].Pos(m_time_passed);
-			pose.position.z=m_motion_profile[2].Pos(m_time_passed);
+			double theta; Vector3d q;
 
-			//m_position_desi_local.M.GetQuaternion(pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w);
+			pose.position.x=motionProfile[0].Pos(m_time_passed);
+			pose.position.y=motionProfile[1].Pos(m_time_passed);
+			pose.position.z=motionProfile[2].Pos(m_time_passed);
+
+			//theta = motionProfile[3].Pos(m_time_passed);
+			//cout << "--- Theta: " << theta << endl;
+			//q = currentRotationalAxis*sin(theta/2);
+
+			//KDL::Rotation errorRotation = KDL::Rotation::Quaternion(q(0), q(1), q(2), cos(theta/2));
+			//(errorRotation*m_traject_begin.M).GetQuaternion(pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w);
+
+			pose.orientation.x = 0.0;
+			pose.orientation.y = 0.0;
+			pose.orientation.z = 0.0;
+			pose.orientation.w = 1.0;
+
 			m_position_desi_port.write(pose);
+
 
 			//TO ROS Visualization
 			geometry_msgs::PoseStamped poseStamped;
@@ -89,13 +88,26 @@ namespace trajectory_generator
 			poseStamped.header.stamp = ros::Time::now();
 			poseStamped.pose = pose;
 			m_position_desi_port2ROS.write(poseStamped);
-#if DEBUG
+#if 1
 			std::cout << "DesPosePort   : " << "x:"<< pose.position.x << " y:"<< pose.position.y << " z:"
 					<< pose.position.z << std::endl;
 			std::cout << "-->Orientation: " << "x:"<< pose.orientation.x << " y:"<< pose.orientation.y
 					<< " z:"<< pose.orientation.z << " w:"<< pose.orientation.w << std::endl;
 #endif
-		}//end of else
+		}//end of empty motionProfile if check
+#if SIMULATION
+		else{	//since we can not get the current pose from the Robot
+			geometry_msgs::Pose pose;
+			pose.position.x=0;
+			pose.position.y=0;
+			pose.position.z=0.7;
+			pose.orientation.x = 0.0;
+			pose.orientation.y = 0.0;
+			pose.orientation.z = 0.0;
+			pose.orientation.w = 1.0;
+			m_position_desi_port.write(pose);
+		}
+#endif
     }
 
     void CartesianGenerator::stopHook()
@@ -106,21 +118,17 @@ namespace trajectory_generator
     {
     }
 
-    //bool CartesianGenerator::moveTo(geometry_msgs::Pose pose, double time){
     bool CartesianGenerator::generateNewVelocityProfiles(RTT::base::PortInterface* portInterface){
     	
-    	//
+#if DEBUG
     	std::cout << "A new pose arrived" << std::endl;
-
-    	double time = 10.0;
+#endif
+    	m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
     	
     	geometry_msgs::Pose pose;
     	geometry_msgs::PoseStamped poseStamped;
     	cmdCartPose.read(poseStamped);
-
     	pose = poseStamped.pose;
-    	
-		m_max_duration = 0;
 
 		m_traject_end.p.x(pose.position.x);
 		m_traject_end.p.y(pose.position.y);
@@ -135,28 +143,68 @@ namespace trajectory_generator
 		m_traject_begin.p.z(pose_meas.position.z);
 		m_traject_begin.M=Rotation::Quaternion(pose_meas.orientation.x,pose_meas.orientation.y,pose_meas.orientation.z,pose_meas.orientation.w);
 
-		double cosThetaby2;
-		(m_traject_end.M*m_traject_begin.M.Inverse()).GetQuaternion(currentRotationalAxis(0),
-				currentRotationalAxis(1), currentRotationalAxis(2), cosThetaby2);
-		currentRotationalAxis.normalize();
-		deltaTheta = acos(cosThetaby2);
+//		KDL::Rotation R1 = m_traject_begin.M;
+//		cout <<   " m_traject_begin  " << endl;
+//		cout <<  R1(0,0) << " " << R1(0,1) << " " <<R1(0,2) << " " << endl;
+//		cout <<  R1(1,0) << " " << R1(1,1) << " " <<R1(1,2) << " " << endl;
+//		cout <<  R1(2,0) << " " << R1(2,1) << " " <<R1(2,2) << " " << endl << endl;
+//		cout <<   " *********** " << endl;
 
-		m_velocity_begin_end = diff(m_traject_begin, m_traject_end);
+		KDL::Rotation errorRotation = (m_traject_end.M)*(m_traject_begin.M.Inverse());
+
+		double x,y,z,w;
+		errorRotation.GetQuaternion(x,y,z,w);
+		currentRotationalAxis[0]=x;
+		currentRotationalAxis[1]=y;
+		currentRotationalAxis[2]=z;
+		currentRotationalAxis.normalize();
+		deltaTheta = 2*acos(w);
+
+		std::cout << "-------------------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
+		std::cout << "deltaTheta" << deltaTheta << std::endl;
+
+		std::vector<double> cartPositionCmd = std::vector<double>(3,0.0);
+		cartPositionCmd[0] = pose.position.x;
+		cartPositionCmd[1] = pose.position.y;
+		cartPositionCmd[2] = pose.position.z;
+
+		std::vector<double> cartPositionMsr = std::vector<double>(3,0.0);
+		cartPositionMsr[0] = pose_meas.position.x;
+		cartPositionMsr[1] = pose_meas.position.y;
+		cartPositionMsr[2] = pose_meas.position.z;
+
+		std::vector<double> cartVelocity = std::vector<double>(3,0.0);
+
+
+		if ((int)motionProfile.size() == 0){//Only for the first run
+			for(int i = 0; i < 3; i++)
+			{
+				cartVelocity[i] = 0.0;
+			}
+		}else{
+			for(int i = 0; i < (int)motionProfile.size(); i++)
+			{
+				cartVelocity[i] = motionProfile[i].Vel(m_time_passed);
+				cartPositionMsr[i] = motionProfile[i].Pos(m_time_passed);
+			}
+		}
+
+		motionProfile.clear();
 
 		// Set motion profiles
-		for (unsigned int i=0; i<3; i++){
-		m_motion_profile[i].SetProfileDuration( 0, m_velocity_begin_end(i), time );
-		m_max_duration = max( m_max_duration, m_motion_profile[i].Duration() );
+		for(int i = 0; i < 3; i++){
+			motionProfile.push_back(VelocityProfile_NonZeroInit(m_maximum_velocity[i], m_maximum_acceleration[i]));
+			motionProfile[i].SetProfile(cartPositionMsr[i], cartPositionCmd[i], cartVelocity[i]);
 		}
-		
-		//Rescale trajectories to maximal duration
-		for (unsigned int i=0; i<6; i++)
-			m_motion_profile[i].SetProfileDuration( 0, m_velocity_begin_end(i), m_max_duration );
+		//motionProfile for theta
+		cout << "motionProfile for theta" << endl;
+		//motionProfile.push_back(VelocityProfile_NonZeroInit(m_maximum_velocity[3], m_maximum_acceleration[3]));
+		//motionProfile[3].SetProfile(0.0,deltaTheta,0.0);
+		cout << "motionProfile for theta: Done. Size: " << motionProfile.size() << endl;
 
 		m_time_begin = os::TimeService::Instance()->getTicks();
 		m_time_passed = 0;
 
-		//m_is_moving = true;
 		return true;
     }
 
@@ -174,7 +222,6 @@ namespace trajectory_generator
 		twist.angular.y=m_velocity_desi_local.rot.y();
 		twist.angular.z=m_velocity_desi_local.rot.z();
 		m_position_desi_port.write(pose);
-		m_velocity_desi_port.write(twist);
 		//m_is_moving = false;
     }
 }//namespace

@@ -37,7 +37,7 @@
 
 #include <Eigen/Dense>
 
-#define DEBUG 1
+#include "VelocityProfile_NonZeroInit.hpp"
 
 //#include "VelocityProfile_NonZeroInit.hpp"
 using namespace Eigen;
@@ -82,6 +82,7 @@ namespace trajectory_generator
       std::vector<double>				m_maximum_velocity, m_maximum_acceleration;
 
       std::vector<KDL::VelocityProfile_Trap>		m_motion_profile;
+      std::vector<VelocityProfile_NonZeroInit> 		motionProfile;
       RTT::os::TimeService::ticks					m_time_begin;
       RTT::os::TimeService::Seconds					m_time_passed;
       double										m_max_duration;
@@ -104,10 +105,6 @@ namespace trajectory_generator
       /// frame, shared with OCL::CartesianControllerPos,
       /// OCL::CartesianControllerPosVel
       RTT::OutputPort< geometry_msgs::Pose >  m_position_desi_port;
-      /// Dataport containing the current desired end-effector
-      /// twist, shared with OCL::CartesianControllerPosVel,
-      /// OCL::CartesianControllerVel
-      RTT::OutputPort< geometry_msgs::Twist >  m_velocity_desi_port;
 
       //RTT::OutputPort<bool> m_move_finished_port;
 

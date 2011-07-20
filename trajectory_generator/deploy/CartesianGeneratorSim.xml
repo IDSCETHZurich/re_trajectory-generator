@@ -26,7 +26,7 @@
 	
 	<struct name="cartesianGenerator" type="trajectory_generator::CartesianGenerator">
 		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.02</value></simple>
+			<simple name="Period" type="double"><value>0.1</value></simple>
 			<simple name="Priority" type="short"><value>1</value></simple>
     			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>
@@ -35,38 +35,9 @@
 		<simple name="PropertyFile" type="string"><value>cpf/cartesianGenerator.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
     			<simple name="cmdCartPose" type="string"><value>ROSConPoseIn</value></simple>
-    			<simple name="CartesianPoseMsr" type="string"><value>MsrCartPos</value></simple>
-    			<simple name="CartesianPoseDes" type="string"><value>DesCartesianPose</value></simple>
+    			<simple name="CartesianPoseMsr" type="string"><value>CartGen2CartGen</value></simple>
+    			<simple name="CartesianPoseDes" type="string"><value>CartGen2CartGen</value></simple>
     			<simple name="CartesianPoseDes2ROS" type="string"><value>ROSConPoseStampedOut</value></simple>
   		</struct>
 	</struct>
-
-	<struct name="FRIServer" type="lwr_fri::FRIComponent">
- 		<struct name="Activity" type="NonPeriodicActivity">
-			<simple name="Priority" type="short"><value>1</value></simple>
-			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
-		</struct>
-	    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
-		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="LoadProperties" type="string"><value>cpf/FRIServer.cpf</value></simple>
-		<struct name="Ports" type="PropertyBag">
-			<simple name="desCartPos" type="string"><value>DesCartesianPose</value></simple>
-			<simple name="msrCartPos" type="string"> <value>MsrCartPos</value></simple>
-		</struct>
-	</struct>
-	
-	<struct name="Reporter" type="OCL::FileReporting">
-    		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.02</value></simple>
-			<simple name="Priority" type="short"><value>0</value></simple>
-			<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
-    		</struct>
-    		<simple name="AutoConf" type="boolean"><value>1</value></simple>
-    		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-    		<simple name="AutoSave" type="boolean"><value>1</value></simple>
-    		<simple name="LoadProperties" type="string"><value>cpf/reportingReal.cpf</value></simple>
-    		<struct name="Peers" type="PropertyBag">
-    			<simple type="string"><value>FRIServer</value></simple>
-    		</struct>
-    	</struct>
 </properties>
