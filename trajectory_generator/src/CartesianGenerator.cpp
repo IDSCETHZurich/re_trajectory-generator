@@ -1,22 +1,9 @@
+// Author: Gajan
+// Credits
 // $Id: nAxisGeneratorCartesianPos.hpp,v 1.1.1.1 2003/12/02 20:32:06 kgadeyne Exp $
 // Copyright (C) 2003 Klaas Gadeyne <klaas.gadeyne@mech.kuleuven.ac.be>
 //                    Wim Meeussen  <wim.meeussen@mech.kuleuven.ac.be>
 // Copyright (C) 2006 Ruben Smits <ruben.smits@mech.kuleuven.ac.be>
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-//
 
 #include "CartesianGenerator.hpp"
 #include <ocl/Component.hpp>
@@ -40,6 +27,7 @@ namespace trajectory_generator
         //Adding Ports
         this->addPort("CartesianPoseMsr",m_position_meas_port);
         this->addPort("CartesianPoseDes",m_position_desi_port);
+        this->addPort("CartesianPoseDes2ROS",m_position_desi_port2ROS);
         this->addPort("CartesianTwistDes",m_velocity_desi_port);
 		this->addEventPort("cmdCartPose",cmdCartPose, boost::bind(&CartesianGenerator::generateNewVelocityProfiles, this, _1));        
 
@@ -122,8 +110,17 @@ namespace trajectory_generator
 	    m_position_desi_local.M.GetQuaternion(pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w);
         m_position_desi_port.write(pose);
 
-        //std::cout << "DesPosePort   : " << "x:"<< pose.position.x << " y:"<< pose.position.y << " z:"<< pose.position.z << std::endl;
-        //std::cout << "-->Orientation: " << "x:"<< pose.orientation.x << " y:"<< pose.orientation.y << " z:"<< pose.orientation.z << " w:"<< pose.orientation.w << std::endl;
+        //TO ROS Visualization
+        geometry_msgs::PoseStamped poseStamped;
+        poseStamped.header.frame_id = "frame_id_1";
+        poseStamped.header.stamp = ros::Time::now();
+        poseStamped.pose = pose;
+        m_position_desi_port2ROS.write(poseStamped);
+
+        std::cout << "DesPosePort   : " << "x:"<< pose.position.x << " y:"<< pose.position.y << " z:"
+        		<< pose.position.z << std::endl;
+        std::cout << "-->Orientation: " << "x:"<< pose.orientation.x << " y:"<< pose.orientation.y
+        		<< " z:"<< pose.orientation.z << " w:"<< pose.orientation.w << std::endl;
 
         geometry_msgs::Twist twist;
         twist.linear.x=m_velocity_desi_local.vel.x();
@@ -153,7 +150,10 @@ namespace trajectory_generator
     	double time = 10.0;
     	
     	geometry_msgs::Pose pose;
-    	cmdCartPose.read(pose);
+    	geometry_msgs::PoseStamped poseStamped;
+    	cmdCartPose.read(poseStamped);
+
+    	pose = poseStamped.pose;
     	
 		m_max_duration = 0;
 
@@ -169,6 +169,8 @@ namespace trajectory_generator
 		m_traject_begin.p.y(pose_meas.position.y);
 		m_traject_begin.p.z(pose_meas.position.z);
 		m_traject_begin.M=Rotation::Quaternion(pose_meas.orientation.x,pose_meas.orientation.y,pose_meas.orientation.z,pose_meas.orientation.w);
+
+
 
 		m_velocity_begin_end = diff(m_traject_begin, m_traject_end);
 

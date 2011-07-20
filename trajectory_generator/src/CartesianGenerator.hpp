@@ -29,13 +29,17 @@
 #include <kdl/kdl.hpp>
 #include <kdl/frames.hpp>
 
+#include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Twist.h>
 
 #include <ocl/OCL.hpp>
 
-//#include "VelocityProfile_NonZeroInit.hpp"
+#include <Eigen/Dense>
 
+//#include "VelocityProfile_NonZeroInit.hpp"
+using namespace Eigen;
+using namespace std;
 namespace trajectory_generator
 {
     /**
@@ -80,6 +84,8 @@ namespace trajectory_generator
       RTT::os::TimeService::Seconds					m_time_passed;
       double										m_max_duration;
 
+      vector3d	currentRotationalAxis;
+
       //bool                                        m_is_moving,m_once;
 
     protected:
@@ -87,7 +93,9 @@ namespace trajectory_generator
       /// frame, shared with OCL::CartesianSensor
       RTT::InputPort< geometry_msgs::Pose >   m_position_meas_port;
       
-      RTT::InputPort< geometry_msgs::Pose > cmdCartPose;
+      RTT::InputPort< geometry_msgs::PoseStamped > cmdCartPose;
+
+      RTT::OutputPort<geometry_msgs::PoseStamped > m_position_desi_port2ROS;
 
       /// Dataport containing the current desired end-effector
       /// frame, shared with OCL::CartesianControllerPos,

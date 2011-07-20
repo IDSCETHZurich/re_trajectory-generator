@@ -2,10 +2,13 @@
 
 #include "std_msgs/String.h"
 #include "geometry_msgs/PoseStamped.h"
-
+#include <Eigen/Dense>
 
 #include <sstream>
+using namespace std;
+using namespace Eigen;
 
+# define PI 3.14159265
 
 int main(int argc, char **argv)
 {
@@ -16,9 +19,9 @@ int main(int argc, char **argv)
 
   ros::Publisher posePub = n.advertise<geometry_msgs::PoseStamped>("poseStampedDsr", 2, true);
 
-  ros::Rate loop_rate(1);
+  ros::Rate loop_rate(0.05);
 
-  int count = 0, aux = 0;
+  int count = 0;
   bool newposition = false;
   double x=0.0, y=0.0, z=0.0;
 
@@ -42,16 +45,19 @@ int main(int argc, char **argv)
     poseStamped.pose.position.y = y;
     poseStamped.pose.position.z = z;
 
-    poseStamped.pose.orientation.x = (1.0-(-1.0))*(double)rand()/(double)RAND_MAX + (-1.0);
-    aux = sqrt(1.0 - poseStamped.pose.orientation.x*poseStamped.pose.orientation.x);
-    poseStamped.pose.orientation.y = (aux-(-aux))*(double)rand()/(double)RAND_MAX + (-aux);
-    aux = sqrt(1.0 - poseStamped.pose.orientation.x*poseStamped.pose.orientation.x
-    								- poseStamped.pose.orientation.y*poseStamped.pose.orientation.y);
-    poseStamped.pose.orientation.z = (aux-(-aux))*(double)rand()/(double)RAND_MAX + (-aux);
-    poseStamped.pose.orientation.w = sqrt(1.0 - poseStamped.pose.orientation.x*poseStamped.pose.orientation.x
-    							  - poseStamped.pose.orientation.y*poseStamped.pose.orientation.y
-    							  - poseStamped.pose.orientation.z*poseStamped.pose.orientation.z);
+    Vector3d rotVec = Vector3d::Random();
+    rotVec.normalize();
 
+    double rotAng = -PI + 2*PI*(double)rand()/(double)RAND_MAX;
+    rotVec *= sin(rotAng/2.0);
+
+    poseStamped.pose.orientation.x = rotVec(0);
+    poseStamped.pose.orientation.y = rotVec(1);
+    poseStamped.pose.orientation.z = rotVec(2);
+    poseStamped.pose.orientation.w = cos(rotAng/2.0);
+
+    ROS_INFO("poseStamped orientation: %lf, %lf, %lf, %lf",
+    		poseStamped.pose.orientation.x,poseStamped.pose.orientation.y,poseStamped.pose.orientation.z,poseStamped.pose.orientation.w);
 
     posePub.publish(poseStamped);
 
