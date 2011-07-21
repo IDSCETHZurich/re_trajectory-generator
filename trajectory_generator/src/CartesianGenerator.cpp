@@ -59,28 +59,23 @@ namespace trajectory_generator
     {
 
 		m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
-		if(motionProfile.size()==(int)3){
+		if(motionProfile.size()==4){
 			geometry_msgs::Pose pose;
-			double theta; Vector3d q;
+			double theta;
+			Vector3d q;
 
 			pose.position.x=motionProfile[0].Pos(m_time_passed);
 			pose.position.y=motionProfile[1].Pos(m_time_passed);
 			pose.position.z=motionProfile[2].Pos(m_time_passed);
 
-			//theta = motionProfile[3].Pos(m_time_passed);
-			//cout << "--- Theta: " << theta << endl;
-			//q = currentRotationalAxis*sin(theta/2);
+			theta = motionProfile[3].Pos(m_time_passed);
+			cout << "--- Theta: " << theta << endl;
+			q = currentRotationalAxis*sin(theta/2);
 
-			//KDL::Rotation errorRotation = KDL::Rotation::Quaternion(q(0), q(1), q(2), cos(theta/2));
-			//(errorRotation*m_traject_begin.M).GetQuaternion(pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w);
-
-			pose.orientation.x = 0.0;
-			pose.orientation.y = 0.0;
-			pose.orientation.z = 0.0;
-			pose.orientation.w = 1.0;
+			KDL::Rotation errorRotation = KDL::Rotation::Quaternion(q(0), q(1), q(2), cos(theta/2));
+			(errorRotation*m_traject_begin.M).GetQuaternion(pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w);
 
 			m_position_desi_port.write(pose);
-
 
 			//TO ROS Visualization
 			geometry_msgs::PoseStamped poseStamped;
@@ -143,13 +138,6 @@ namespace trajectory_generator
 		m_traject_begin.p.z(pose_meas.position.z);
 		m_traject_begin.M=Rotation::Quaternion(pose_meas.orientation.x,pose_meas.orientation.y,pose_meas.orientation.z,pose_meas.orientation.w);
 
-//		KDL::Rotation R1 = m_traject_begin.M;
-//		cout <<   " m_traject_begin  " << endl;
-//		cout <<  R1(0,0) << " " << R1(0,1) << " " <<R1(0,2) << " " << endl;
-//		cout <<  R1(1,0) << " " << R1(1,1) << " " <<R1(1,2) << " " << endl;
-//		cout <<  R1(2,0) << " " << R1(2,1) << " " <<R1(2,2) << " " << endl << endl;
-//		cout <<   " *********** " << endl;
-
 		KDL::Rotation errorRotation = (m_traject_end.M)*(m_traject_begin.M.Inverse());
 
 		double x,y,z,w;
@@ -169,12 +157,12 @@ namespace trajectory_generator
 		cartPositionCmd[2] = pose.position.z;
 
 		std::vector<double> cartPositionMsr = std::vector<double>(3,0.0);
+		//the following 3 assignments will get over written except for the first time
 		cartPositionMsr[0] = pose_meas.position.x;
 		cartPositionMsr[1] = pose_meas.position.y;
 		cartPositionMsr[2] = pose_meas.position.z;
 
 		std::vector<double> cartVelocity = std::vector<double>(3,0.0);
-
 
 		if ((int)motionProfile.size() == 0){//Only for the first run
 			for(int i = 0; i < 3; i++)
@@ -182,7 +170,7 @@ namespace trajectory_generator
 				cartVelocity[i] = 0.0;
 			}
 		}else{
-			for(int i = 0; i < (int)motionProfile.size(); i++)
+			for(int i = 0; i < 3; i++)
 			{
 				cartVelocity[i] = motionProfile[i].Vel(m_time_passed);
 				cartPositionMsr[i] = motionProfile[i].Pos(m_time_passed);
@@ -197,10 +185,8 @@ namespace trajectory_generator
 			motionProfile[i].SetProfile(cartPositionMsr[i], cartPositionCmd[i], cartVelocity[i]);
 		}
 		//motionProfile for theta
-		cout << "motionProfile for theta" << endl;
-		//motionProfile.push_back(VelocityProfile_NonZeroInit(m_maximum_velocity[3], m_maximum_acceleration[3]));
-		//motionProfile[3].SetProfile(0.0,deltaTheta,0.0);
-		cout << "motionProfile for theta: Done. Size: " << motionProfile.size() << endl;
+		motionProfile.push_back(VelocityProfile_NonZeroInit(m_maximum_velocity[3], m_maximum_acceleration[3]));
+		motionProfile[3].SetProfile(0.0,deltaTheta,0.0);
 
 		m_time_begin = os::TimeService::Instance()->getTicks();
 		m_time_passed = 0;
@@ -213,15 +199,5 @@ namespace trajectory_generator
     	std::cout << "resetPosition() called" << std::endl;
     	geometry_msgs::Pose pose;
 		m_position_meas_port.read(pose);
-		SetToZero(m_velocity_desi_local);
-		geometry_msgs::Twist twist;
-		twist.linear.x=m_velocity_desi_local.vel.x();
-		twist.linear.y=m_velocity_desi_local.vel.y();
-		twist.linear.z=m_velocity_desi_local.vel.z();
-		twist.angular.x=m_velocity_desi_local.rot.x();
-		twist.angular.y=m_velocity_desi_local.rot.y();
-		twist.angular.z=m_velocity_desi_local.rot.z();
-		m_position_desi_port.write(pose);
-		//m_is_moving = false;
     }
 }//namespace

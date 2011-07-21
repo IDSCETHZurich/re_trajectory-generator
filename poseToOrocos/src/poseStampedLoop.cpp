@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 
   ros::Publisher posePub = n.advertise<geometry_msgs::PoseStamped>("poseStampedDsr", 2, true);
 
-  ros::Rate loop_rate(0.25);
+  ros::Rate loop_rate(0.5);
 
   int count = 0;
   bool newposition = false;
