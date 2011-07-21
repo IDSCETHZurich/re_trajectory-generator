@@ -3,7 +3,7 @@
 
 #include "CartesianGenerator.hpp"
 #include <ocl/Component.hpp>
-#define SIMULATION 1
+#define SIMULATION 0
 ORO_LIST_COMPONENT_TYPE(trajectory_generator::CartesianGenerator);
 //ORO_CREATE_COMPONENT(trajectory_generator::CartesianGenerator);
 
@@ -22,7 +22,7 @@ namespace trajectory_generator
         //Adding Ports
         this->addPort("CartesianPoseMsr",m_position_meas_port);
         this->addPort("CartesianPoseDes",m_position_desi_port);
-        this->addPort("CartesianPoseDes2ROS",m_position_desi_port2ROS);
+        this->addPort("CartesianPoseDes2ROS",m_position_desi_port2ROS); //2ROS
 		this->addEventPort("cmdCartPose",cmdCartPose, boost::bind(&CartesianGenerator::generateNewVelocityProfiles, this, _1));        
 
         //Adding Properties
@@ -79,7 +79,7 @@ namespace trajectory_generator
 
 			//TO ROS Visualization
 			geometry_msgs::PoseStamped poseStamped;
-			poseStamped.header.frame_id = "frame_id_1";
+			poseStamped.header.frame_id = "/frame_id_1";
 			poseStamped.header.stamp = ros::Time::now();
 			poseStamped.pose = pose;
 			m_position_desi_port2ROS.write(poseStamped);
@@ -138,14 +138,26 @@ namespace trajectory_generator
 		m_traject_begin.p.z(pose_meas.position.z);
 		m_traject_begin.M=Rotation::Quaternion(pose_meas.orientation.x,pose_meas.orientation.y,pose_meas.orientation.z,pose_meas.orientation.w);
 
+
+
 		KDL::Rotation errorRotation = (m_traject_end.M)*(m_traject_begin.M.Inverse());
+
+//		KDL::Rotation tmp=errorRotation;
+//		double q1, q2, q3, q4;
+//		cout << "tmp" << endl;
+//		cout << tmp(0,0) << ", " << tmp(0,1) << ", " << tmp(0,2) << endl;
+//		cout << tmp(1,0) << ", " << tmp(1,1) << ", " << tmp(1,2) << endl;
+//		cout << tmp(2,0) << ", " << tmp(2,1) << ", " << tmp(2,2) << endl;
+//		cout << endl;
+//		tmp.GetQuaternion(q1,q2,q3,q4);
+//		cout << "tmp quaternion: " << q1 << q2 << q3 << q4 << endl;
 
 		double x,y,z,w;
 		errorRotation.GetQuaternion(x,y,z,w);
+
 		currentRotationalAxis[0]=x;
 		currentRotationalAxis[1]=y;
 		currentRotationalAxis[2]=z;
-		currentRotationalAxis.normalize();
 		deltaTheta = 2*acos(w);
 
 		std::cout << "-------------------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
