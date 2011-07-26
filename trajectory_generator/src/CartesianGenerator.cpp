@@ -3,7 +3,7 @@
 
 #include "CartesianGenerator.hpp"
 #include <ocl/Component.hpp>
-#define SIMULATION 0
+#define SIMULATION 1
 ORO_LIST_COMPONENT_TYPE(trajectory_generator::CartesianGenerator);
 //ORO_CREATE_COMPONENT(trajectory_generator::CartesianGenerator);
 
@@ -30,7 +30,7 @@ namespace trajectory_generator
         this->addProperty("max_acc",m_maximum_acceleration).doc("Maximum Acceleration in Trajectory");
 
         //Adding Methods
-        this->addOperation( "resetPosition",&CartesianGenerator::resetPosition,this,OwnThread).doc("Reset generator's position" );
+        this->addOperation("resetPosition",&CartesianGenerator::resetPosition,this,OwnThread).doc("Reset generator's position");
     }
 
     CartesianGenerator::~CartesianGenerator()
@@ -83,7 +83,7 @@ namespace trajectory_generator
 			poseStamped.header.stamp = ros::Time::now();
 			poseStamped.pose = pose;
 			m_position_desi_port2ROS.write(poseStamped);
-#if 1
+#if 0
 			std::cout << "DesPosePort   : " << "x:"<< pose.position.x << " y:"<< pose.position.y << " z:"
 					<< pose.position.z << std::endl;
 			std::cout << "-->Orientation: " << "x:"<< pose.orientation.x << " y:"<< pose.orientation.y
@@ -115,15 +115,13 @@ namespace trajectory_generator
 
     bool CartesianGenerator::generateNewVelocityProfiles(RTT::base::PortInterface* portInterface){
     	
-#if DEBUG
+#if 1
     	std::cout << "A new pose arrived" << std::endl;
 #endif
     	m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
     	
     	geometry_msgs::Pose pose;
-    	geometry_msgs::PoseStamped poseStamped;
-    	cmdCartPose.read(poseStamped);
-    	pose = poseStamped.pose;
+    	cmdCartPose.read(pose);
 
 		m_traject_end.p.x(pose.position.x);
 		m_traject_end.p.y(pose.position.y);
@@ -137,8 +135,6 @@ namespace trajectory_generator
 		m_traject_begin.p.y(pose_meas.position.y);
 		m_traject_begin.p.z(pose_meas.position.z);
 		m_traject_begin.M=Rotation::Quaternion(pose_meas.orientation.x,pose_meas.orientation.y,pose_meas.orientation.z,pose_meas.orientation.w);
-
-
 
 		KDL::Rotation errorRotation = (m_traject_end.M)*(m_traject_begin.M.Inverse());
 
@@ -160,7 +156,7 @@ namespace trajectory_generator
 		currentRotationalAxis[2]=z;
 		deltaTheta = 2*acos(w);
 
-		std::cout << "-------------------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
+		//std::cout << "-------------------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
 		std::cout << "deltaTheta" << deltaTheta << std::endl;
 
 		std::vector<double> cartPositionCmd = std::vector<double>(3,0.0);

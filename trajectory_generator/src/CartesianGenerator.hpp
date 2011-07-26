@@ -95,16 +95,16 @@ namespace trajectory_generator
     protected:
       /// Dataport containing the current measured end-effector
       /// frame, shared with OCL::CartesianSensor
-      RTT::InputPort< geometry_msgs::Pose >   m_position_meas_port;
+      RTT::InputPort< geometry_msgs::Pose >   		m_position_meas_port;
       
-      RTT::InputPort< geometry_msgs::PoseStamped > cmdCartPose;
+      RTT::InputPort< geometry_msgs::Pose > 		cmdCartPose;
 
-      RTT::OutputPort<geometry_msgs::PoseStamped > m_position_desi_port2ROS;
+      RTT::OutputPort<geometry_msgs::PoseStamped > 	m_position_desi_port2ROS;
 
       /// Dataport containing the current desired end-effector
       /// frame, shared with OCL::CartesianControllerPos,
       /// OCL::CartesianControllerPosVel
-      RTT::OutputPort< geometry_msgs::Pose >  m_position_desi_port;
+      RTT::OutputPort< geometry_msgs::Pose >  		m_position_desi_port;
 
       //RTT::OutputPort<bool> m_move_finished_port;
 

@@ -17,7 +17,8 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-  ros::Publisher posePub = n.advertise<geometry_msgs::PoseStamped>("poseStampedDsr", 2, true);
+  ros::Publisher posePub = n.advertise<geometry_msgs::Pose>("poseDsr", 2, true);
+  ros::Publisher poseStampedPub = n.advertise<geometry_msgs::PoseStamped>("poseStampedDsr", 2, true);
 
   ros::Rate loop_rate(0.25);
 
@@ -59,9 +60,11 @@ int main(int argc, char **argv)
     ROS_INFO("poseStamped orientation: %lf, %lf, %lf, %lf",
     		poseStamped.pose.orientation.x,poseStamped.pose.orientation.y,poseStamped.pose.orientation.z,poseStamped.pose.orientation.w);
 
-    posePub.publish(poseStamped);
+    poseStampedPub.publish(poseStamped); //to rviz
+    posePub.publish(poseStamped.pose); //to orocos
 
     ros::spinOnce();
+
 
     loop_rate.sleep();
     ++count;
