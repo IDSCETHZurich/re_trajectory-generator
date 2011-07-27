@@ -17,10 +17,17 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
+<<<<<<< HEAD
   ros::Publisher poseStampedPub = n.advertise<geometry_msgs::PoseStamped>("poseStampedDsr", 2, true);
   ros::Publisher posePub = n.advertise<geometry_msgs::Pose>("poseDsr", 2, true);
 
   ros::Rate loop_rate(0.2);
+=======
+  ros::Publisher posePub = n.advertise<geometry_msgs::Pose>("poseDsr", 2, true);
+  ros::Publisher poseStampedPub = n.advertise<geometry_msgs::PoseStamped>("poseStampedDsr", 2, true);
+
+  ros::Rate loop_rate(0.25);
+>>>>>>> a92e5c5a39ea76383bd22ad60360fa1c63f40699
 
   int count = 0;
   bool newposition = false;
@@ -60,10 +67,16 @@ int main(int argc, char **argv)
     ROS_INFO("poseStamped orientation: %lf, %lf, %lf, %lf",
     		poseStamped.pose.orientation.x,poseStamped.pose.orientation.y,poseStamped.pose.orientation.z,poseStamped.pose.orientation.w);
 
+<<<<<<< HEAD
     poseStampedPub.publish(poseStamped);
     posePub.publish(poseStamped.pose);
+=======
+    poseStampedPub.publish(poseStamped); //to rviz
+    posePub.publish(poseStamped.pose); //to orocos
+>>>>>>> a92e5c5a39ea76383bd22ad60360fa1c63f40699
 
     ros::spinOnce();
+
 
     loop_rate.sleep();
     ++count;
