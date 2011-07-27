@@ -24,8 +24,20 @@ trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorReal_cartPos.xml (*1)
 rosrun  poseToOrocos jntPosLoop 
 KRC side - select joint position control
 
+CartesianGeneratorSim.xml
+-------------------------
+cartesianGenerator.cpp  - #define SIMULATION 1
+trajectory_generator/deploy$ ./run.sh CartesianGeneratorSim.xml (*1) 
+rosrun poseToOrocos poseStpedLoop
+roslaunch trajectory_generator visualize.launch 
 
-
+CartesianGeneratorReal.xml
+--------------------------
+cartesianGenerator.cpp  - #define SIMULATION 0
+trajectory_generator/deploy$ ./run.sh CartesianGeneratorReal.xml (*1) 
+rosrun poseToOrocos poseStpedLoop
+roslaunch trajectory_generator visualize.launch 
+KRC side - select Cartesian stiffness mode
 
 
 

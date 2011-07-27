@@ -81,7 +81,6 @@ namespace trajectory_generator
       KDL::Twist                        m_velocity_desi_local, m_velocity_begin_end, m_velocity_delta;
       std::vector<double>				m_maximum_velocity, m_maximum_acceleration;
 
-      std::vector<KDL::VelocityProfile_Trap>		m_motion_profile;
       std::vector<VelocityProfile_NonZeroInit> 		motionProfile;
       RTT::os::TimeService::ticks					m_time_begin;
       RTT::os::TimeService::Seconds					m_time_passed;
@@ -97,7 +96,7 @@ namespace trajectory_generator
       /// frame, shared with OCL::CartesianSensor
       RTT::InputPort< geometry_msgs::Pose >   m_position_meas_port;
       
-      RTT::InputPort< geometry_msgs::PoseStamped > cmdCartPose;
+      RTT::InputPort< geometry_msgs::Pose > cmdCartPose;
 
       RTT::OutputPort<geometry_msgs::PoseStamped > m_position_desi_port2ROS;
 

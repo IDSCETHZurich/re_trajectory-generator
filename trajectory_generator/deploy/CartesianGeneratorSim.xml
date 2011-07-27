@@ -14,7 +14,7 @@
   		<simple name="type" type="short"><value>0</value></simple>
   		<simple name="size" type="short"><value>1</value></simple>
   		<simple name="transport" type="short"><value>3</value></simple>
-  		<simple name="name_id" type="string"><value>poseStampedDsr</value></simple>
+  		<simple name="name_id" type="string"><value>poseDsr</value></simple>
 	</struct>
 	
 	<struct name="ROSConPoseStampedOut" type="ConnPolicy">

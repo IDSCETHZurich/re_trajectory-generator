@@ -15,8 +15,7 @@ namespace trajectory_generator
     using namespace std;
 
     CartesianGenerator::CartesianGenerator(string name)
-        : TaskContext(name,PreOperational),
-         m_motion_profile(6,VelocityProfile_Trap(0,0))
+        : TaskContext(name,PreOperational)
     {
         //Creating TaskContext
         //Adding Ports
@@ -39,10 +38,6 @@ namespace trajectory_generator
 
     bool CartesianGenerator::configureHook()
     {
-    	for(unsigned int i=0;i<3;i++){
-		  m_motion_profile[i].SetMax(m_maximum_velocity[i],m_maximum_acceleration[i]);
-		  m_motion_profile[i+3].SetMax(m_maximum_velocity[i+3],m_maximum_acceleration[i+3]);
-		}
 		return true;
     }
 
@@ -121,9 +116,9 @@ namespace trajectory_generator
     	m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
     	
     	geometry_msgs::Pose pose;
-    	geometry_msgs::PoseStamped poseStamped;
-    	cmdCartPose.read(poseStamped);
-    	pose = poseStamped.pose;
+    	//geometry_msgs::PoseStamped poseStamped;
+    	cmdCartPose.read(pose);
+    	//pose = poseStamped.pose;
 
 		m_traject_end.p.x(pose.position.x);
 		m_traject_end.p.y(pose.position.y);
