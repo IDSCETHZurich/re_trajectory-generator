@@ -149,6 +149,8 @@ namespace trajectory_generator
 		currentRotationalAxis[0]=x;
 		currentRotationalAxis[1]=y;
 		currentRotationalAxis[2]=z;
+		if(currentRotationalAxis.norm() != 0.0)
+			currentRotationalAxis.normalize();
 		deltaTheta = 2*acos(w);
 
 		//std::cout << "-------------------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
