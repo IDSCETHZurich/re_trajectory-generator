@@ -57,17 +57,19 @@ namespace trajectory_generator
 		if(motionProfile.size()==4){
 			geometry_msgs::Pose pose;
 			double theta;
-			Vector3d q;
+
 
 			pose.position.x=motionProfile[0].Pos(m_time_passed);
 			pose.position.y=motionProfile[1].Pos(m_time_passed);
 			pose.position.z=motionProfile[2].Pos(m_time_passed);
 
 			theta = motionProfile[3].Pos(m_time_passed);
-			cout << "--- Theta: " << theta << endl;
-			q = currentRotationalAxis*sin(theta/2);
+			//cout << "--- Theta: " << theta << endl;
 
+			Vector3d q;
+			q = currentRotationalAxis*sin(theta/2);
 			KDL::Rotation errorRotation = KDL::Rotation::Quaternion(q(0), q(1), q(2), cos(theta/2));
+
 			(errorRotation*m_traject_begin.M).GetQuaternion(pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w);
 
 			m_position_desi_port.write(pose);
@@ -147,20 +149,26 @@ namespace trajectory_generator
 		errorRotation.GetQuaternion(x,y,z,w);
 
 		Eigen::AngleAxis<double> aa;
-		aa = Eigen::Quaterniond(x,y,z,w);
+		aa = Eigen::Quaterniond(w,x,y,z);
 		currentRotationalAxis = aa.axis();
 		deltaTheta = aa.angle();
 
+		std::cout << "----EIGEN---------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
+		std::cout << "deltaTheta" << deltaTheta << std::endl;
 
 //		currentRotationalAxis[0]=x;
 //		currentRotationalAxis[1]=y;
 //		currentRotationalAxis[2]=z;
-//		if(currentRotationalAxis.norm() != 0.0)
+//		if(currentRotationalAxis.norm() > 0.001){
 //			currentRotationalAxis.normalize();
-//		deltaTheta = 2*acos(w);
+//			deltaTheta = 2*acos(w);
+//		}else{
+//			currentRotationalAxis.setZero();
+//			deltaTheta = 0.0;
+//		}
 
-		//std::cout << "-------------------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
-		std::cout << "deltaTheta" << deltaTheta << std::endl;
+//		std::cout << "----KDL-----------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
+//		std::cout << "deltaTheta" << deltaTheta << std::endl;
 
 		std::vector<double> cartPositionCmd = std::vector<double>(3,0.0);
 		cartPositionCmd[0] = pose.position.x;
