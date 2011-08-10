@@ -146,12 +146,18 @@ namespace trajectory_generator
 		double x,y,z,w;
 		errorRotation.GetQuaternion(x,y,z,w);
 
-		currentRotationalAxis[0]=x;
-		currentRotationalAxis[1]=y;
-		currentRotationalAxis[2]=z;
-		if(currentRotationalAxis.norm() != 0.0)
-			currentRotationalAxis.normalize();
-		deltaTheta = 2*acos(w);
+		Eigen::AngleAxis<double> aa;
+		aa = Eigen::Quaterniond(x,y,z,w);
+		currentRotationalAxis = aa.axis();
+		deltaTheta = aa.angle();
+
+
+//		currentRotationalAxis[0]=x;
+//		currentRotationalAxis[1]=y;
+//		currentRotationalAxis[2]=z;
+//		if(currentRotationalAxis.norm() != 0.0)
+//			currentRotationalAxis.normalize();
+//		deltaTheta = 2*acos(w);
 
 		//std::cout << "-------------------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
 		std::cout << "deltaTheta" << deltaTheta << std::endl;
