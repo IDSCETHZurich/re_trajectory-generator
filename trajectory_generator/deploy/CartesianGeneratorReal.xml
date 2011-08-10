@@ -54,7 +54,7 @@
 			<simple name="msrCartPos" type="string"> <value>FRI2CartGen</value></simple>
 		</struct>
 	</struct>
-<<<<<<< HEAD
+
 	
 	<struct name="Reporter" type="OCL::FileReporting">
     		<struct name="Activity" type="PeriodicActivity">
@@ -65,11 +65,9 @@
     		<simple name="AutoConf" type="boolean"><value>1</value></simple>
     		<simple name="AutoStart" type="boolean"><value>1</value></simple>
     		<simple name="AutoSave" type="boolean"><value>1</value></simple>
-    		<simple name="LoadProperties" type="string"><value>reportingFRI.cpf</value></simple>
+    		<simple name="LoadProperties" type="string"><value>cpf/reportingReal.cpf</value></simple>
     		<struct name="Peers" type="PropertyBag">
     			<simple type="string"><value>FRIServer</value></simple>
     		</struct>
     	</struct>
-=======
->>>>>>> a92e5c5a39ea76383bd22ad60360fa1c63f40699
 </properties>
