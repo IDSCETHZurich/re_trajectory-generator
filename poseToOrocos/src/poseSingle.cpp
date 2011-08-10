@@ -99,7 +99,7 @@ int main(int argc, char **argv)
      */
 // %Tag(FILL_MESSAGE)%
     geometry_msgs::Pose pose;
-    pose.position.x = -0.45;
+    pose.position.x = -0.70;
     pose.position.y = -9.38216471695e-05;
     pose.position.z = 0.594774723053;
 

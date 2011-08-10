@@ -25,7 +25,7 @@
 	
 	<struct name="cartesianGenerator" type="trajectory_generator::CartesianGenerator">
 		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.1</value></simple>
+			<simple name="Period" type="double"><value>0.02</value></simple>
 			<simple name="Priority" type="short"><value>1</value></simple>
     			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>

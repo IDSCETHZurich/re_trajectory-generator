@@ -53,6 +53,15 @@ int main(int argc, char **argv)
     poseStamped.pose.position.y = y;
     poseStamped.pose.position.z = z;
 
+//    	poseStamped.pose.position.x = -0.45 - 0.30*(double)rand()/(double)RAND_MAX;
+//    	poseStamped.pose.position.y = -9.38216471695e-05;
+//    	poseStamped.pose.position.z = 0.594774723053;
+//
+//    	poseStamped.pose.orientation.x = -4.88070518543e-05;
+//    	poseStamped.pose.orientation.y = -0.70080730609;
+//    	poseStamped.pose.orientation.z = 7.50503570579e-05;
+//    	poseStamped.pose.orientation.w = 0.713350613677;
+
     Vector3d rotVec = Vector3d::Random();
     rotVec.normalize();
 

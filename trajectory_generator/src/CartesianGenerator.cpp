@@ -3,7 +3,6 @@
 
 #include "CartesianGenerator.hpp"
 #include <ocl/Component.hpp>
-#define SIMULATION 1
 ORO_LIST_COMPONENT_TYPE(trajectory_generator::CartesianGenerator);
 //ORO_CREATE_COMPONENT(trajectory_generator::CartesianGenerator);
 
@@ -45,9 +44,18 @@ namespace trajectory_generator
     {
 		//initialize
 		geometry_msgs::Pose pose;
-		m_position_meas_port.read(pose);
+
+		pose.position.x=0;
+		pose.position.y=0;
+		pose.position.z=0.7;
+		pose.orientation.x = 0.0;
+		pose.orientation.y = 0.0;
+		pose.orientation.z = 0.0;
+		pose.orientation.w = 1.0;
 		m_position_desi_port.write(pose);
+
 		return true;
+
     }
 
     void CartesianGenerator::updateHook()
@@ -64,10 +72,11 @@ namespace trajectory_generator
 			pose.position.z=motionProfile[2].Pos(m_time_passed);
 
 			theta = motionProfile[3].Pos(m_time_passed);
-			cout << "--- Theta: " << theta << endl;
+			//cout << "--- Theta: " << theta << endl;
 
 			Vector3d q;
 			q = currentRotationalAxis*sin(theta/2);
+
 			KDL::Rotation errorRotation = KDL::Rotation::Quaternion(q(0), q(1), q(2), cos(theta/2));
 
 			(errorRotation*m_traject_begin.M).GetQuaternion(pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w);
@@ -87,19 +96,6 @@ namespace trajectory_generator
 					<< " z:"<< pose.orientation.z << " w:"<< pose.orientation.w << std::endl;
 #endif
 		}//end of empty motionProfile if check
-#if SIMULATION
-		else{	//since we can not get the current pose from the Robot
-			geometry_msgs::Pose pose;
-			pose.position.x=0;
-			pose.position.y=0;
-			pose.position.z=0.7;
-			pose.orientation.x = 0.0;
-			pose.orientation.y = 0.0;
-			pose.orientation.z = 0.0;
-			pose.orientation.w = 1.0;
-			m_position_desi_port.write(pose);
-		}
-#endif
     }
 
     void CartesianGenerator::stopHook()
@@ -127,6 +123,7 @@ namespace trajectory_generator
 
 		// get current position
 		geometry_msgs::Pose pose_meas;
+
 		m_position_meas_port.read(pose_meas);
 		m_traject_begin.p.x(pose_meas.position.x);
 		m_traject_begin.p.y(pose_meas.position.y);
@@ -218,5 +215,7 @@ namespace trajectory_generator
     	std::cout << "resetPosition() called" << std::endl;
     	geometry_msgs::Pose pose;
 		m_position_meas_port.read(pose);
+		m_position_desi_port.write(pose);
+
     }
 }//namespace
