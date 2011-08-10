@@ -65,9 +65,10 @@
     		<simple name="AutoConf" type="boolean"><value>1</value></simple>
     		<simple name="AutoStart" type="boolean"><value>1</value></simple>
     		<simple name="AutoSave" type="boolean"><value>1</value></simple>
-    		<simple name="LoadProperties" type="string"><value>cpf/reportingReal.cpf</value></simple>
+    		<simple name="LoadProperties" type="string"><value>cpf/reportingCartReal.cpf</value></simple>
     		<struct name="Peers" type="PropertyBag">
     			<simple type="string"><value>FRIServer</value></simple>
+    			<simple type="string"><value>cartesianGenerator</value></simple>
     		</struct>
     	</struct>
 </properties>

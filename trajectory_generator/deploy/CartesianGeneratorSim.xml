@@ -40,4 +40,20 @@
     			<simple name="CartesianPoseDes2ROS" type="string"><value>ROSConPoseStampedOut</value></simple>
   		</struct>
 	</struct>
+	
+	<struct name="Reporter" type="OCL::FileReporting">
+    		<struct name="Activity" type="PeriodicActivity">
+			<simple name="Period" type="double"><value>0.1</value></simple>
+			<simple name="Priority" type="short"><value>0</value></simple>
+			<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
+    		</struct>
+    		<simple name="AutoConf" type="boolean"><value>1</value></simple>
+    		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+    		<simple name="AutoSave" type="boolean"><value>1</value></simple>
+    		<simple name="LoadProperties" type="string"><value>cpf/reportingCartSim.cpf</value></simple>
+    		<struct name="Peers" type="PropertyBag">
+    			<simple type="string"><value>cartesianGenerator</value></simple>
+    		</struct>
+    </struct>
+	
 </properties>
