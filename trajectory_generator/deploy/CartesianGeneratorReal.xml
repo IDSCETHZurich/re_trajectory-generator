@@ -17,6 +17,13 @@
   		<simple name="name_id" type="string"><value>poseStampedDsr</value></simple>
 	</struct>
 	
+	<struct name="FRI2ROS" type="ConnPolicy">
+  		<simple name="type" type="short"><value>0</value></simple>
+  		<simple name="size" type="short"><value>1</value></simple>
+  		<simple name="transport" type="short"><value>3</value></simple>
+  		<simple name="name_id" type="string"><value>msrCartPos</value></simple>
+	</struct>
+	
 	<struct name="ROSConPoseStampedOut" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple>
   		<simple name="size" type="short"><value>1</value></simple>
@@ -32,7 +39,7 @@
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="PropertyFile" type="string"><value>cpf/cartesianGenerator.cpf</value></simple>
+		<simple name="PropertyFile" type="string"><value>cpf/cartesianGeneratorReal.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
     			<simple name="cmdCartPose" type="string"><value>ROSConPoseIn</value></simple>
     			<simple name="CartesianPoseMsr" type="string"><value>FRI2CartGen</value></simple>
@@ -52,6 +59,7 @@
 		<struct name="Ports" type="PropertyBag">
 			<simple name="desCartPos" type="string"><value>CartGen2FRI</value></simple>
 			<simple name="msrCartPos" type="string"> <value>FRI2CartGen</value></simple>
+			<simple name="msrCartPos" type="string"> <value>FRI2ROS</value></simple>
 		</struct>
 	</struct>
 

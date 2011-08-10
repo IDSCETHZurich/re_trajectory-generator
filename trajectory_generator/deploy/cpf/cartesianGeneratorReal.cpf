@@ -1,0 +1,17 @@
+<?xml version="1.8" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "cpf.dtd">
+<!-- Properties of the trajectoryGenerator component -->
+<properties>
+<struct name="max_vel" type="float64[]">  <description>The maximum velocity</description> 
+   <simple name="Element0" type="double"><description>linear.x</description><value>0.1</value></simple>
+   <simple name="Element1" type="double"><description>linear.y</description><value>0.1</value></simple>
+   <simple name="Element2" type="double"><description>linear.z</description><value>0.1</value></simple>
+   <simple name="Element3" type="double"><description>rotational.theta</description><value>0.1</value></simple>
+</struct>
+<struct name="max_acc" type="float64[]"><description>The maximum acceleration</description> 
+   <simple name="Element0" type="double"><description>linear.x</description><value>0.1</value></simple>
+   <simple name="Element1" type="double"><description>linear.y</description><value>0.1</value></simple>
+   <simple name="Element2" type="double"><description>linear.z</description><value>0.1</value></simple>
+   <simple name="Element3" type="double"><description>rotational.theta</description><value>0.1</value></simple>
+</struct>
+</properties>

@@ -64,7 +64,7 @@ namespace trajectory_generator
 			pose.position.z=motionProfile[2].Pos(m_time_passed);
 
 			theta = motionProfile[3].Pos(m_time_passed);
-			//cout << "--- Theta: " << theta << endl;
+			cout << "--- Theta: " << theta << endl;
 
 			Vector3d q;
 			q = currentRotationalAxis*sin(theta/2);

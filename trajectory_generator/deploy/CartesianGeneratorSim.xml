@@ -3,7 +3,6 @@
 <properties>
 
  	<simple name="Import" type="string"><value>kdl_typekit</value></simple>
-	<simple name="Import" type="string"><value>lwr_fri</value></simple>
   	<simple name="Import" type="string"><value>rtt_ros_integration</value></simple>
 	<simple name="Import" type="string"><value>trajectory_generator</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_std_msgs</value></simple>
@@ -32,7 +31,7 @@
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="PropertyFile" type="string"><value>cpf/cartesianGenerator.cpf</value></simple>
+		<simple name="PropertyFile" type="string"><value>cpf/cartesianGeneratorSim.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
     			<simple name="cmdCartPose" type="string"><value>ROSConPoseIn</value></simple>
     			<simple name="CartesianPoseMsr" type="string"><value>CartGen2CartGen</value></simple>

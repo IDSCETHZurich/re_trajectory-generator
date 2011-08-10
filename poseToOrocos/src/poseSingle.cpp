@@ -99,15 +99,14 @@ int main(int argc, char **argv)
      */
 // %Tag(FILL_MESSAGE)%
     geometry_msgs::Pose pose;
-    pose.position.x = 0.0;
-    pose.position.y = 0.3;
-    pose.position.z = 1.0; 
+    pose.position.x = -0.45;
+    pose.position.y = -9.38216471695e-05;
+    pose.position.z = 0.594774723053;
 
-    pose.orientation.x = 0.0;
-    pose.orientation.y = 0.0; 
-    pose.orientation.z = 0.0;
-    pose.orientation.w = 1.0;
-
+    pose.orientation.x = -4.88070518543e-05;
+    pose.orientation.y = -0.70080730609;
+    pose.orientation.z = 7.50503570579e-05;
+    pose.orientation.w = 0.713350613677;
     /**
      * The publish() function is how you send messages. The parameter
      * is the message object. The type of this object must agree with the type
