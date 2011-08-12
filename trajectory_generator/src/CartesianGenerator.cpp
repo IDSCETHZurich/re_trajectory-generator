@@ -150,8 +150,8 @@ namespace trajectory_generator
 		currentRotationalAxis = aa.axis();
 		deltaTheta = aa.angle();
 
-		std::cout << "----EIGEN---------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
-		std::cout << "deltaTheta" << deltaTheta << std::endl;
+//		std::cout << "----EIGEN---------" << std::endl << "currentRotationalAxis: "  << std::endl << currentRotationalAxis << std::endl;
+//		std::cout << "deltaTheta" << deltaTheta << std::endl;
 
 //		currentRotationalAxis[0]=x;
 //		currentRotationalAxis[1]=y;
