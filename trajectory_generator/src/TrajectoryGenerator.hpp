@@ -100,6 +100,8 @@ namespace trajectory_generator
       	*/
       bool generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface);
 
+      bool getJntPos_TG(std::vector<double>);
+
       unsigned int num_axes;
 
       ///@{

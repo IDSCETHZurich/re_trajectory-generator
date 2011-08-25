@@ -94,7 +94,7 @@ private:
 	//RTT::OutputPort<std::vector<double> > gravityPort;
 
 	InputPort<std::vector<double> > m_jntPosPort;
-        InputPort<std::vector<double> > m_jntVelPort;
+    InputPort<std::vector<double> > m_jntVelPort;
         InputPort<geometry_msgs::Pose> m_cartPosPort;
         InputPort<geometry_msgs::Twist> m_cartTwistPort;
 	InputPort<std::vector<double> > m_addJntTrqPort;
@@ -111,6 +111,8 @@ private:
 	//IDSC Debugging
 	RTT::os::TimeService::ticks	time_begin;
 	RTT::os::TimeService::Seconds	time_passed;
+
+	RTT::OperationCaller<bool(std::vector<double>)> getJntPos_TG;
 };
 
 }//Namespace LWR

@@ -25,10 +25,10 @@
 	</struct>
 	
 	<struct name="trajectoryGenerator" type="trajectory_generator::TrajectoryGenerator">
-		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.005</value></simple>
+		<struct name="Activity" type="NonPeriodicActivity">
+			<!--<simple name="Period" type="double"><value>0.005</value></simple>-->
 			<simple name="Priority" type="short"><value>1</value></simple>
-    			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
+    		<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
@@ -53,6 +53,9 @@
 			<simple name="msrJntPos" type="string"><value>MsrJointPosition</value></simple>
 			<simple name="desJntPos" type="string"><value>DesJointPosition</value></simple>
 		</struct>
+		<struct name="Peers" type="PropertyBag">
+    			<simple type="string"><value>trajectoryGenerator</value></simple>
+    	</struct>
 	</struct>
 	
 	<struct name="Reporter" type="OCL::FileReporting">
