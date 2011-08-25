@@ -81,6 +81,9 @@ FRIComponent::~FRIComponent() {
 }
 
 bool FRIComponent::configureHook() {
+	//IDSC Debugging
+	time_begin = os::TimeService::Instance()->getTicks();
+
 	//Check the sizes of all data:
 	if (!FRI_CHECK_SIZES_OK) {
 		log(Error) << "Padding on this platform is not OK :(" << endlog();
@@ -123,8 +126,14 @@ bool FRIComponent::startHook() {
 void FRIComponent::updateHook() {
 	//Read:
 	socklen_t addr_len = sizeof(m_remote_addr);
+
+	//time_passed = os::TimeService::Instance()->secondsSince(time_begin);
+	//log(Info) << time_passed  << " Data1 0.0 0.0 0.0 0.0 0.0 0.0 0.0" <<endlog();
 	int n = recvfrom(m_socket, (void*) &m_msr_data, sizeof(m_msr_data), 0,
 			&m_remote_addr, &addr_len);
+	//time_passed = os::TimeService::Instance()->secondsSince(time_begin);
+	//log(Info) << time_passed  << " Data2 0.0 0.0 0.0 0.0 0.0 0.0 0.0" <<endlog();
+
 	if (sizeof(tFriMsrData) != n)
 		log(Error) << "bad packet lenght: " << n << ", expected: "
 				<< sizeof(tFriMsrData) << endlog();
@@ -321,6 +330,8 @@ void FRIComponent::updateHook() {
 		
 		m_cmd_data.krl = m_toKRL;
 
+		//time_passed = os::TimeService::Instance()->secondsSince(time_begin);
+		//log(Info) << time_passed << " Data3 " << m_jntPos[0] << " " << m_jntPos[1] << " " << m_jntPos[2] << " " << m_jntPos[3] << " " << m_jntPos[4] << " " << m_jntPos[5] << " " << m_jntPos[6] << endlog();
 		if (0 > sendto(m_socket, (void*) &m_cmd_data, sizeof(m_cmd_data), 0,
 				(sockaddr*) &m_remote_addr, sizeof(m_remote_addr)))
 			log(Error) << "Sending datagram failed." << endlog();

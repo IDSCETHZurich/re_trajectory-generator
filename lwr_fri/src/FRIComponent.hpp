@@ -107,6 +107,10 @@ private:
 	const char* m_remote_address;
 	struct sockaddr m_remote_addr;
 	uint16_t counter;
+
+	//IDSC Debugging
+	RTT::os::TimeService::ticks	time_begin;
+	RTT::os::TimeService::Seconds	time_passed;
 };
 
 }//Namespace LWR

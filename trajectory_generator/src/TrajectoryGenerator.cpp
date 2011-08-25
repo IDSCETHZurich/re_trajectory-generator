@@ -84,7 +84,7 @@ namespace trajectory_generator
     	//v_max = v_max_property.rvalue();
     	//a_max = a_max_property.rvalue();
 
-    	log(Info) << "nAxes = " << num_axes << endlog();
+    	//log(Info) << "nAxes = " << num_axes << endlog();
 
     	return true;
 
@@ -98,7 +98,7 @@ namespace trajectory_generator
 
     bool TrajectoryGenerator::generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface){
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-    	log(Info) << "a new jnt pose arrived" << endlog();
+    	//log(Info) << "a new jnt pose arrived" << endlog();
 #if DEBUG
     	cout << "a new jnt pose arrived" << endl;
 #endif
@@ -110,7 +110,7 @@ namespace trajectory_generator
     		cout << "Joint " << i << " : " << lastCommndedPoseJntPos[i] << " /// ";
 #endif
     		if(lastCommndedPoseJntPos[i]<p_min[i] || lastCommndedPoseJntPos[i]>p_max[i]){
-    			log(Info) << "Commanded joint position out of bounds" << endlog();
+    			//log(Info) << "Commanded joint position out of bounds" << endlog();
     			cout << "Commanded joint position out of bounds" << lastCommndedPoseJntPos[i] << endl;
     			return false;
     		}
@@ -179,6 +179,9 @@ namespace trajectory_generator
     	    }
     	    output_jntPosPort.write(jntPosCmd);
     	    output_jntPosPort_toROS.write(jntState);
+#if 0
+    	    log(Info) << time_passed << " " << jntPosCmd[0] << " " << jntPosCmd[1] << " " << jntPosCmd[2] << " " << jntPosCmd[3] << " " << jntPosCmd[4] << " " << jntPosCmd[5] << " " << jntPosCmd[6] << endlog();
+#endif
     	}
     }
 

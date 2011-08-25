@@ -138,7 +138,7 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 
 	if (Dp < 0.5* iVel*iVel / maxAcc){
 	//slow down to zero and perform a new trajectory going back
-		log(Info) << "Slow down to zero and perform a new trajectory going back " << endlog();
+		//log(Info) << "Slow down to zero and perform a new trajectory going back " << endlog();
 		std::vector<double> sp1;
 		double T1 = abs(iVel)/maxAcc;
 		double D1 = 0.5*iVel*T1;
@@ -157,7 +157,7 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 		//end of slow down to Zero and go back
 
 	}else if ( Dp < (0.5/maxAcc)*(2*maxVel*maxVel - iVel*iVel)){
-		log(Info) << "Triangular velocity profile " << endlog();
+		//log(Info) << "Triangular velocity profile " << endlog();
 		//triangular velocity profile
 		std::vector<double> sp1,sp2;
 		//Adding the acceleration subProfile
@@ -181,7 +181,7 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 
 	//end of triangular velocity profile
 	}else{
-		log(Info) << "Asymmetric trapezoidal velocity profile " << endlog();
+		//log(Info) << "Asymmetric trapezoidal velocity profile " << endlog();
 		//Asymmetric trapezoidal velocity profile
 		std::vector<double> sp1,sp2,sp3;
 		//Adding the acceleration subProfile
