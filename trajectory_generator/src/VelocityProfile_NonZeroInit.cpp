@@ -274,22 +274,24 @@ void VelocityProfile_NonZeroInit::SetProfileDuration(double newDuration)
 				// The first (deceleration) and the second (acceleration) pieces remain the same.
 				// The third piece will start earlier and will keep a constant velocity (constVel)
 				double T1, T2, P1, P2;
-				double aux = maxAcc*synchroTime;// + trajSign*initVel;
+				double aux = maxAcc*synchroTime;// + trajSign*initVel; initial velocity is zero
 				double Dp = finalPos-subVelProfiles[1][1];
 				double trajSignNew = abs(Dp)/Dp;
 				constVel = 0.5*(aux - sqrt(aux*aux - 4*trajSignNew*maxAcc*(Dp)));
 
-				T1 = constVel/maxAcc;
-				T2 = newDuration - constVel/maxAcc;
-
-				P1 = subVelProfiles[1][1] + 0.5*T1*(trajSignNew*constVel) ; // position at the start of the third part
-				P2 = P1 + (T2-T1)*trajSignNew*constVel;
+				// Constants of the start of the third piece of trajectory
+				T1 = subVelProfiles[1][0] + constVel/maxAcc;
+				P1 = subVelProfiles[1][1] + 0.5*(T1-subVelProfiles[1][0])*(trajSignNew*constVel) ;
 
 				// Third piece
-				subVelProfiles[2][0] = ( T1 + subVelProfiles[1][0] );
+				subVelProfiles[2][0] = ( T1 );
 				subVelProfiles[2][1] = ( P1 );
 				subVelProfiles[2][2] = ( trajSignNew*constVel );
 				subVelProfiles[2][3] = ( 0.0 );
+
+				// Constants of the start of the fourth (last) piece of trajectory
+				T2 = synchroTime - constVel/maxAcc;
+				P2 = subVelProfiles[2][1] + (T2-subVelProfiles[2][0])*trajSignNew*constVel;
 
 				// Fourth piece
 				std::vector<double> sp4;
