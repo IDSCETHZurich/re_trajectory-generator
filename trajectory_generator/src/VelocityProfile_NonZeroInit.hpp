@@ -87,7 +87,13 @@ using namespace KDL;
         //! Time-optimal calculated duration of maneuver
         double duration;
         //! Time scale when a longer than time-optimal duration is required (synchronization)
-        double timeScale;
+//        double timeScale;
+        double synchroTime;
+
+        //! Sign of the trajectory
+        double trajSign;
+        //! Sign of synchronization. Distinguishes between trap and double ramp profiles
+        double syncSign;
 
         //! Maximum velocity achievable by the robot
         double maxVel;
