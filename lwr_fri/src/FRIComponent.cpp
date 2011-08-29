@@ -116,7 +116,7 @@ bool FRIComponent::configureHook() {
 
 	//Add trajectoryGenerator as peer
 	if(this->hasPeer("trajectoryGenerator")){
-		getJntPos_TG = this->getPeer("trajectoryGenerator")->getOperation("getJntPos_TG");
+		updateTG = this->getPeer("trajectoryGenerator")->getOperation("updateTG");
 	}
 
 	return true;
@@ -252,7 +252,7 @@ void FRIComponent::updateHook() {
 		if (m_msr_data.intf.state == FRI_STATE_CMD) {
 			if (m_control_mode == 1) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_JNTPOS;
-				if(getJntPos_TG(m_jntPos)){
+				if(updateTG()){
 					if (NewData == m_jntPosPort.read(m_jntPos))
 						for (unsigned int i = 0; i < LBR_MNJ; i++)
 							m_cmd_data.cmd.jntPos[i] = m_jntPos[i];

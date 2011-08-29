@@ -112,7 +112,7 @@ private:
 	RTT::os::TimeService::ticks	time_begin;
 	RTT::os::TimeService::Seconds	time_passed;
 
-	RTT::OperationCaller<bool(std::vector<double>)> getJntPos_TG;
+	RTT::OperationCaller<bool(void)> updateTG;
 };
 
 }//Namespace LWR

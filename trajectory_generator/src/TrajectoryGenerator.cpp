@@ -58,7 +58,7 @@ namespace trajectory_generator
         this->addProperty("max_vel",v_max).doc("Maximum Velocity in Trajectory");
         this->addProperty("max_acc",a_max).doc("Maximum Acceleration in Trajectory");
 
-        this->addOperation("getJntPos_TG", &TrajectoryGenerator::getJntPos_TG, this, OwnThread);
+        this->addOperation("updateTG", &TrajectoryGenerator::updateTG, this, OwnThread);
 
         lastCommndedPoseJntPos = std::vector<double>(7,0.0);
         jntVel = std::vector<double>(7,0.0);
@@ -166,7 +166,7 @@ namespace trajectory_generator
     }
 
 
-    bool TrajectoryGenerator::getJntPos_TG(std::vector<double> jntPosCmd){
+    bool TrajectoryGenerator::updateTG(void){
     	if (motionProfile.size()==7){
 			time_passed = os::TimeService::Instance()->secondsSince(time_begin);
 			log(Info) << time_passed << endlog();
@@ -177,9 +177,11 @@ namespace trajectory_generator
 				jntState.position.push_back(motionProfile[i].Pos(time_passed));
 			}
 			output_jntPosPort_toROS.write(jntState);
+#if DEBUG
 			log(Info) << jntPosCmd[0] << " " << jntPosCmd[1] << " " << jntPosCmd[2] << " "
 										<< jntPosCmd[3] << " " << jntPosCmd[4] << " " << jntPosCmd[5] << " "
 										<< jntPosCmd[6] << endlog();
+#endif
 			output_jntPosPort.write(jntPosCmd);
 			return true;
     	}else{
@@ -190,21 +192,7 @@ namespace trajectory_generator
 
     void TrajectoryGenerator::updateHook()
     {
-//    	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-//    	//Execute current velocity profile
-//    	if (motionProfile.size()==7){
-//    		jntState.position.clear();
-//    	    jntPosCmd.clear();
-//    	    for(int i = 0; i < (int)motionProfile.size(); i++){
-//    	    	jntPosCmd.push_back(motionProfile[i].Pos(time_passed));
-//    	    	jntState.position.push_back(motionProfile[i].Pos(time_passed));
-//    	    }
-//    	    output_jntPosPort.write(jntPosCmd);
-//    	    output_jntPosPort_toROS.write(jntState);
-//#if 0
-//    	    log(Info) << time_passed << " " << jntPosCmd[0] << " " << jntPosCmd[1] << " " << jntPosCmd[2] << " " << jntPosCmd[3] << " " << jntPosCmd[4] << " " << jntPosCmd[5] << " " << jntPosCmd[6] << endlog();
-//#endif
-//    	}
+    	updateTG();
     }
 
 
