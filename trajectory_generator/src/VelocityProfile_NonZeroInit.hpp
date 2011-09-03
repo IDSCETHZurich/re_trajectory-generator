@@ -56,7 +56,7 @@
 
 #ifndef VELOCITYPROFILE_NONZEROINIT_H
 #define VELOCITYPROFILE_NONZEROINIT_H
-#define DEBUG 0
+#define DEBUG 1
 
 #include <rtt/RTT.hpp>
 #include <rtt/TaskContext.hpp>
@@ -105,12 +105,14 @@ using namespace KDL;
         double finalPos;
         //! Velocity of the joint when maneuver starts
         double initVel;
+        //! Velocity of the joint when maneuver finishes
+        double finalVel;
         //! Beginning time of the manuever
         double initTime;
 
         //! Private method for creating the subprofiles of the trajectory
         // Method for creating subprofiles
-        double SubProfileBuilder(double finalPos, double initPos, double initVel, double initTime);
+        double SubProfileBuilder(double finalPos, double initPos, double initVel, double finalVel, double initTime);
 
 
     public:
@@ -123,9 +125,18 @@ using namespace KDL;
          *  \param pos1 Initial position of the trajectory (should be actual robot position)
          *  \param pos2 Final desired position of the trajectory
          *  \param _inivel Must be smaller than \p _maxvel assigned in the constructor
+         *  \param _finalvel Must be smaller than \p _maxvel assigned in the constructor
          *  \param _initime Must not be negative (and tipically zero)
          */
-	    bool SetProfile(double pos1,double pos2, double _inivel, double _initime);
+	    bool SetProfile(double pos1,double pos2, double _inivel, double _finalvel, double _initime);
+        /** \brief Profile definition. Initial time of trajectory is assumed to be zero.
+         *
+         *  \param pos1 Initial position of the trajectory (should be actual robot position)
+         *  \param pos2 Final desired position of the trajectory
+         *  \param _inivel Must be smaller than \p _maxvel assigned in the constructor
+         *  \param _finalvel Must be smaller than \p _maxvel assigned in the constructor
+         */
+	    bool SetProfile(double pos1,double pos2, double _inivel, double _finalvel);
         /** \brief Profile definition. Initial time of trajectory is assumed to be zero.
          *
          *  \param pos1 Initial position of the trajectory (should be actual robot position)

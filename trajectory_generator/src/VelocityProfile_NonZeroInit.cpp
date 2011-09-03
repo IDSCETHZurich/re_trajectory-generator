@@ -33,8 +33,8 @@ namespace trajectory_generator {
 VelocityProfile_NonZeroInit::VelocityProfile_NonZeroInit(double _maxvel, double _maxacc):
         duration(0.0), synchroTime(0.0), //timeScale(1),
         trajSign(1.0), syncSign(1.0),
-        maxVel(_maxvel), maxAcc(_maxacc),
-        initPos(0.0), finalPos(0.0), initVel(0.0), initTime(0.0)
+        maxVel(abs(_maxvel)), maxAcc(abs(_maxacc)),
+        initPos(0.0), finalPos(0.0), initVel(0.0), finalVel(0.0), initTime(0.0)
 
 {}
 
@@ -45,6 +45,7 @@ void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2)
 	initPos = pos1;
 	finalPos = pos2;
 	initVel = 0.0;
+	finalVel = 0.0;
 	initTime = 0.0;
 	// set Time scale to default
 //	timeScale = 1;
@@ -53,7 +54,7 @@ void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2)
 			initPos << ") initVel(" << initVel << ") " << endl;
 	cout << "------------------------------------------" << endl;
 #endif
-	duration = SubProfileBuilder(finalPos, initPos, initVel, initTime);
+	duration = SubProfileBuilder(finalPos, initPos, initVel, finalVel, initTime);
 
 	// Set SynchroTime to Duration as an initial value
 	synchroTime = duration;
@@ -64,7 +65,7 @@ void VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2)
 bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _inivel)
 {
 	//Precondition
-	if (_inivel > maxVel)
+	if (abs(_inivel) > maxVel)
 	{
 		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << endl;
 		cout << "Profile will not be built" << endl;
@@ -73,6 +74,7 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 	initPos = pos1;
 	finalPos = pos2;
 	initVel = _inivel;
+	finalVel = 0.0;
 	initTime = 0.0;
 	// set Time scale to default
 //	timeScale = 1;
@@ -81,7 +83,38 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 			initPos << ") initVel(" << initVel << ") " << endl;
 	cout << "------------------------------------------" << endl;
 #endif
-	duration = SubProfileBuilder(finalPos, initPos, initVel, initTime);
+	duration = SubProfileBuilder(finalPos, initPos, initVel, finalVel, initTime);
+
+	// Set SynchroTime to Duration as an initial value
+	synchroTime = duration;
+
+	return true;
+}
+
+
+// This definition of SetProfile is added for completeness
+bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _inivel, double _finalvel)
+{
+	//Precondition
+	if (abs(_inivel) > maxVel || abs(_finalvel) > maxVel )
+	{
+		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << endl;
+		cout << "Profile will not be built" << endl;
+		return false;
+	}
+	initPos = pos1;
+	finalPos = pos2;
+	initVel = _inivel;
+	finalVel = _finalvel;
+	initTime = 0.0;
+	// set Time scale to default
+//	timeScale = 1;
+#if DEBUG
+	cout << "4 Parameters Constructor/nBuilding Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
+			initPos << ") initVel(" << initVel << ") finalVel(" << finalVel << ")" << endl;
+	cout << "------------------------------------------" << endl;
+#endif
+	duration = SubProfileBuilder(finalPos, initPos, initVel, finalVel, initTime);
 
 	// Set SynchroTime to Duration as an initial value
 	synchroTime = duration;
@@ -91,10 +124,10 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 
 
 // This is the recommended use for SetProfile function
-bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _inivel, double _initime)
+bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _inivel, double _finalvel, double _initime)
 {
 	//Precondition
-	if (_inivel > maxVel)
+	if (abs(_inivel) > maxVel || abs(_finalvel) > maxVel )
 	{
 		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << endl;
 		cout << "Profile will not be built" << endl;
@@ -109,15 +142,16 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
     initPos = pos1;
     finalPos = pos2;
     initVel = _inivel;
+    finalVel = _finalvel;
     initTime = _initime;
 	// set Time scale to default
 //	timeScale = 1;
 #if DEBUG
 	cout << "4 Parameters Constructor/nBuilding Velocity Profile with maxAcc(" << maxAcc << ") maxVel(" << maxVel << ") finalPos(" << finalPos << ") initPos(" << \
-			initPos << ") initVel(" << initVel << ") " << endl;
+			initPos << ") initVel(" << initVel << ") finalVel(" << finalVel << ") initTime(" << initTime << ")" << endl;
 	cout << "------------------------------------------" << endl;
 #endif
-	duration = SubProfileBuilder(finalPos, initPos, initVel, initTime); // Initial time set to zero for new trajectories
+	duration = SubProfileBuilder(finalPos, initPos, initVel, finalVel, initTime); // Initial time set to zero for new trajectories
 
 	// Set SynchroTime to Duration as an initial value
 	synchroTime = duration;
@@ -126,23 +160,44 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 }
 
 
-double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, double iVel, double iTime)
+double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, double iVel, double fVel, double iTime)
 {
+	// We need these auxiliar variables for classifying the trajectory
+	double Dp, Dv, meanVel, tfcrit, Dpcrit, trajSign;
 
-	// We need the distance (absolute) to be covered
-	double Dp = abs(fPos -  iPos), tmpDuration;
+	// Auxiliar trajectory duration
+	double tmpDuration;
+
+	Dp = fPos-iPos; // Distance to cover
+	Dv = fVel-iVel; // Velocity leap
+	meanVel = (fVel+iVel)/2; // Mean velocity for critical trajectory
+	tfcrit = abs((fVel-iVel)/maxAcc); // Duration of critical trajectory
+	Dpcrit = meanVel*tfcrit; // Critical distance to be covered
+
+	///////////////
+	// TODO: Check on the velocity if we are going to hit the limits with the final state!!!
+	///////////////
+
 	// trajSign gives the direction of the trajectory
-	// +1 for positive ((fPos>iPos)
-	trajSign = 1.0;
-	// -1 for negative ((fPos<iPos)
-	if (fPos -  iPos < 0)
+	// +1 for trajectories over the Dpcrit
+	if ( Dp > Dpcrit + epsilon )
+		trajSign = 1.0;
+	// -1 for trajectories under the Dpcrit
+	else if ( Dp < Dpcrit - epsilon )
 		trajSign = -1.0;
-
-	if(abs(fPos-iPos) < epsilon && abs(iVel) < epsilon ){
+	// If the distance to cover is equal to critical, the direction depends on velocity leap
+	else if ( Dv > epsilon )
+		trajSign = 1.0;
+	else if ( Dv < -epsilon )
+		trajSign = -1.0;
+	// If we are here, it means that initial state is equal to final state: we are at the target!!!
+	else
+	{
+		// We create a dummy maneuver
 		std::vector<double> sp1;
 		sp1.push_back(iTime);
 		sp1.push_back(iPos);
-		sp1.push_back(0.0);
+		sp1.push_back(iVel);
 		sp1.push_back(0.0);
 
 		subVelProfiles.push_back(sp1);
@@ -151,54 +206,42 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 		return tmpDuration;
 	}
 
-	if (Dp < 0.5* iVel*iVel / maxAcc){
+	// We calculate maximum velocity reached during maneuver
+	double peakVel = sqrt( trajSign*Dp*maxAcc + (iVel*iVel+fVel*fVel)/2);
+	if ( peakVel < maxVel ){
 	//slow down to zero and perform a new trajectory going back
-		//log(Info) << "Slow down to zero and perform a new trajectory going back " << endlog();
-		std::vector<double> sp1;
-		double T1 = abs(iVel)/maxAcc;
-		double D1 = 0.5*iVel*T1;
+		//log(Info) << "---- Triangular Velocity Profile ----" << endlog();
+		// Two pieces trajectory
+		std::vector<double> sp1,sp2;
+		// Characteristic times
+		double T20 = (trajSign*peakVel-iVel)/(trajSign*maxAcc);
 
 		// Coefficients of the movement
-		sp1.push_back(iTime); //t_0
-		sp1.push_back(iPos);
-		sp1.push_back(iVel);
-		if (iVel < 0)
-			sp1.push_back(maxAcc);
-		else
-			sp1.push_back(-maxAcc);
-		subVelProfiles.push_back(sp1);
-		//Duration will be set is this call
-		tmpDuration = T1 + SubProfileBuilder(fPos, iPos+D1, 0.0, T1 + iTime);
-		//end of slow down to Zero and go back
+		sp1.push_back( iTime ); //t_0
+		sp1.push_back( iPos );
+		sp1.push_back( iVel );
+		sp1.push_back( trajSign*maxAcc );
 
-	}else if ( Dp < (0.5/maxAcc)*(2*maxVel*maxVel - iVel*iVel)){
-		//log(Info) << "Triangular velocity profile " << endlog();
-		//triangular velocity profile
-		std::vector<double> sp1,sp2;
-		//Adding the acceleration subProfile
-		sp1.push_back(iTime); //t_0
-		sp1.push_back(iPos);
-		sp1.push_back(iVel);
-		sp1.push_back(trajSign*maxAcc);
 		subVelProfiles.push_back(sp1);
 
-		//Adding the deceleration subProfile
-		double maxVelProfile = sqrt(Dp*maxAcc + 0.5*iVel*iVel);
-		double T1 =  abs(trajSign*maxVelProfile-iVel)/maxAcc;
-
-		sp2.push_back( T1 + iTime );
-		sp2.push_back(iPos + 0.5*T1*(trajSign*maxVelProfile + iVel) );
-		sp2.push_back( trajSign*maxVelProfile );
+		sp2.push_back( iTime + T20 );
+		sp2.push_back( subVelProfiles[0][1] +
+						(T20-iTime)*(subVelProfiles[0][2] + 0.5*(T20-iTime)*subVelProfiles[0][3]) );
+		sp2.push_back( trajSign*peakVel );
 		sp2.push_back( -trajSign*maxAcc );
 		subVelProfiles.push_back(sp2);
 
-		tmpDuration = T1 + maxVelProfile/maxAcc;
-
+		tmpDuration = T20 + (fVel-trajSign*peakVel)/(-trajSign*maxAcc);
 	//end of triangular velocity profile
+
 	}else{
-		//log(Info) << "Asymmetric trapezoidal velocity profile " << endlog();
-		//Asymmetric trapezoidal velocity profile
+		// log(Info) << "---- Trapezoidal Velocity Profile ----" << endlog();
+		// Three pieces trajectory
 		std::vector<double> sp1,sp2,sp3;
+		// Characteristic times
+		double T20 = (trajSign*maxVel-iVel)/(trajSign*maxAcc);
+		double T30 = 1/(maxVel) * (trajSign*Dp + (fVel*fVel+iVel*iVel-trajSign*2*maxVel*iVel)/(2*maxAcc));
+
 		//Adding the acceleration subProfile
 		sp1.push_back( iTime ); //t_0
 		sp1.push_back( iPos );
@@ -207,27 +250,52 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 		subVelProfiles.push_back(sp1);
 
 		//Adding the constant velocity subProfile
-		double T1 = (trajSign*maxVel-iVel)/(trajSign*maxAcc);
-		double P1 = iPos + 0.5*T1*(trajSign*maxVel + iVel) ; // position at the start of the subProfile
-		sp2.push_back( T1 + iTime );
-		sp2.push_back( P1 );
+		sp2.push_back( iTime + T20 );
+		sp2.push_back( subVelProfiles[0][1] +
+						(T20-iTime)*(subVelProfiles[0][2] + 0.5*(T20-iTime)*subVelProfiles[0][3]) );
 		sp2.push_back( trajSign*maxVel );
 		sp2.push_back( 0.0 );
 		subVelProfiles.push_back(sp2);
 
 		//Adding the Deceleration subProfile
-		double T2 =  1/(trajSign*maxVel) * (fPos - P1 + T1*trajSign*maxVel - (0.5*maxVel*maxVel)/(trajSign*maxAcc));
-		double P2 = P1 + (T2-T1)*trajSign*maxVel;
-		sp3.push_back( T2 + iTime );
-		sp3.push_back( P2 );
+		sp3.push_back( iTime + T30 );
+		sp3.push_back( subVelProfiles[1][1] +
+						(T30-iTime-T20)*(subVelProfiles[1][2] + 0.5*(T30-iTime-T20)*subVelProfiles[1][3]) );
 		sp3.push_back( trajSign*maxVel );
 		sp3.push_back( -trajSign*maxAcc );
 		subVelProfiles.push_back(sp3);
 
-		tmpDuration = T2 + maxVel/maxAcc;
+		tmpDuration = T30 + (fVel-trajSign*maxVel)/(-trajSign*maxAcc);
 
 	//End of Asymmetric trapezoidal velocity profile
 	}
+
+	//TODO: Add a final piece of trajectory that decelerates smoothly to zero
+	if (abs(fVel) > epsilon )
+	{
+		// Decelerate system to zero
+		std::vector<double> spDec;
+
+		spDec.push_back( tmpDuration ); //t_0
+		spDec.push_back( fPos );
+		spDec.push_back( fVel );
+		spDec.push_back( -fVel/abs(fVel)*maxAcc );
+
+		subVelProfiles.push_back(spDec);
+	}
+
+	// Finally, we add a steady piece giving the final state
+	std::vector<double> spSS;
+	double TDec = abs(fVel)/maxAcc;
+
+	spSS.push_back( tmpDuration+TDec ); //t_0
+	spSS.push_back( fPos+0.5*fVel*TDec  );
+	spSS.push_back( 0.0 );
+	spSS.push_back( 0.0 );
+
+	subVelProfiles.push_back(spSS);
+
+
 	return tmpDuration;
 }
 
@@ -450,11 +518,8 @@ double VelocityProfile_NonZeroInit::Pos(double time) const
 	}
 	// if we are here, time is in the last piece or higher than duration so we set the output to the last requested position
 	int last = subVelProfiles.size()-1;
-	if (time > synchroTime)///timeScale)
-        time = synchroTime;///timeScale;
 
-	return subVelProfiles[last][1] + subVelProfiles[last][2] * (time -  subVelProfiles[last][0]) \
-            + 0.5 * subVelProfiles[last][3]*(time -  subVelProfiles[last][0])*(time -  subVelProfiles[last][0]);
+	return subVelProfiles[last][1];
 }
 
 
@@ -468,10 +533,8 @@ double VelocityProfile_NonZeroInit::Vel(double time) const
 	}
 	// if we are here, time is in the last piece or higher than duration so we set the output to the final velocity
 	int last = subVelProfiles.size()-1;
-	if (time > synchroTime)///timeScale)
-        time = synchroTime;///timeScale;
 
-	return  subVelProfiles[last][2] + subVelProfiles[last][3]*(time -  subVelProfiles[last][0]);
+	return  subVelProfiles[last][2];
 }
 
 
@@ -485,10 +548,8 @@ double VelocityProfile_NonZeroInit::Acc(double time) const
 	}
 	// if we are here, time is in the last piece or higher than duration so we set the output to the final acceleration (0.0)
 	int last = subVelProfiles.size()-1;
-	if (time < synchroTime)///timeScale)
-		return  subVelProfiles[last][3];
 
-	return 0.0;
+	return  subVelProfiles[last][3];
 }
 
 

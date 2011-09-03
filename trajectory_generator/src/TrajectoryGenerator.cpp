@@ -124,6 +124,7 @@ namespace trajectory_generator
     	//Create joint specific velocity profiles
     	double maxDuration = 0.0;
     	std::vector<double> jntPos = std::vector<double>(7,0.0);
+    	std::vector<double> finVel = std::vector<double>(7,0.0);
 
     	msr_jntPosPort.read(jntPos);
 
@@ -138,6 +139,8 @@ namespace trajectory_generator
     		{
     			jntVel[i] = motionProfile[i].Vel(time_passed);
     			jntPos[i] = motionProfile[i].Pos(time_passed);
+    			// Experimental: adding final velocities to the trajectory
+    			finVel[i] = v_max[i]*(-1 + 2*((double)rand()/(double)RAND_MAX));
  	   		}
      	}
 
@@ -146,15 +149,18 @@ namespace trajectory_generator
     	//TODO: Check dimensions
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
     		motionProfile.push_back(VelocityProfile_NonZeroInit(v_max[i], a_max[i]));
-    		motionProfile[i].SetProfile(jntPos[i], lastCommndedPoseJntPos[i], jntVel[i]);
+//    		motionProfile[i].SetProfile(jntPos[i], lastCommndedPoseJntPos[i], jntVel[i]);
+			motionProfile[i].SetProfile(jntPos[i], lastCommndedPoseJntPos[i], jntVel[i], finVel[i]);
     		if(motionProfile[i].Duration() > maxDuration )
     			maxDuration = motionProfile[i].Duration();
     	}
 
     	//Do sync
-    	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-    		motionProfile[i].SetProfileDuration(maxDuration);
-    	}
+/////////////////
+//    	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
+//    		motionProfile[i].SetProfileDuration(maxDuration);
+//    	}
+/////////////////
 
     	//Set times
     	time_begin = os::TimeService::Instance()->getTicks();
