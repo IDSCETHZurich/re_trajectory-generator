@@ -140,7 +140,9 @@ namespace trajectory_generator
     			jntVel[i] = motionProfile[i].Vel(time_passed);
     			jntPos[i] = motionProfile[i].Pos(time_passed);
     			// Experimental: adding final velocities to the trajectory
-    			finVel[i] = v_max[i]*(-1 + 2*((double)rand()/(double)RAND_MAX));
+    			// Cannot check if final state is valid (or would hit the limits of the workspace)
+    			// To do so, we need the physical joint limits (in KUKA_IK component)
+    			finVel[i] = v_max[i]*(-0.5 + 1*((double)rand()/(double)RAND_MAX));
  	   		}
      	}
 

@@ -176,10 +176,13 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 
 	///////////////
 	// TODO: Check on the velocity if we are going to hit the limits with the final state!!!
+	// We cannot check here as the hardware limits are not available. Should this be changed??
+	// Passing the check to the Trajectory Generator
 	///////////////
 
 	// trajSign gives the direction of the trajectory
 	// +1 for trajectories over the Dpcrit
+	trajSign = 0.0;
 	if ( Dp > Dpcrit + epsilon )
 		trajSign = 1.0;
 	// -1 for trajectories under the Dpcrit
@@ -190,8 +193,9 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 		trajSign = 1.0;
 	else if ( Dv < -epsilon )
 		trajSign = -1.0;
-	// If we are here, it means that initial state is equal to final state: we are at the target!!!
-	else
+
+	// If the initial state is equal to final state: we are at the target!!!
+	if (trajSign == 0.0)
 	{
 		// We create a dummy maneuver
 		std::vector<double> sp1;
@@ -203,72 +207,73 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 		subVelProfiles.push_back(sp1);
 
 		tmpDuration = epsilon;
-		return tmpDuration;
 	}
+	else
+	{
+		// We calculate maximum velocity reached during maneuver
+		double peakVel = sqrt( trajSign*Dp*maxAcc + (iVel*iVel+fVel*fVel)/2);
+		if ( peakVel < maxVel ){
+		//slow down to zero and perform a new trajectory going back
+			//log(Info) << "---- Triangular Velocity Profile ----" << endlog();
+			// Two pieces trajectory
+			std::vector<double> sp1,sp2;
+			// Characteristic times
+			double T20 = (trajSign*peakVel-iVel)/(trajSign*maxAcc);
 
-	// We calculate maximum velocity reached during maneuver
-	double peakVel = sqrt( trajSign*Dp*maxAcc + (iVel*iVel+fVel*fVel)/2);
-	if ( peakVel < maxVel ){
-	//slow down to zero and perform a new trajectory going back
-		//log(Info) << "---- Triangular Velocity Profile ----" << endlog();
-		// Two pieces trajectory
-		std::vector<double> sp1,sp2;
-		// Characteristic times
-		double T20 = (trajSign*peakVel-iVel)/(trajSign*maxAcc);
+			// Coefficients of the movement
+			sp1.push_back( iTime ); //t_0
+			sp1.push_back( iPos );
+			sp1.push_back( iVel );
+			sp1.push_back( trajSign*maxAcc );
 
-		// Coefficients of the movement
-		sp1.push_back( iTime ); //t_0
-		sp1.push_back( iPos );
-		sp1.push_back( iVel );
-		sp1.push_back( trajSign*maxAcc );
+			subVelProfiles.push_back(sp1);
 
-		subVelProfiles.push_back(sp1);
+			sp2.push_back( iTime + T20 );
+			sp2.push_back( subVelProfiles[0][1] +
+							(T20-iTime)*(subVelProfiles[0][2] + 0.5*(T20-iTime)*subVelProfiles[0][3]) );
+			sp2.push_back( trajSign*peakVel );
+			sp2.push_back( -trajSign*maxAcc );
+			subVelProfiles.push_back(sp2);
 
-		sp2.push_back( iTime + T20 );
-		sp2.push_back( subVelProfiles[0][1] +
-						(T20-iTime)*(subVelProfiles[0][2] + 0.5*(T20-iTime)*subVelProfiles[0][3]) );
-		sp2.push_back( trajSign*peakVel );
-		sp2.push_back( -trajSign*maxAcc );
-		subVelProfiles.push_back(sp2);
+			tmpDuration = T20 + (fVel-trajSign*peakVel)/(-trajSign*maxAcc);
+		//end of triangular velocity profile
 
-		tmpDuration = T20 + (fVel-trajSign*peakVel)/(-trajSign*maxAcc);
-	//end of triangular velocity profile
+		}else{
+			// log(Info) << "---- Trapezoidal Velocity Profile ----" << endlog();
+			// Three pieces trajectory
+			std::vector<double> sp1,sp2,sp3;
+			// Characteristic times
+			double T20 = (trajSign*maxVel-iVel)/(trajSign*maxAcc);
+			double T30 = 1/(maxVel) * (trajSign*Dp + (fVel*fVel+iVel*iVel-trajSign*2*maxVel*iVel)/(2*maxAcc));
 
-	}else{
-		// log(Info) << "---- Trapezoidal Velocity Profile ----" << endlog();
-		// Three pieces trajectory
-		std::vector<double> sp1,sp2,sp3;
-		// Characteristic times
-		double T20 = (trajSign*maxVel-iVel)/(trajSign*maxAcc);
-		double T30 = 1/(maxVel) * (trajSign*Dp + (fVel*fVel+iVel*iVel-trajSign*2*maxVel*iVel)/(2*maxAcc));
+			//Adding the acceleration subProfile
+			sp1.push_back( iTime ); //t_0
+			sp1.push_back( iPos );
+			sp1.push_back( iVel );
+			sp1.push_back( trajSign*maxAcc );
+			subVelProfiles.push_back(sp1);
 
-		//Adding the acceleration subProfile
-		sp1.push_back( iTime ); //t_0
-		sp1.push_back( iPos );
-		sp1.push_back( iVel );
-		sp1.push_back( trajSign*maxAcc );
-		subVelProfiles.push_back(sp1);
+			//Adding the constant velocity subProfile
+			sp2.push_back( iTime + T20 );
+			sp2.push_back( subVelProfiles[0][1] +
+							(T20-iTime)*(subVelProfiles[0][2] + 0.5*(T20-iTime)*subVelProfiles[0][3]) );
+			sp2.push_back( trajSign*maxVel );
+			sp2.push_back( 0.0 );
+			subVelProfiles.push_back(sp2);
 
-		//Adding the constant velocity subProfile
-		sp2.push_back( iTime + T20 );
-		sp2.push_back( subVelProfiles[0][1] +
-						(T20-iTime)*(subVelProfiles[0][2] + 0.5*(T20-iTime)*subVelProfiles[0][3]) );
-		sp2.push_back( trajSign*maxVel );
-		sp2.push_back( 0.0 );
-		subVelProfiles.push_back(sp2);
+			//Adding the Deceleration subProfile
+			sp3.push_back( iTime + T30 );
+			sp3.push_back( subVelProfiles[1][1] +
+							(T30-iTime-T20)*(subVelProfiles[1][2] + 0.5*(T30-iTime-T20)*subVelProfiles[1][3]) );
+			sp3.push_back( trajSign*maxVel );
+			sp3.push_back( -trajSign*maxAcc );
+			subVelProfiles.push_back(sp3);
 
-		//Adding the Deceleration subProfile
-		sp3.push_back( iTime + T30 );
-		sp3.push_back( subVelProfiles[1][1] +
-						(T30-iTime-T20)*(subVelProfiles[1][2] + 0.5*(T30-iTime-T20)*subVelProfiles[1][3]) );
-		sp3.push_back( trajSign*maxVel );
-		sp3.push_back( -trajSign*maxAcc );
-		subVelProfiles.push_back(sp3);
+			tmpDuration = T30 + (fVel-trajSign*maxVel)/(-trajSign*maxAcc);
 
-		tmpDuration = T30 + (fVel-trajSign*maxVel)/(-trajSign*maxAcc);
-
-	//End of Asymmetric trapezoidal velocity profile
-	}
+		//End of Asymmetric trapezoidal velocity profile
+		}
+	} // if-else that detects if the final state is equal to the original
 
 	//TODO: Add a final piece of trajectory that decelerates smoothly to zero
 	if (abs(fVel) > epsilon )
@@ -284,7 +289,7 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 		subVelProfiles.push_back(spDec);
 	}
 
-	// Finally, we add a steady piece giving the final state
+	// Finally, we add a steady piece giving the final state for times higher than duration+TDec
 	std::vector<double> spSS;
 	double TDec = abs(fVel)/maxAcc;
 
