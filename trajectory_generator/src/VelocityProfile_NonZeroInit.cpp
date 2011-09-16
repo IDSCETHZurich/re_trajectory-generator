@@ -163,7 +163,7 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, double iVel, double fVel, double iTime)
 {
 	// We need these auxiliar variables for classifying the trajectory
-	double Dp, Dv, meanVel, tfcrit, Dpcrit, trajSign;
+	double Dp, Dv, meanVel, tfcrit, Dpcrit;
 
 	// Auxiliar trajectory duration
 	double tmpDuration;
@@ -194,6 +194,21 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 	else if ( Dv < -epsilon )
 		trajSign = -1.0;
 
+
+#if DEBUG
+		cout << "======================================" << endl;
+    	cout << "trajSign " << trajSign << endl;
+    	cout << "iPos " << iPos << endl;
+    	cout << "fPos " << fPos << endl;
+    	cout << "iVel " << iVel << endl;
+    	cout << "fVel " << fVel << endl;
+    	cout << "Dp " << Dp << endl;
+       	cout << "Dpcrit " << Dpcrit << endl;
+       	cout << "meanVel " << meanVel << endl;
+#endif
+
+
+
 	// If the initial state is equal to final state: we are at the target!!!
 	if (trajSign == 0.0)
 	{
@@ -212,6 +227,13 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 	{
 		// We calculate maximum velocity reached during maneuver
 		double peakVel = sqrt( trajSign*Dp*maxAcc + (iVel*iVel+fVel*fVel)/2);
+
+
+#if DEBUG
+       	cout << "peakVel " << peakVel << endl;
+#endif
+
+
 		if ( peakVel < maxVel ){
 		//slow down to zero and perform a new trajectory going back
 			//log(Info) << "---- Triangular Velocity Profile ----" << endlog();
@@ -234,6 +256,9 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 			sp2.push_back( trajSign*peakVel );
 			sp2.push_back( -trajSign*maxAcc );
 			subVelProfiles.push_back(sp2);
+#if DEBUG
+	       	cout << "T20 " << T20 << endl;
+#endif
 
 			tmpDuration = T20 + (fVel-trajSign*peakVel)/(-trajSign*maxAcc);
 		//end of triangular velocity profile
@@ -271,6 +296,11 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 
 			tmpDuration = T30 + (fVel-trajSign*maxVel)/(-trajSign*maxAcc);
 
+#if DEBUG
+	       	cout << "T20 " << T20 << endl;
+	       	cout << "T30 " << T30 << endl;
+	       	cout << "tmpDuration " << tmpDuration << endl;
+#endif
 		//End of Asymmetric trapezoidal velocity profile
 		}
 	} // if-else that detects if the final state is equal to the original
@@ -281,7 +311,7 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 		// Decelerate system to zero
 		std::vector<double> spDec;
 
-		spDec.push_back( tmpDuration ); //t_0
+		spDec.push_back( tmpDuration );
 		spDec.push_back( fPos );
 		spDec.push_back( fVel );
 		spDec.push_back( -fVel/abs(fVel)*maxAcc );
@@ -293,33 +323,36 @@ double VelocityProfile_NonZeroInit::SubProfileBuilder(double fPos, double iPos, 
 	std::vector<double> spSS;
 	double TDec = abs(fVel)/maxAcc;
 
-	spSS.push_back( tmpDuration+TDec ); //t_0
+	spSS.push_back( tmpDuration+TDec );
 	spSS.push_back( fPos+0.5*fVel*TDec  );
 	spSS.push_back( 0.0 );
 	spSS.push_back( 0.0 );
 
 	subVelProfiles.push_back(spSS);
 
-
+#if DEBUG
+   	cout << "maxAcc " << maxAcc << endl;
+   	cout << "maxVel " << maxVel << endl;
+   	cout << "tmpDuration " << tmpDuration << endl;
+   	cout << "======================================" << endl;
+#endif
 	return tmpDuration;
 }
 
 
 void VelocityProfile_NonZeroInit::SetProfileDuration(double newDuration)
 {
-    // TODO: Synchronization has not been implemented yet because of v_i
-//	timeScale = 1; //duration/newDuration;
-//    if (timeScale > 1)
-//        return; // Cannot go below time optimal maneuver
-//    for (int i=0 ; i < (int)subVelProfiles.size() ; i++ ){
-//        subVelProfiles[i][0] /= timeScale;
-//        subVelProfiles[i][2] *= timeScale;
-//        subVelProfiles[i][3] *= timeScale*timeScale;
-//    }
     if (newDuration <= duration) {
     	synchroTime = duration;
 #if 0
     	cout << "Requested time for synchronization is not valid" << endl;
+#endif
+    }
+    else if (finalVel != 0.0)
+    {
+    	synchroTime = duration;
+#if 0
+    	cout << "Cannot synchronize for vf other than zero" << endl;
 #endif
     }
     //Synchronizing trajectories
@@ -335,47 +368,12 @@ void VelocityProfile_NonZeroInit::SetProfileDuration(double newDuration)
 		if(abs(finalPos-initPos) < epsilon && abs(initVel) < epsilon )
 			cout << "Zero trajectory. It will not be synchronized" << endlog();
 
-		else if (abs(finalPos-initPos) <= 0.5* initVel*initVel / maxAcc)
-		{
-//			cout << "Deceleration trajectory" << endl;
 
- 	 	 	synchroTime = newDuration;
+		///// The trajectory generator has been changed to allow for vf other than zero
+		///// At the same time, the posible trajectories have been reduced to two cases
+		///// triangular and trapezoidal, without this deceleration one (particular case of triangular)
 
-			// Synchronizing the backwards movement
-			if (subVelProfiles.size() == 3)
-			{
-				// The first (deceleration) and the second (acceleration) pieces remain the same.
-				// The third piece will start earlier and will keep a constant velocity (constVel)
-				double T1, T2, P1, P2;
-				double aux = maxAcc*synchroTime;// + trajSign*initVel; initial velocity is zero
-				double Dp = finalPos-subVelProfiles[1][1];
-				double trajSignNew = abs(Dp)/Dp;
-				constVel = 0.5*(aux - sqrt(aux*aux - 4*trajSignNew*maxAcc*(Dp)));
-
-				// Constants of the start of the third piece of trajectory
-				T1 = subVelProfiles[1][0] + constVel/maxAcc;
-				P1 = subVelProfiles[1][1] + 0.5*(T1-subVelProfiles[1][0])*(trajSignNew*constVel) ;
-
-				// Third piece
-				subVelProfiles[2][0] = ( T1 );
-				subVelProfiles[2][1] = ( P1 );
-				subVelProfiles[2][2] = ( trajSignNew*constVel );
-				subVelProfiles[2][3] = ( 0.0 );
-
-				// Constants of the start of the fourth (last) piece of trajectory
-				T2 = synchroTime - constVel/maxAcc;
-				P2 = subVelProfiles[2][1] + (T2-subVelProfiles[2][0])*trajSignNew*constVel;
-
-				// Fourth piece
-				std::vector<double> sp4;
-				sp4.push_back( T2 );
-				sp4.push_back( P2 );
-				sp4.push_back( trajSignNew*constVel );
-				sp4.push_back( -trajSignNew*maxAcc );
-				subVelProfiles.push_back(sp4);
-
-			}
-		}
+///////////////////
 		else
 		{
 			synchroTime = newDuration;
@@ -387,19 +385,25 @@ void VelocityProfile_NonZeroInit::SetProfileDuration(double newDuration)
 			{
 				double aux = maxAcc*synchroTime + trajSign*initVel;
 				constVel = 0.5*(aux - sqrt(aux*aux - 4*trajSign*maxAcc*(finalPos-initPos) - 2*initVel*initVel));
-//				cout << "Trapezoidal synchronized trajectory" << endlog();
+	//				cout << "Trapezoidal synchronized trajectory" << endlog();
 			}
 			else{
 				constVel = (trajSign*(finalPos-initPos) - 0.5*initVel*initVel/maxAcc)/(synchroTime - initVel/(trajSign*maxAcc));
-//				cout << "Double ramp synchronized trajectory" << endlog();
+	//				cout << "Double ramp synchronized trajectory" << endlog();
 			}
-#if 0
-			cout << "!!!!! ConstVelProfile !!!!! " << constVel << endl;
-			cout << "!!!!! Synchro Sign !!!!! " << syncSign << endl;
-			cout << "!!!!! Trajectory Sign !!!!! " << trajSign << endl;
+
+
+#if DEBUG
+    	cout << "trajSign " << trajSign << endl;
+    	cout << "syncSign " << syncSign << endl;
+    	cout << "synchroTime " << synchroTime << endl;
+    	cout << "constVel " << constVel << endl;
+    	cout << "maxAcc " << maxAcc << endl;
+
 #endif
 
-			// Change the acceleration in case the sync time is very large
+
+    	// Change the acceleration in case the sync time is very large
 			subVelProfiles[0][3] = syncSign*trajSign*maxAcc;
 
 			// Calculate the modified constant velocity subprofile (2nd part)
@@ -414,31 +418,40 @@ void VelocityProfile_NonZeroInit::SetProfileDuration(double newDuration)
 			double T2 =  synchroTime - constVel/maxAcc;
 			double P2 = P1 + (T2-T1)*trajSign*constVel;
 
-			//If we had a triangular profile before (only two parts), we add a third subVelProfile for the decelerating part
-			if ( subVelProfiles.size() == 2 )
+			subVelProfiles[2][0] = ( T2 + initTime );
+			subVelProfiles[2][1] = ( P2 );
+			subVelProfiles[2][2] = ( trajSign*constVel );
+			subVelProfiles[2][3] = ( -trajSign*maxAcc );
+
+			// Finally, we add a steady piece giving the final state for times higher than duration+TDec
+			if ( subVelProfiles.size() == 3 )
 			{
-				std::vector<double> sp3;
-				//Adding the Deceleration subProfile
-				sp3.push_back( T2 + initTime );
-				sp3.push_back( P2 );
-				sp3.push_back( trajSign*constVel );
-				sp3.push_back( -trajSign*maxAcc );
-				subVelProfiles.push_back(sp3);
+				std::vector<double> spSS;
+
+				spSS.push_back( synchroTime );
+				spSS.push_back( finalPos );
+				spSS.push_back( 0.0 );
+				spSS.push_back( 0.0 );
+
+				subVelProfiles.push_back(spSS);
 			}
-			// If we had a trapezoidal profile, we already had this third part of the profile
-			else {
-				subVelProfiles[2][0] = ( T2 + initTime );
-				subVelProfiles[2][1] = ( P2 );
-				subVelProfiles[2][2] = ( trajSign*constVel );
-				subVelProfiles[2][3] = ( -trajSign*maxAcc );
+			else
+			{
+				subVelProfiles[3][0] = ( synchroTime );
+				subVelProfiles[3][1] = ( finalPos );
+				subVelProfiles[3][2] = ( 0.0 );
+				subVelProfiles[3][3] = ( 0.0 );
+
 			}
+
 
 		//End of Synchronization
 		}
-//		cout << "Synchro time has been changed to " << synchroTime << " from " << duration << endl;
-	}
+////////////////////////
+    }
 
-#if 0
+
+#if DEBUG
 	cout << "Synchronized trajectory" << endl;
 	cout << "=======================" << endl;
 	cout << "fPos " << finalPos << " iPos " << initPos << " iVel " << initVel << endl;
@@ -480,21 +493,15 @@ void VelocityProfile_NonZeroInit::SetProfileDuration(double newDuration)
 // This function is defined for compatibility with VelocityProfile class
 void VelocityProfile_NonZeroInit::SetProfileDuration(double pos1, double pos2, double newDuration)
 {
-    // TODO: Synchronization has not been implemented yet because of v_i
-//	timeScale = 1; //duration/newDuration;
-//    if (timeScale > 1)
-//        return; // Cannot go below time optimal maneuver
-//    for (int i=0 ; i < (int)subVelProfiles.size() ; i++ ){
-//        subVelProfiles[i][0] /= timeScale;
-//        subVelProfiles[i][2] *= timeScale;
-//        subVelProfiles[i][3] *= timeScale*timeScale;
-//    }
     if (newDuration < duration) {
     	synchroTime = duration;
 #if DEBUG
     	cout << "Requested time for synchronization is not valid" << endl;
 #endif
     }
+    else
+    	this->SetProfileDuration(newDuration);
+
 	return;
 }
 

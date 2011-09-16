@@ -98,9 +98,12 @@ int main(int argc, char **argv)
   sensor_msgs::JointState jntState;
   jntState.position.clear();
   jntState.position = std::vector<double>(7,0.0);
+  jntState.position[0] = 3.14159/6;
   jntState.position[1] = 3.14159/4;
-  jntState.position[0] = 3.14159/4;
-//  jntState.position[3] = 3.14159/2;
+  jntState.position[2] = 3.14159/10;
+  jntState.position[3] = 3.14159/2;
+  jntState.position[4] = -3.14159/8;
+  jntState.position[5] = -3.14159/3;
 /*  for(int i=0; i< 7 ; i++ ){
   	jntState.position.push_back(-2 + 4.0*((double)rand()/(double)RAND_MAX));
   }

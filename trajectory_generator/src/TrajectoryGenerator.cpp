@@ -151,17 +151,20 @@ namespace trajectory_generator
     	//TODO: Check dimensions
     	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
     		motionProfile.push_back(VelocityProfile_NonZeroInit(v_max[i], a_max[i]));
-//    		motionProfile[i].SetProfile(jntPos[i], lastCommndedPoseJntPos[i], jntVel[i]);
-			motionProfile[i].SetProfile(jntPos[i], lastCommndedPoseJntPos[i], jntVel[i], finVel[i]);
+    		motionProfile[i].SetProfile(jntPos[i], lastCommndedPoseJntPos[i], jntVel[i]);
+//			motionProfile[i].SetProfile(jntPos[i], lastCommndedPoseJntPos[i], jntVel[i], finVel[i]);
     		if(motionProfile[i].Duration() > maxDuration )
     			maxDuration = motionProfile[i].Duration();
+#if 1
+    	cout << "**********After Joint " << i << " MaxDuration " << maxDuration << endl;
+#endif
     	}
 
     	//Do sync
 /////////////////
-//    	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
-//    		motionProfile[i].SetProfileDuration(maxDuration);
-//    	}
+    	for(int i = 0; i < (int)lastCommndedPoseJntPos.size(); i++){
+    		motionProfile[i].SetProfileDuration(maxDuration);
+    	}
 /////////////////
 
     	//Set times
