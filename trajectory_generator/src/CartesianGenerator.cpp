@@ -108,13 +108,16 @@ namespace trajectory_generator
 
     bool CartesianGenerator::generateNewVelocityProfiles(RTT::base::PortInterface* portInterface){
     	
-#if 1
-    	std::cout << "A new pose arrived" << std::endl;
-#endif
+
     	m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
     	
     	geometry_msgs::Pose pose;
     	cmdCartPose.read(pose);
+#if 1
+    	std::cout << "A new pose arrived" << std::endl;
+    	std::cout << "position: " << pose.position.x <<  " " << pose.position.y << " " << pose.position.z  << std::endl;
+#endif
+
 
 		m_traject_end.p.x(pose.position.x);
 		m_traject_end.p.y(pose.position.y);

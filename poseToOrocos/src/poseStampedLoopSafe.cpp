@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-  ros::Publisher posePub = n.advertise<geometry_msgs::PoseStamped>("poseStampedDsr", 2, true);
+  ros::Publisher posePub = n.advertise<geometry_msgs::Pose>("poseDsr", 2, true);
 
   ros::Rate loop_rate(0.25);
 
@@ -33,11 +33,12 @@ int main(int argc, char **argv)
 
 
     if (count%2==0)
-    	poseStamped.pose.position.x = 0.050;
+    	poseStamped.pose.position.z = 0.987;
     else
-    	poseStamped.pose.position.x = 0.300;
+    	poseStamped.pose.position.z = 0.751;
+
+    poseStamped.pose.position.x = 0.381;
     poseStamped.pose.position.y = 0.0;
-    poseStamped.pose.position.z = 0.955;
 
     //Vector3d rotVec = Vector3d::Random();
     //rotVec.normalize();
@@ -50,10 +51,11 @@ int main(int argc, char **argv)
     poseStamped.pose.orientation.z = 0;//rotVec(2);
     poseStamped.pose.orientation.w = 1;//cos(rotAng/2.0);
 
-    ROS_INFO("poseStamped orientation: %lf, %lf, %lf, %lf",
-    		poseStamped.pose.orientation.x,poseStamped.pose.orientation.y,poseStamped.pose.orientation.z,poseStamped.pose.orientation.w);
+    ROS_INFO("poseStamped pose: %lf, %lf, %lf", poseStamped.pose.position.x, poseStamped.pose.position.y, poseStamped.pose.position.z);
+    //ROS_INFO("poseStamped orientation: %lf, %lf, %lf, %lf",
+    //		poseStamped.pose.orientation.x,poseStamped.pose.orientation.y,poseStamped.pose.orientation.z,poseStamped.pose.orientation.w);
 
-    posePub.publish(poseStamped);
+    posePub.publish(poseStamped.pose);
 
     ros::spinOnce();
 

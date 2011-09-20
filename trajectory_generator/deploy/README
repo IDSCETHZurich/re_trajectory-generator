@@ -1,41 +1,60 @@
-TrajectoryGeneratorSim_jntSpace.xml
+===================================
+Deployer file naming convention
+<GeneratorType><ExecutionMode>-<InputType>.xml
+GeneratorType:
+TrajectoryGenerator-controls the robot in joint space
+CartesianGenerator-controls the robot in cartesian space
+
+ExecutionMode: 
+Real-Execution in the real robot (e.g., KUKA LWR)
+Sim-Simulation in RVIZ. 
+
+InputType:
+jntPosInput-joint position input 
+cartPosInput - cartesian position input (geometry_msgs::Pose)
+===================================
+
+
+TrajectoryGeneratorSim_jntPosInput.xml
 -----------------------------------
-roslaunch trajectory_generator visualize.launch 
-trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorSim_jntSpace.xml (*1)
+roslaunch trajectory_generator visualize.launch (config_TrajectoryGenerator.vcg)
+trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorSim_jntPosInput.xml (*1)
 rosrun  poseToOrocos jntPosLoop 
 
-TrajectoryGeneratorSim_cartSpace.xml
+TrajectoryGeneratorSim_cartPosInput.xml
 ------------------------------------
-roslaunch trajectory_generator visualize.launch 
-trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorSim_cartSpace.xml (*1)
-rosrun  poseToOrocos jntPosLoop 
+roslaunch trajectory_generator visualize.launch  (config_TrajectoryGenerator.vcg)
+trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorSim_cartPosInput.xml (*1)
+rosrun  poseToOrocos poseLoop 
 
-TrajectoryGeneratorReal_jntPos.xml
-----------------------------------
-roslaunch trajectory_generator visualize.launch 
-trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorReal_jntPos.xml (*1)
-rosrun  poseToOrocos jntPosLoop 
-KRC side - select joint position control
-
-TrajectoryGeneratorReal_cartPos.xml
+TrajectoryGeneratorReal_jntPosInput.xml
 -----------------------------------
 roslaunch trajectory_generator visualize.launch 
-trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorReal_cartPos.xml (*1)
+trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorReal_jntPosInput.xml (*1)
 rosrun  poseToOrocos jntPosLoop 
 KRC side - select joint position control
 
-CartesianGeneratorSim.xml
--------------------------
-trajectory_generator/deploy$ ./run.sh CartesianGeneratorSim.xml (*1) 
-rosrun poseToOrocos poseStampedLoop
+TrajectoryGeneratorReal_cartPosInput.xml
+-----------------------------------
 roslaunch trajectory_generator visualize.launch 
+trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorReal_cartPosInput.xml (*1)
+rosrun  poseToOrocos poseLoop 
+KRC side - select joint position control
 
-CartesianGeneratorReal.xml
+CartesianGeneratorSim_cartPosInput.xml
+-------------------------
+trajectory_generator/deploy$ ./run.sh CartesianGeneratorSim_cartPosInput.xml (*1) 
+rosrun poseToOrocos poseStampedLoop
+roslaunch trajectory_generator visualize.launch (config_CartesianGenerator.vcg)
+Topics Published to ROS: [/poseStampedCmd],[/poseStampedDsr] (type:geometry_msgs::PoseStamped)
+
+CartesianGeneratorReal_cartPosInput.xml
 --------------------------
-trajectory_generator/deploy$ ./run.sh CartesianGeneratorReal.xml (*1) 
+trajectory_generator/deploy$ ./run.sh CartesianGeneratorReal_cartPosInput.xml (*1) 
+(Set cartesin impedence ,Go in to FRI monitor mode, 
+reset the CartesianGenerator, and then go to FRI command mode)
 rosrun poseToOrocos poseStampedLoop
 roslaunch trajectory_generator visualize.launch 
 KRC side - select Cartesian stiffness mode
-
 
 *1 - should be executed inside trajectory_generator/deploy

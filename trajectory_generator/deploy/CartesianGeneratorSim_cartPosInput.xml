@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM "cpf.dtd">
 <properties>
 
- 	<simple name="Import" type="string"><value>kdl_typekit</value></simple>
+ 	<!--<simple name="Import" type="string"><value>kdl_typekit</value></simple>-->
   	<simple name="Import" type="string"><value>rtt_ros_integration</value></simple>
 	<simple name="Import" type="string"><value>trajectory_generator</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_std_msgs</value></simple>

@@ -2,44 +2,45 @@
 <!DOCTYPE properties SYSTEM "cpf.dtd">
 <properties>
 
- 	<simple name="Import" type="string"><value>kdl_typekit</value></simple>
+ 	<!--<simple name="Import" type="string"><value>kdl_typekit</value></simple>-->
 	<simple name="Import" type="string"><value>lwr_fri</value></simple>
   	<simple name="Import" type="string"><value>rtt_ros_integration</value></simple>
 	<simple name="Import" type="string"><value>trajectory_generator</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_std_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_ros_integration_sensor_msgs</value></simple>
-	<simple name="Import" type="string"><value>rtt_ros_integration_geometry_msgs</value></simple>>
+	<simple name="Import" type="string"><value>rtt_ros_integration_geometry_msgs</value></simple>
 	
-	<struct name="ROSConPoseIn" type="ConnPolicy">
+	<struct name="ROSConJntPosIn" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple>
   		<simple name="size" type="short"><value>1</value></simple>
   		<simple name="transport" type="short"><value>3</value></simple>
-  		<simple name="name_id" type="string"><value>poseDsr</value></simple>
+  		<simple name="name_id" type="string"><value>jntPosDsr</value></simple>
 	</struct>
 	
-	<struct name="msrCartPos" type="ConnPolicy">
+	<struct name="ROSConJntPosOut" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple>
   		<simple name="size" type="short"><value>1</value></simple>
   		<simple name="transport" type="short"><value>3</value></simple>
-  		<simple name="name_id" type="string"><value>msrCartPos</value></simple>
+  		<simple name="name_id" type="string"><value>joint_states</value></simple>
 	</struct>
 	
-	<struct name="cartesianGenerator" type="trajectory_generator::CartesianGenerator">
+	<struct name="trajectoryGenerator" type="trajectory_generator::TrajectoryGenerator">
 		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.02</value></simple>
+			<simple name="Period" type="double"><value>0.005</value></simple>
 			<simple name="Priority" type="short"><value>1</value></simple>
     			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="PropertyFile" type="string"><value>cpf/cartesianGeneratorReal.cpf</value></simple>
+		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGenerator.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
-    			<simple name="cmdCartPose" type="string"><value>ROSConPoseIn</value></simple>
-    			<simple name="CartesianPoseMsr" type="string"><value>FRI2CartGen</value></simple>
-    			<simple name="CartesianPoseDes" type="string"><value>CartGen2FRI</value></simple>
+    			<simple name="JointPositionInput" type="string"><value>ROSConJntPosIn</value></simple>
+    			<simple name="JointPositionDesToROS" type="string"><value>ROSConJntPosOut</value></simple>
+    			<simple name="JointPositionMsr" type="string"><value>MsrJointPosition</value></simple>
+    			<simple name="JointPositionDes" type="string"><value>DesJointPosition</value></simple>
   		</struct>
 	</struct>
-	
+
 	<struct name="FRIServer" type="lwr_fri::FRIComponent">
  		<struct name="Activity" type="NonPeriodicActivity">
 			<simple name="Priority" type="short"><value>1</value></simple>
@@ -47,28 +48,27 @@
 		</struct>
 	    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="LoadProperties" type="string"><value>cpf/FRIServer_cm4.cpf</value></simple>
+		<simple name="LoadProperties" type="string"><value>cpf/FRIServer.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
-			<simple name="desCartPos" type="string"><value>CartGen2FRI</value></simple>
-			<simple name="msrCartPos" type="string"> <value>FRI2CartGen</value></simple>
-			<simple name="msrCartPos" type="string"> <value>msrCartPos</value></simple>
+			<simple name="msrJntPos" type="string"><value>MsrJointPosition</value></simple>
+			<simple name="desJntPos" type="string"><value>DesJointPosition</value></simple>
 		</struct>
 	</struct>
-
 	
 	<struct name="Reporter" type="OCL::FileReporting">
     		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.02</value></simple>
+			<simple name="Period" type="double"><value>0.005</value></simple>
 			<simple name="Priority" type="short"><value>0</value></simple>
 			<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
     		</struct>
     		<simple name="AutoConf" type="boolean"><value>1</value></simple>
     		<simple name="AutoStart" type="boolean"><value>1</value></simple>
     		<simple name="AutoSave" type="boolean"><value>1</value></simple>
-    		<simple name="LoadProperties" type="string"><value>cpf/reportingCartReal.cpf</value></simple>
+    		<simple name="LoadProperties" type="string"><value>cpf/reportingReal.cpf</value></simple>
+    		<!-- List all peers (uni-directional) -->
     		<struct name="Peers" type="PropertyBag">
+    			<simple type="string"><value>trajectoryGenerator</value></simple>
     			<simple type="string"><value>FRIServer</value></simple>
-    			<simple type="string"><value>cartesianGenerator</value></simple>
     		</struct>
     	</struct>
 </properties>

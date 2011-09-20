@@ -112,7 +112,7 @@ int main(int argc, char **argv)
     while (!newposition) {
     	x = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
     	y = (0.7-(-0.7))*(double)rand()/(double)RAND_MAX + (-0.7);
-    	z = (0.7-(0.2))*(double)rand()/(double)RAND_MAX + (0.2);
+    	z = (0.9-( 0.4))*(double)rand()/(double)RAND_MAX + (0.4);
     	if (x*x+y*y+z*z>=0.50 && x*x+y*y+z*z<=0.70) {
     		newposition = true;
     	}

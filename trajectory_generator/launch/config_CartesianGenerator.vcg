@@ -1,0 +1,55 @@
+Background\ ColorR=0
+Background\ ColorG=0
+Background\ ColorB=0
+Fixed\ Frame=/frame_id_1
+Target\ Frame=<Fixed Frame>
+Axes.Enabled=1
+Axes.Length=0.1
+Axes.Radius=0.01
+Axes.Reference\ Frame=<Fixed Frame>
+Grid.Alpha=0.5
+Grid.Cell\ Size=0.1
+Grid.ColorR=0.5
+Grid.ColorG=0.5
+Grid.ColorB=0.5
+Grid.Enabled=1
+Grid.Line\ Style=0
+Grid.Line\ Width=0.03
+Grid.Normal\ Cell\ Count=0
+Grid.OffsetX=0
+Grid.OffsetY=0
+Grid.OffsetZ=0
+Grid.Plane=0
+Grid.Plane\ Cell\ Count=10
+Grid.Reference\ Frame=<Fixed Frame>
+Pose.Axes\ Length=1
+Pose.Axes\ Radius=0.1
+Pose.Enabled=1
+Pose.Shape=1
+Pose.Topic=/poseStampedDsr
+Pose2.Axes\ Length=1
+Pose2.Axes\ Radius=0.1
+Pose2.Enabled=1
+Pose2.Shape=1
+Pose2.Topic=/poseStampedCmd
+Tool\ 2D\ Nav\ GoalTopic=goal
+Tool\ 2D\ Pose\ EstimateTopic=initialpose
+Camera\ Type=rviz::OrbitViewController
+Camera\ Config=1.24772 4.46927 9.72381 0 0 0
+Property\ Grid\ State=selection=Fixed Frame;expanded=.Global Options,Axes.Enabled,Grid.Enabled,Pose.Enabled,Pose.Enabled.Pose.Shape Properties,Pose2.Enabled,Pose2.Enabled.Pose2.StatusTopStatus,Pose2.Enabled.Pose2.Shape Properties;scrollpos=0,0;splitterpos=171,328;ispageselected=1
+[Display0]
+Name=Axes
+Package=rviz
+ClassName=rviz::AxesDisplay
+[Display1]
+Name=Grid
+Package=rviz
+ClassName=rviz::GridDisplay
+[Display2]
+Name=Pose
+Package=rviz
+ClassName=rviz::PoseDisplay
+[Display3]
+Name=Pose2
+Package=rviz
+ClassName=rviz::PoseDisplay
