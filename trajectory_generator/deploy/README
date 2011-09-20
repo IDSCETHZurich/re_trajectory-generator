@@ -9,7 +9,7 @@ ExecutionMode:
 Real-Execution in the real robot (e.g., KUKA LWR)
 Sim-Simulation in RVIZ. 
 
-InputType:
+Inputype:
 jntPosInput-joint position input 
 cartPosInput - cartesian position input (geometry_msgs::Pose)
 ===================================

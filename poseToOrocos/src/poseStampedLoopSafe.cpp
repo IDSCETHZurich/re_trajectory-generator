@@ -33,11 +33,11 @@ int main(int argc, char **argv)
 
 
     if (count%2==0)
-    	poseStamped.pose.position.z = 0.987;
+    	poseStamped.pose.position.z = 0.931;
     else
     	poseStamped.pose.position.z = 0.751;
 
-    poseStamped.pose.position.x = 0.381;
+    poseStamped.pose.position.x = 0.417;
     poseStamped.pose.position.y = 0.0;
 
     //Vector3d rotVec = Vector3d::Random();
