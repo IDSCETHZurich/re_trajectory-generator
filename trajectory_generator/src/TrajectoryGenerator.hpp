@@ -128,7 +128,7 @@ namespace trajectory_generator
       /**
        * @brief intermediate command variables
        */
-      std::vector<double> lastCommndedPoseJntPos;
+      std::vector<double> lastCommandedPoseJntPos;
       geometry_msgs::Pose lastCommandedPose;
       ///@}
 
