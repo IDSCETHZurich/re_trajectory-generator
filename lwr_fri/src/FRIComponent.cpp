@@ -119,6 +119,10 @@ bool FRIComponent::configureHook() {
 		updateTG = this->getPeer("trajectoryGenerator")->getOperation("updateTG");
 	}
 
+	if(this->hasPeer("cartesianGenerator")){
+		updateCG = this->getPeer("cartesianGenerator")->getOperation("updateCG");
+	}
+
 	return true;
 
 }
@@ -276,24 +280,27 @@ void FRIComponent::updateHook() {
 								= m_jntTorques[i];
 			} else if (m_control_mode == 4) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_CARTPOS;
-				if (NewData == m_cartPosPort.read(m_cartPos)) {
-					KDL::Rotation rot = KDL::Rotation::Quaternion(
-							m_cartPos.orientation.x, m_cartPos.orientation.y,
-							m_cartPos.orientation.z, m_cartPos.orientation.w);
-					m_cmd_data.cmd.cartPos[0] = rot.data[0];
-					m_cmd_data.cmd.cartPos[1] = rot.data[1];
-					m_cmd_data.cmd.cartPos[2] = rot.data[2];
-					m_cmd_data.cmd.cartPos[4] = rot.data[3];
-					m_cmd_data.cmd.cartPos[5] = rot.data[4];
-					m_cmd_data.cmd.cartPos[6] = rot.data[5];
-					m_cmd_data.cmd.cartPos[8] = rot.data[6];
-					m_cmd_data.cmd.cartPos[9] = rot.data[7];
-					m_cmd_data.cmd.cartPos[10] = rot.data[8];
+				if(updateCG()){
+					if (NewData == m_cartPosPort.read(m_cartPos)) {
+						KDL::Rotation rot = KDL::Rotation::Quaternion(
+								m_cartPos.orientation.x, m_cartPos.orientation.y,
+								m_cartPos.orientation.z, m_cartPos.orientation.w);
+						m_cmd_data.cmd.cartPos[0] = rot.data[0];
+						m_cmd_data.cmd.cartPos[1] = rot.data[1];
+						m_cmd_data.cmd.cartPos[2] = rot.data[2];
+						m_cmd_data.cmd.cartPos[4] = rot.data[3];
+						m_cmd_data.cmd.cartPos[5] = rot.data[4];
+						m_cmd_data.cmd.cartPos[6] = rot.data[5];
+						m_cmd_data.cmd.cartPos[8] = rot.data[6];
+						m_cmd_data.cmd.cartPos[9] = rot.data[7];
+						m_cmd_data.cmd.cartPos[10] = rot.data[8];
 
-					m_cmd_data.cmd.cartPos[3] = m_cartPos.position.x;
-					m_cmd_data.cmd.cartPos[7] = m_cartPos.position.y;
-					m_cmd_data.cmd.cartPos[11] = m_cartPos.position.z;
-				}
+						m_cmd_data.cmd.cartPos[3] = m_cartPos.position.x;
+						m_cmd_data.cmd.cartPos[7] = m_cartPos.position.y;
+						m_cmd_data.cmd.cartPos[11] = m_cartPos.position.z;
+					}//end of if NewData
+				}//end of if updateCG
+
 			} else if (m_control_mode == 5) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_TCPFT;
 				if (NewData == m_addTcpWrenchPort.read(m_cartWrench)) {

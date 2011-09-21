@@ -53,6 +53,9 @@
 			<simple name="msrCartPos" type="string"> <value>FRI2CartGen</value></simple>
 			<simple name="msrCartPos" type="string"> <value>msrCartPos</value></simple>
 		</struct>
+		<struct name="Peers" type="PropertyBag">
+    			<simple type="string"><value>cartesianGenerator</value></simple>
+		</struct>
 	</struct>
 	
 	<struct name="Reporter" type="OCL::FileReporting">
