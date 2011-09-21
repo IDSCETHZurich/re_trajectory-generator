@@ -155,7 +155,7 @@ namespace trajectory_generator
 //			motionProfile[i].SetProfile(jntPos[i], lastCommndedPoseJntPos[i], jntVel[i], finVel[i]);
     		if(motionProfile[i].Duration() > maxDuration )
     			maxDuration = motionProfile[i].Duration();
-#if 1
+#if DEBUG
     	cout << "**********After Joint " << i << " MaxDuration " << maxDuration << endl;
 #endif
     	}
