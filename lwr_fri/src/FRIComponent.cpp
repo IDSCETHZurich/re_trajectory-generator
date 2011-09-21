@@ -137,11 +137,9 @@ void FRIComponent::updateHook() {
 	socklen_t addr_len = sizeof(m_remote_addr);
 
 	//time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-	//log(Info) << time_passed  << " Data1 0.0 0.0 0.0 0.0 0.0 0.0 0.0" <<endlog();
 	int n = recvfrom(m_socket, (void*) &m_msr_data, sizeof(m_msr_data), 0,
 			&m_remote_addr, &addr_len);
 	//time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-	//log(Info) << time_passed  << " Data2 0.0 0.0 0.0 0.0 0.0 0.0 0.0" <<endlog();
 
 	if (sizeof(tFriMsrData) != n)
 		log(Error) << "bad packet lenght: " << n << ", expected: "
@@ -355,7 +353,7 @@ void FRIComponent::updateHook() {
 		if (0 > sendto(m_socket, (void*) &m_cmd_data, sizeof(m_cmd_data), 0,
 				(sockaddr*) &m_remote_addr, sizeof(m_remote_addr)))
 			log(Error) << "Sending datagram failed." << endlog();
-	}
+	} //end of if-else bad packt length
 		this->trigger();
 	}
 
