@@ -72,6 +72,9 @@
 			<simple name="desJntPos" type="string"><value>DesJointPosition</value></simple>
 			<simple name="msrCartPos" type="string"> <value>MsrCartPos</value></simple>
 		</struct>
+		<struct name="Peers" type="PropertyBag">
+    			<simple type="string"><value>trajectoryGenerator</value></simple>
+    	</struct>
 	</struct>
 	
 	<struct name="Reporter" type="OCL::FileReporting">

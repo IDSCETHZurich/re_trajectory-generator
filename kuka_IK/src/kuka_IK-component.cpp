@@ -126,6 +126,7 @@ namespace kuka_IK{
         tmpJntState.position.clear();
         for(int i=0; i < 7; i++){
     		tmpJntState.position.push_back(commndedPoseJntPos[i]);
+    		tmpJntState.velocity.push_back(0.0);
     	}
 
     	output_jntPosPort.write(tmpJntState);

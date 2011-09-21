@@ -58,9 +58,14 @@ namespace trajectory_generator
         this->addProperty("max_vel",v_max).doc("Maximum Velocity in Trajectory");
         this->addProperty("max_acc",a_max).doc("Maximum Acceleration in Trajectory");
 
+        this->addProperty("doSync",doSync).doc("Do synchronization");
+        this->addProperty("addFinalVel",addFinalVel).doc("Incorporate final velocities");
+
         this->addOperation("updateTG", &TrajectoryGenerator::updateTG, this, OwnThread);
 
         lastCommandedPoseJntPos = std::vector<double>(7,0.0);
+        lastCommandedPoseJntVel = std::vector<double>(7,0.0);
+        jntPos = std::vector<double>(7,0.0);
         jntVel = std::vector<double>(7,0.0);
 
         jntState.header.frame_id = "arm_0_link";
@@ -71,6 +76,10 @@ namespace trajectory_generator
         jntState.name.push_back("arm_5_joint");
         jntState.name.push_back("arm_6_joint");
         jntState.name.push_back("arm_7_joint");
+
+
+
+
     }
 
     TrajectoryGenerator::~TrajectoryGenerator()
@@ -93,7 +102,12 @@ namespace trajectory_generator
 
     bool TrajectoryGenerator::startHook()
     {
+		if(doSync==true && addFinalVel==true){
+			doSync = false;
+			cout << "Sync with non zero final velocities is not yet implemented" << endl;
+		}
     	std::cout << "TrajectoryGenerator::Trajectory generator running" << std::endl;
+
     	return true;
     }
 
@@ -101,61 +115,49 @@ namespace trajectory_generator
 
     bool TrajectoryGenerator::generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface)
     {
+    	//Create joint specific velocity profiles
+    	double maxDuration = 0.0;
+
+
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-    	//log(Info) << "a new jnt pose arrived" << endlog();
 #if DEBUG
     	cout << "a new jnt pose arrived" << endl;
 #endif
     	input_jntPosPort.read(cmdJntState);
     	lastCommandedPoseJntPos = cmdJntState.position;
+    	lastCommandedPoseJntVel = cmdJntState.velocity;
+
+
+
 
     	for(int i=0; i < 7; i++){
-#if DEBUG
-    		cout << "Joint " << i << " : " << lastCommandedPoseJntPos[i] << " /// ";
-#endif
     		if(lastCommandedPoseJntPos[i]<p_min[i] || lastCommandedPoseJntPos[i]>p_max[i]){
     			//log(Info) << "Commanded joint position out of bounds" << endlog();
     			cout << "Commanded joint position out of bounds" << lastCommandedPoseJntPos[i] << endl;
     			return false;
     		}
 
+    		// We calculate if the final state is reachable within the kinematic limits
+    		// If not, we ask for a new final velocity until we get a valid value
+    		if ((lastCommandedPoseJntPos[i] + 0.5*lastCommandedPoseJntVel[i]*abs(lastCommandedPoseJntVel[i]/a_max[i]) > p_max[i]) ||
+    				(lastCommandedPoseJntPos[i] + 0.5*lastCommandedPoseJntVel[i]*abs(lastCommandedPoseJntVel[i]/a_max[i]) < p_min[i])){
+    			cout << "Commanded final velocity out of bounds" << lastCommandedPoseJntVel[i] << endl;
+    			return false;
+    		}
     	}
-#if DEBUG
-    	cout << endl;
-#endif
-
-    	//Create joint specific velocity profiles
-    	double maxDuration = 0.0;
-    	std::vector<double> jntPos = std::vector<double>(7,0.0);
-    	std::vector<double> finVel = std::vector<double>(7,0.0);
-
-    	msr_jntPosPort.read(jntPos);
 
 
     	if ((int)motionProfile.size() == 0){//Only for the first run
     		for(int i = 0; i < (int)num_axes; i++)
 			{
     			jntVel[i] = 0.0;
+    			msr_jntPosPort.read(jntPos);
     		}
     	}else{
-
-    		bool valid = false;
-
     		for(int i = 0; i < (int)motionProfile.size(); i++)
     		{
     			jntVel[i] = motionProfile[i].Vel(time_passed);
     			jntPos[i] = motionProfile[i].Pos(time_passed);
-    			// Experimental: adding final velocities to the trajectory
-    			// We calculate if the final state is reachable within the kinematic limits
-    			// If not, we ask for a new final velocity until we get a valid value
-    			valid = false;
-    			while (!valid)
-    			{
-        			finVel[i] = v_max[i]*(-0.5 + 1*((double)rand()/(double)RAND_MAX));
-        			if ((lastCommandedPoseJntPos[i] + 0.5*finVel[i]*abs(finVel[i]) < p_max[i]) &&
-        				(lastCommandedPoseJntPos[i] + 0.5*finVel[i]*abs(finVel[i]) > p_min[i]))
-        				valid = true;
-    			}
  	   		}
      	}
 
@@ -164,21 +166,20 @@ namespace trajectory_generator
     	//TODO: Check dimensions
     	for(int i = 0; i < (int)lastCommandedPoseJntPos.size(); i++){
     		motionProfile.push_back(VelocityProfile_NonZeroInit(v_max[i], a_max[i]));
-//    		motionProfile[i].SetProfile(jntPos[i], lastCommandedPoseJntPos[i], jntVel[i]);
-			motionProfile[i].SetProfile(jntPos[i], lastCommandedPoseJntPos[i], jntVel[i], finVel[i]);
+    		if(!addFinalVel)
+    			motionProfile[i].SetProfile(jntPos[i], lastCommandedPoseJntPos[i], jntVel[i]);
+    		else
+    			motionProfile[i].SetProfile(jntPos[i], lastCommandedPoseJntPos[i], jntVel[i], lastCommandedPoseJntVel[i]);
     		if(motionProfile[i].Duration() > maxDuration )
     			maxDuration = motionProfile[i].Duration();
-#if DEBUG
-    	cout << "**********After Joint " << i << " MaxDuration " << maxDuration << endl;
-#endif
     	}
 
     	//Do sync
-/////////////////
-    	for(int i = 0; i < (int)lastCommandedPoseJntPos.size(); i++){
-    		motionProfile[i].SetProfileDuration(maxDuration);
+    	if(doSync){
+			for(int i = 0; i < (int)lastCommandedPoseJntPos.size(); i++){
+				motionProfile[i].SetProfileDuration(maxDuration);
+			}
     	}
-/////////////////
 
     	//Set times
     	time_begin = os::TimeService::Instance()->getTicks();

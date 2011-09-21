@@ -129,14 +129,18 @@ namespace trajectory_generator
        * @brief intermediate command variables
        */
       std::vector<double> lastCommandedPoseJntPos;
+      std::vector<double> lastCommandedPoseJntVel;
       geometry_msgs::Pose lastCommandedPose;
       ///@}
 
       /// Initial joint velocities of each rotational joint of the Robot
+      std::vector<double> jntPos;
       std::vector<double> jntVel;
 
       /// joint state going out on output_jntPosPort_toROS port
       sensor_msgs::JointState jntState;
+
+      bool doSync, addFinalVel;
 
 
     protected:

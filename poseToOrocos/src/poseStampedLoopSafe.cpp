@@ -22,8 +22,6 @@ int main(int argc, char **argv)
   ros::Rate loop_rate(0.25);
 
   int count = 0;
-  bool newposition = false;
-  double x=0.0, y=0.0, z=0.0;
 
   while (ros::ok())
   {
@@ -31,25 +29,22 @@ int main(int argc, char **argv)
     poseStamped.header.frame_id="/frame_id_1";
     poseStamped.header.stamp = ros::Time::now();
 
+    if (count%2==0){
+    	poseStamped.pose.position.z = 1.012;
+    	poseStamped.pose.orientation.y = 0.0;
+        poseStamped.pose.orientation.w = 1.0;
+    }
+    else{
+    	poseStamped.pose.position.z = 0.700;
+    	poseStamped.pose.orientation.y = 1/sqrt(2);
+        poseStamped.pose.orientation.w = 1/sqrt(2);
+    }
 
-    if (count%2==0)
-    	poseStamped.pose.position.z = 0.931;
-    else
-    	poseStamped.pose.position.z = 0.751;
-
-    poseStamped.pose.position.x = 0.417;
+    poseStamped.pose.position.x = 0.285;
     poseStamped.pose.position.y = 0.0;
 
-    //Vector3d rotVec = Vector3d::Random();
-    //rotVec.normalize();
-
-    //double rotAng = -PI + 2*PI*(double)rand()/(double)RAND_MAX;
-    //rotVec *= sin(rotAng/2.0);
-
     poseStamped.pose.orientation.x = 0;//rotVec(0);
-    poseStamped.pose.orientation.y = 0;//rotVec(1);
     poseStamped.pose.orientation.z = 0;//rotVec(2);
-    poseStamped.pose.orientation.w = 1;//cos(rotAng/2.0);
 
     ROS_INFO("poseStamped pose: %lf, %lf, %lf", poseStamped.pose.position.x, poseStamped.pose.position.y, poseStamped.pose.position.z);
     //ROS_INFO("poseStamped orientation: %lf, %lf, %lf, %lf",
