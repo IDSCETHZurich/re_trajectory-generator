@@ -70,6 +70,7 @@ namespace trajectory_generator
         virtual void updateHook();
         virtual void stopHook();
         virtual void cleanupHook();
+        bool updateCG();
 
     private:
       //bool moveTo(geometry_msgs::Pose pose, double time=0);

@@ -29,6 +29,7 @@ namespace trajectory_generator
 
         //Adding Methods
         this->addOperation("resetPosition",&CartesianGenerator::resetPosition,this,OwnThread).doc("Reset generator's position");
+        this->addOperation("updateCG", &CartesianGenerator::updateCG, this, OwnThread);
     }
 
     CartesianGenerator::~CartesianGenerator()
@@ -58,10 +59,8 @@ namespace trajectory_generator
 
     }
 
-    void CartesianGenerator::updateHook()
-    {
-
-		m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
+    bool CartesianGenerator::updateCG(){
+    	m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
 		if(motionProfile.size()==4){
 			geometry_msgs::Pose pose;
 			double theta;
@@ -95,7 +94,17 @@ namespace trajectory_generator
 			std::cout << "-->Orientation: " << "x:"<< pose.orientation.x << " y:"<< pose.orientation.y
 					<< " z:"<< pose.orientation.z << " w:"<< pose.orientation.w << std::endl;
 #endif
-		}//end of empty motionProfile if check
+			return true;
+		}else{
+			return false;
+		}
+
+    }
+
+
+    void CartesianGenerator::updateHook()
+    {
+    	updateCG();
     }
 
     void CartesianGenerator::stopHook()

@@ -113,6 +113,7 @@ private:
 	RTT::os::TimeService::Seconds	time_passed;
 
 	RTT::OperationCaller<bool(void)> updateTG;
+	RTT::OperationCaller<bool(void)> updateCG;
 };
 
 }//Namespace LWR

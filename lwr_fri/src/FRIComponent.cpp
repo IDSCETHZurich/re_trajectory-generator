@@ -119,6 +119,10 @@ bool FRIComponent::configureHook() {
 		updateTG = this->getPeer("trajectoryGenerator")->getOperation("updateTG");
 	}
 
+	if(this->hasPeer("cartesianGenerator")){
+		updateCG = this->getPeer("cartesianGenerator")->getOperation("updateCG");
+	}
+
 	return true;
 
 }
@@ -133,11 +137,9 @@ void FRIComponent::updateHook() {
 	socklen_t addr_len = sizeof(m_remote_addr);
 
 	//time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-	//log(Info) << time_passed  << " Data1 0.0 0.0 0.0 0.0 0.0 0.0 0.0" <<endlog();
 	int n = recvfrom(m_socket, (void*) &m_msr_data, sizeof(m_msr_data), 0,
 			&m_remote_addr, &addr_len);
 	//time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-	//log(Info) << time_passed  << " Data2 0.0 0.0 0.0 0.0 0.0 0.0 0.0" <<endlog();
 
 	if (sizeof(tFriMsrData) != n)
 		log(Error) << "bad packet lenght: " << n << ", expected: "
@@ -256,10 +258,13 @@ void FRIComponent::updateHook() {
 					if (NewData == m_jntPosPort.read(m_jntPos))
 						for (unsigned int i = 0; i < LBR_MNJ; i++)
 							m_cmd_data.cmd.jntPos[i] = m_jntPos[i];
-//					log(Info) << "FRI: "<< m_jntPos[0] << " " << m_jntPos[1] << " " << m_jntPos[2] << " "
+//					std::cout << "FRI: "<< m_jntPos[0] << " " << m_jntPos[1] << " " << m_jntPos[2] << " "
 //							<< m_jntPos[3] << " " << m_jntPos[4] << " " << m_jntPos[5] << " "
-//							<< m_jntPos[6] << endlog();
+//							<< m_jntPos[6] << std::endl;
 				}
+
+
+
 			} else	if (m_control_mode == 2) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_JNTPOS;
 				if (NewData == m_jntVelPort.read(m_jntVel))
@@ -273,24 +278,27 @@ void FRIComponent::updateHook() {
 								= m_jntTorques[i];
 			} else if (m_control_mode == 4) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_CARTPOS;
-				if (NewData == m_cartPosPort.read(m_cartPos)) {
-					KDL::Rotation rot = KDL::Rotation::Quaternion(
-							m_cartPos.orientation.x, m_cartPos.orientation.y,
-							m_cartPos.orientation.z, m_cartPos.orientation.w);
-					m_cmd_data.cmd.cartPos[0] = rot.data[0];
-					m_cmd_data.cmd.cartPos[1] = rot.data[1];
-					m_cmd_data.cmd.cartPos[2] = rot.data[2];
-					m_cmd_data.cmd.cartPos[4] = rot.data[3];
-					m_cmd_data.cmd.cartPos[5] = rot.data[4];
-					m_cmd_data.cmd.cartPos[6] = rot.data[5];
-					m_cmd_data.cmd.cartPos[8] = rot.data[6];
-					m_cmd_data.cmd.cartPos[9] = rot.data[7];
-					m_cmd_data.cmd.cartPos[10] = rot.data[8];
+				if(updateCG()){
+					if (NewData == m_cartPosPort.read(m_cartPos)) {
+						KDL::Rotation rot = KDL::Rotation::Quaternion(
+								m_cartPos.orientation.x, m_cartPos.orientation.y,
+								m_cartPos.orientation.z, m_cartPos.orientation.w);
+						m_cmd_data.cmd.cartPos[0] = rot.data[0];
+						m_cmd_data.cmd.cartPos[1] = rot.data[1];
+						m_cmd_data.cmd.cartPos[2] = rot.data[2];
+						m_cmd_data.cmd.cartPos[4] = rot.data[3];
+						m_cmd_data.cmd.cartPos[5] = rot.data[4];
+						m_cmd_data.cmd.cartPos[6] = rot.data[5];
+						m_cmd_data.cmd.cartPos[8] = rot.data[6];
+						m_cmd_data.cmd.cartPos[9] = rot.data[7];
+						m_cmd_data.cmd.cartPos[10] = rot.data[8];
 
-					m_cmd_data.cmd.cartPos[3] = m_cartPos.position.x;
-					m_cmd_data.cmd.cartPos[7] = m_cartPos.position.y;
-					m_cmd_data.cmd.cartPos[11] = m_cartPos.position.z;
-				}
+						m_cmd_data.cmd.cartPos[3] = m_cartPos.position.x;
+						m_cmd_data.cmd.cartPos[7] = m_cartPos.position.y;
+						m_cmd_data.cmd.cartPos[11] = m_cartPos.position.z;
+					}//end of if NewData
+				}//end of if updateCG
+
 			} else if (m_control_mode == 5) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_TCPFT;
 				if (NewData == m_addTcpWrenchPort.read(m_cartWrench)) {
@@ -345,7 +353,7 @@ void FRIComponent::updateHook() {
 		if (0 > sendto(m_socket, (void*) &m_cmd_data, sizeof(m_cmd_data), 0,
 				(sockaddr*) &m_remote_addr, sizeof(m_remote_addr)))
 			log(Error) << "Sending datagram failed." << endlog();
-	}
+	} //end of if-else bad packt length
 		this->trigger();
 	}
 
