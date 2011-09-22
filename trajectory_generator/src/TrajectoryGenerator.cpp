@@ -117,7 +117,7 @@ namespace trajectory_generator
     {
     	//Create joint specific velocity profiles
     	double maxDuration = 0.0;
-
+    	double p_aux = 0.0;
 
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
 #if DEBUG
@@ -128,20 +128,20 @@ namespace trajectory_generator
     	lastCommandedPoseJntVel = cmdJntState.velocity;
 
 
-
-
     	for(int i=0; i < 7; i++){
     		if(lastCommandedPoseJntPos[i]<p_min[i] || lastCommandedPoseJntPos[i]>p_max[i]){
     			//log(Info) << "Commanded joint position out of bounds" << endlog();
-    			cout << "Commanded joint position out of bounds" << lastCommandedPoseJntPos[i] << endl;
+    			cout << "Commanded joint position out of bounds " << lastCommandedPoseJntPos[i] << endl;
     			return false;
     		}
 
-    		// We calculate if the final state is reachable within the kinematic limits
-    		// If not, we ask for a new final velocity until we get a valid value
-    		if ((lastCommandedPoseJntPos[i] + 0.5*lastCommandedPoseJntVel[i]*abs(lastCommandedPoseJntVel[i]/a_max[i]) > p_max[i]) ||
-    				(lastCommandedPoseJntPos[i] + 0.5*lastCommandedPoseJntVel[i]*abs(lastCommandedPoseJntVel[i]/a_max[i]) < p_min[i])){
-    			cout << "Commanded final velocity out of bounds" << lastCommandedPoseJntVel[i] << endl;
+    		// We see if the final state is reachable within the kinematic limits
+    		// First we calculate the margin of position that we have
+    		p_aux = min(abs(lastCommandedPoseJntPos[i]-p_min[i]),abs(p_max[i]-lastCommandedPoseJntPos[i]));
+    		// Then, if the motion due to deceleration/acceleration needed to stop_the_robot/reach_the_final_vel
+    		// is higher than the distance that we have to the position limits, final state cannot be achieved
+    		if (p_aux < 0.5*lastCommandedPoseJntVel[i]*lastCommandedPoseJntVel[i]/a_max[i]){
+    			cout << "Commanded final velocity out of bounds " << lastCommandedPoseJntVel[i] << endl;
     			return false;
     		}
     	}
