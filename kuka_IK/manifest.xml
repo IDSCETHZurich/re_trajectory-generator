@@ -7,9 +7,12 @@
     <author>Unknown Author</author>
     <depend package="rtt" />
     <depend package="ocl"/>
+    <depend package="kdl"/>
     <depend package="orocos_kdl"/>
     <depend package="geometry_msgs"/>
     <depend package="sensor_msgs"/>
     <depend package="tf_conversions"/>
+    <depend package="lwr_fri"/>
+	<depend package="eigen"/>
 </package>
 

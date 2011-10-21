@@ -40,19 +40,56 @@ namespace kuka_IK{
     	 this->addPort("JointPositionDes",output_jntPosPort);
     	 this->addPort("JointPositionMsr",msr_jntPosPort);
     	 this->addPort("msrCartPosPort", cartPosPort);
+    	 this->addPort("RobotStatePort", RobotStatePort);
+
+
     	 jntPos = std::vector<double>(7,0.0);
     }
 
     bool kuka_IK::cartPosInputHandle(RTT::base::PortInterface* portInterface){
-    	input_cartPosPort.read(commandedPose);
+	   //Jacobian
+	   MatrixXf Jacobian(6,7);
+	   VectorXf xDot(6);
+	   VectorXf thetaDot(7);
+
+
+
+    	input_cartPosPort.read(commandedState);
+
+    	if(commandedState.size()!=13)
+    		std::cout << "vector dimensions does not agree" << std::endl;
+
+    	commandedPose.position.x = commandedState[0];
+    	commandedPose.position.y = commandedState[1];
+    	commandedPose.position.z = commandedState[2];
+    	commandedPose.orientation.x = commandedState[3];
+    	commandedPose.orientation.y = commandedState[4];
+    	commandedPose.orientation.z = commandedState[5];
+    	commandedPose.orientation.w = commandedState[6];
+
+    	//rest is the twist
+    	RobotStatePort.read(tmpRobotData);
+
+        for ( int i = 0; i < 6; i++)
+          for ( int j = 0; j < 7; j++)
+  			Jacobian(i,j) = tmpRobotData.jacobian[i*7+j];
+
+
+        for ( int i = 7; i < 13; i++)
+        	xDot(i-7) = commandedState[i];
+
+        thetaDot = (	((Jacobian.transpose()*Jacobian).inverse())	*	Jacobian.transpose()	)	*	xDot;
+
+
+
+
+
 #if DEBUG
-    	cout << endl << "Pose.position.x  = " << commandedPose.position.x << endl;
     	cout << "Pose.position.y  = " << commandedPose.position.y << endl;
     	cout << "Pose.position.z  = " << commandedPose.position.z << endl;
 #endif
     	// Read out the robot joint position
     	msr_jntPosPort.read(jntPos);
-
 
 #if DEBUG
     	std::cout << " kuka-IK-component.cpp: jntPos" << std::endl;
@@ -126,7 +163,7 @@ namespace kuka_IK{
         tmpJntState.position.clear();
         for(int i=0; i < 7; i++){
     		tmpJntState.position.push_back(commndedPoseJntPos[i]);
-    		tmpJntState.velocity.push_back(0.0);
+    		tmpJntState.velocity.push_back(thetaDot[i]);
     	}
 
     	output_jntPosPort.write(tmpJntState);
