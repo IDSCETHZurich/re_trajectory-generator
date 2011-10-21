@@ -75,6 +75,19 @@ namespace trajectory_generator
      */
     class TrajectoryGenerator : public RTT::TaskContext
     {
+    private:
+    	/**
+    	 * \brief Check validity of velocities and scale them if necessary
+    	 *
+    	 * @param sensor_msgs::JointState robotState desired state of the system
+    	 *
+    	 * @output int value that gives out one of the following values
+    	 *         0 Velocities are OK
+    	 *         1 Velocities have been modified to be within the limits
+    	 *        -1 There was an error: output values are not valid
+    	 */
+    	int jntVelScaling(sensor_msgs::JointState (&robotState));
+
     public:
         /**
          * \brief Constructor of the TrajectoryGenerator class.

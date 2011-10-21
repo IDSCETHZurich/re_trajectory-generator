@@ -86,6 +86,61 @@ namespace trajectory_generator
     {
     }
 
+	int TrajectoryGenerator::jntVelScaling(sensor_msgs::JointState (&robotState))
+	{
+		std::vector<double> vM (7,0.0);
+		std::vector<double> scale (7,1.0);
+		double p_left, p_right;
+		unsigned int i;
+
+		for(i=0 ; i<robotState.velocity.size() ; i++)
+		{
+			// Limits for applying constant velocity limit or curve
+			p_left = p_min[i] + 0.5*v_max[i]*v_max[i]/a_max[i];
+			p_right = p_max[i] - 0.5*v_max[i]*v_max[i]/a_max[i];
+			// Left phase-plane constraint
+			if (robotState.position[i] < p_left)
+			{
+				vM[i] = sign(robotState.velocity[i])*(sqrt(2*(p_left - p_min[i])*a_max[i]));
+			}
+			// Constant Velocity Limits
+			else if (robotState.position[i] < p_right)
+			{
+				vM[i] = sign(robotState.velocity[i])*v_max[i];
+			}
+			// Right phase-plane constraint
+			else
+			{
+				vM[i] = sign(robotState.velocity[i])*(sqrt(2*(p_max[i] - p_right)*a_max[i]));
+			}
+
+			// If the requested velocity is higher than maximum, we calculate the scaling factor
+			if (robotState.velocity[i] > vM[i])
+				scale[i] = robotState.velocity[i]/vM[i];
+		}
+
+		// Find maximum scale
+		int scaleM = 1.0;
+		for(i=0 ; i<robotState.velocity.size() ; i++)
+			if (scale[i]>scaleM)
+				scaleM = scale[i];
+
+		// Recalculate velocities in the Robot Space if the scale factor is greater than one
+		if (scaleM > 1.0)
+		{
+			for(i=0 ; i<robotState.velocity.size() ; i++)
+				robotState.velocity[i] /= scaleM;
+
+			return 1;
+		}
+		else
+			return 0;
+
+		// We never should reach this point
+		return -1;
+	}
+
+
     bool TrajectoryGenerator::configureHook()
     {
     	//num_axes = num_axes_prop.rvalue();
@@ -120,7 +175,8 @@ namespace trajectory_generator
     	double p_aux = 0.0;
 
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-#if DEBUG
+
+    	#if DEBUG
     	cout << "a new jnt pose arrived" << endl;
 #endif
     	input_jntPosPort.read(cmdJntState);
