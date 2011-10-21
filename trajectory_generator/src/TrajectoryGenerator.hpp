@@ -155,5 +155,7 @@ namespace trajectory_generator
       /// Dataport containing the desired joint angles (In s)
       RTT::OutputPort< sensor_msgs::JointState >  output_jntPosPort_toROS;
 
+      ofstream timeLogger;
+
   }; // class
 }//namespace

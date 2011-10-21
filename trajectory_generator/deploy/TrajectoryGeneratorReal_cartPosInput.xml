@@ -43,7 +43,6 @@
 	
 	<struct name="trajectoryGenerator" type="trajectory_generator::TrajectoryGenerator">
 		<struct name="Activity" type="NonPeriodicActivity">
-			<simple name="Period" type="double"><value>0.01</value></simple>
 			<simple name="Priority" type="short"><value>1</value></simple>
     			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>
