@@ -75,32 +75,33 @@ private:
 	 * statistics
 	 */
 	OutputPort<tFriRobotState> m_RobotStatePort;
+	OutputPort<tFriRobotData> m_RobotDataPort;
 	OutputPort<tFriIntfState> m_FriStatePort;
 
 	/**
 	 * Current robot data
 	 */
 	OutputPort<std::vector<double> > m_msrJntPosPort;
-        OutputPort<std::vector<double> > m_cmdJntPosPort;
+	OutputPort<std::vector<double> > m_cmdJntPosPort;
 	OutputPort<std::vector<double> > m_cmdJntPosFriOffsetPort;
 	OutputPort<geometry_msgs::Pose>  m_msrCartPosPort;
 	OutputPort<geometry_msgs::Pose>  m_cmdCartPosPort;
 	OutputPort<geometry_msgs::Pose>  m_cmdCartPosFriOffsetPort;
 	OutputPort<std::vector<double> >   m_msrJntTrqPort;
 	OutputPort<std::vector<double> >   m_estExtJntTrqPort;
-        OutputPort<geometry_msgs::Wrench> m_estExtTcpWrenchPort;
+	OutputPort<geometry_msgs::Wrench> m_estExtTcpWrenchPort;
 	//RTT::OutputPort<KDL::Jacobian> jacobianPort;
 	//RTT::OutputPort<Eigen::MatrixXd > massMatrixPort;
 	//RTT::OutputPort<std::vector<double> > gravityPort;
 
 	InputPort<std::vector<double> > m_jntPosPort;
     InputPort<std::vector<double> > m_jntVelPort;
-        InputPort<geometry_msgs::Pose> m_cartPosPort;
-        InputPort<geometry_msgs::Twist> m_cartTwistPort;
+	InputPort<geometry_msgs::Pose> m_cartPosPort;
+	InputPort<geometry_msgs::Twist> m_cartTwistPort;
 	InputPort<std::vector<double> > m_addJntTrqPort;
-        InputPort<geometry_msgs::Wrench> m_addTcpWrenchPort;
-        //InputPort<JointImpedances> m_jntImpedancePort;
-        //InputPort<CartesianImpedance> m_cartImpedancePort;
+	InputPort<geometry_msgs::Wrench> m_addTcpWrenchPort;
+	//InputPort<JointImpedances> m_jntImpedancePort;
+	//InputPort<CartesianImpedance> m_cartImpedancePort;
 
 	int m_local_port,m_socket,m_remote_port, m_control_mode;
 

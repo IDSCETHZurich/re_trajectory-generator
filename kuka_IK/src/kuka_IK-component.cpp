@@ -42,18 +42,10 @@ namespace kuka_IK{
     	 this->addPort("msrCartPosPort", cartPosPort);
     	 this->addPort("RobotStatePort", RobotStatePort);
 
-
     	 jntPos = std::vector<double>(7,0.0);
     }
 
     bool kuka_IK::cartPosInputHandle(RTT::base::PortInterface* portInterface){
-	   //Jacobian
-	   MatrixXf Jacobian(6,7);
-	   VectorXf xDot(6);
-	   VectorXf thetaDot(7);
-
-
-
     	input_cartPosPort.read(commandedState);
 
     	if(commandedState.size()!=13)
@@ -73,16 +65,13 @@ namespace kuka_IK{
         for ( int i = 0; i < 6; i++)
           for ( int j = 0; j < 7; j++)
   			Jacobian(i,j) = tmpRobotData.jacobian[i*7+j];
+        cout << "Jacobian = "  << endl << Jacobian << endl;
 
-
-        for ( int i = 7; i < 13; i++)
-        	xDot(i-7) = commandedState[i];
+        for ( int i = 0; i < 6; i++)
+        	xDot(i) = commandedState[i+7];
 
         thetaDot = (	((Jacobian.transpose()*Jacobian).inverse())	*	Jacobian.transpose()	)	*	xDot;
-
-
-
-
+        cout << "thetaDot = "  << endl << thetaDot << endl;
 
 #if DEBUG
     	cout << "Pose.position.y  = " << commandedPose.position.y << endl;
@@ -164,6 +153,7 @@ namespace kuka_IK{
         for(int i=0; i < 7; i++){
     		tmpJntState.position.push_back(commndedPoseJntPos[i]);
     		tmpJntState.velocity.push_back(thetaDot[i]);
+    		//tmpJntState.velocity.push_back(0.0);
     	}
 
     	output_jntPosPort.write(tmpJntState);
@@ -226,11 +216,8 @@ namespace kuka_IK{
 			}
 			//output_jntPosPort.write(tmpJntState);
 
-
-
 			if ((yI == gridSize-1 && y_inc==1) || (yI == 0 && y_inc == -1) ) { y_inc=y_inc*-1;  xI++; }
 			else yI = yI + y_inc;
-
 
     	}else{
     		std::cout << "Grid Scanning Done. Calling stopHook()" << std::endl;

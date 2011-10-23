@@ -71,8 +71,10 @@ class kuka_IK
    tFriRobotData tmpRobotData;
    ///@}
 
-
-
+   //Jacobian
+   Matrix<double, 6, 7>	Jacobian;
+   Matrix<double, 6, 1>	xDot;
+   Matrix<double, 7, 1>	thetaDot;
 
    ///Dimensionality reduction: Grid parameters
    int xI,yI,y_inc;

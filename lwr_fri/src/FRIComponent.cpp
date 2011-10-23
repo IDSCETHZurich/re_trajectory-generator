@@ -46,6 +46,8 @@ FRIComponent::FRIComponent(const string& name) :
 	this->addAttribute("fromKRL", m_fromKRL);
 	this->addAttribute("toKRL", m_toKRL);
 
+	this->addPort("RobotData", m_RobotDataPort).doc(
+			"Port containing the data of the robot");
 	this->addPort("RobotState", m_RobotStatePort).doc(
 			"Port containing the status of the robot");
 	this->addPort("FRIState", m_FriStatePort).doc(
@@ -146,6 +148,7 @@ void FRIComponent::updateHook() {
 				<< sizeof(tFriMsrData) << endlog();
 	else {
 		m_RobotStatePort.write(m_msr_data.robot);
+		m_RobotDataPort.write(m_msr_data.data);
 		m_FriStatePort.write(m_msr_data.intf);
 
 		/*
@@ -154,7 +157,6 @@ void FRIComponent::updateHook() {
 		 this->stop();
 		 }
 		 */
-
 		m_fromKRL = m_msr_data.krl;
 		for (unsigned int i = 0; i < LBR_MNJ; i++)
 			m_jntPos[i] = m_msr_data.data.msrJntPos[i];
