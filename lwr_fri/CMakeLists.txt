@@ -26,8 +26,8 @@ if (ROS_ROOT)
   rosbuild_init()
   rosbuild_find_ros_package( rtt )
   rosbuild_find_ros_package( ocl )
-  set( RTT_HINTS HINTS ${rtt_PACKAGE_PATH}/install )
-  set( OCL_HINTS HINTS ${ocl_PACKAGE_PATH}/install )
+  set( RTT_HINTS HINTS ${rtt_PACKAGE_PATH}/../install )
+# set( OCL_HINTS HINTS ${ocl_PACKAGE_PATH}/install )
 endif()
 
 # Set the CMAKE_PREFIX_PATH in case you're not using Orocos through ROS

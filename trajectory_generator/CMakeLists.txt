@@ -12,9 +12,8 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 rosbuild_init()
 
 # Modified by Gajan
-#rosbuild_add_library(${PROJECT_NAME} src/VelocityProfile_NonZeroInit.cpp)
 rosbuild_find_ros_package(rtt )
-find_package(Orocos-RTT HINTS ${rtt_PACKAGE_PATH}/install )
+find_package(Orocos-RTT HINTS ${rtt_PACKAGE_PATH}/../install )
 # Defines the orocos_* cmake macros. See that file for additional
 # documentation.
 include(${OROCOS-RTT_USE_FILE_PATH}/UseOROCOS-RTT.cmake)
