@@ -82,13 +82,13 @@ namespace trajectory_generator
 			m_position_desi_port.write(pose);
 
 			//TO ROS Visualization
-#if 0
+
 			geometry_msgs::PoseStamped poseStamped;
 			poseStamped.header.frame_id = "/frame_id_1";
 			poseStamped.header.stamp = ros::Time::now();
 			poseStamped.pose = pose;
 			m_position_desi_port2ROS.write(poseStamped);
-
+#if 0
 			std::cout << "DesPosePort   : " << "x:"<< pose.position.x << " y:"<< pose.position.y << " z:"
 					<< pose.position.z << std::endl;
 			std::cout << "-->Orientation: " << "x:"<< pose.orientation.x << " y:"<< pose.orientation.y

@@ -198,6 +198,7 @@ namespace trajectory_generator
 			log(Info) << time_passed << endlog();
 			jntPosCmd.clear();
 			jntState.position.clear();
+			jntState.header.stamp = ros::Time::now();
 			for(int i = 0; i < (int)motionProfile.size(); i++){
 				jntPosCmd.push_back(motionProfile[i].Pos(time_passed));
 				jntState.position.push_back(motionProfile[i].Pos(time_passed));
