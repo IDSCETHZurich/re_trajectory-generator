@@ -90,13 +90,29 @@ namespace trajectory_generator
       Vector3d										currentRotationalAxis;
       double										deltaTheta;
 
-      //bool                                        m_is_moving,m_once;
+      double t_sync;
+      double theta_vel;
+      double xi,yi,zi,xf,yf,zf;
+      double TrajVectorMagnitude;
+      struct VectorDirection
+      {
+    	  double x;
+    	  double y;
+    	  double z;
+      } TrajVectorDirection;
+
+      bool move_robot;
+      bool position_ready;
+      bool orientation_ready;
+      bool pose_ready;
+      geometry_msgs::Pose desired_pose;
+
+
 
     protected:
       /// Dataport containing the current measured end-effector
       /// frame, shared with OCL::CartesianSensor
       RTT::InputPort< geometry_msgs::Pose >   		m_position_meas_port;
-      
 
       RTT::InputPort< geometry_msgs::Pose > cmdCartPose;
 

@@ -115,8 +115,8 @@ namespace kuka_IK{
 #endif
 
 
-    	//if (!(KukaLWR_Kinematics::ikSolver(jntPos, commandedPose, commndedPoseJntPos))){
-    	if (!(KukaLWR_Kinematics::ikSolverIterative7DOF(jntPos, commandedPose, commndedPoseJntPos))){
+    	if (!(KukaLWR_Kinematics::ikSolver(jntPos, commandedPose, commndedPoseJntPos))){
+    	//if (!(KukaLWR_Kinematics::ikSolverIterative7DOF(jntPos, commandedPose, commndedPoseJntPos))){
     		cout << "lastCommandedPose cannot be achieved" << endl;
     		for(int i = 0; i < 7; i++)  std::cout << commndedPoseJntPos[i] << " " ;
     		std::cout << std::endl;
@@ -188,8 +188,6 @@ namespace kuka_IK{
 				tmpJntState.position.push_back(commndedPoseJntPos[i]);
 			}
 			//output_jntPosPort.write(tmpJntState);
-
-
 
 			if ((yI == gridSize-1 && y_inc==1) || (yI == 0 && y_inc == -1) ) { y_inc=y_inc*-1;  xI++; }
 			else yI = yI + y_inc;
