@@ -78,8 +78,6 @@ namespace trajectory_generator
         jntState.name.push_back("arm_7_joint");
 
 
-
-
     }
 
     TrajectoryGenerator::~TrajectoryGenerator()
@@ -100,36 +98,62 @@ namespace trajectory_generator
 			p_right = p_max[i] - 0.5*v_max[i]*v_max[i]/a_max[i];
 			// Left phase-plane constraint
 			if (robotState.position[i] < p_left)
-			{
 				vM[i] = sign(robotState.velocity[i])*(sqrt(2*(p_left - p_min[i])*a_max[i]));
-			}
+
 			// Constant Velocity Limits
 			else if (robotState.position[i] < p_right)
-			{
 				vM[i] = sign(robotState.velocity[i])*v_max[i];
-			}
+
 			// Right phase-plane constraint
 			else
-			{
 				vM[i] = sign(robotState.velocity[i])*(sqrt(2*(p_max[i] - p_right)*a_max[i]));
-			}
 
 			// If the requested velocity is higher than maximum, we calculate the scaling factor
-			if (robotState.velocity[i] > vM[i])
+			if (abs(robotState.velocity[i]) > abs(vM[i]))
+			{
 				scale[i] = robotState.velocity[i]/vM[i];
+				cout << "The requested velocity is higher than it should. Rescaling from "
+						<< robotState.velocity[i] << " to " << vM[i] << " by a factor " << scale[i] << endl;
+			}
 		}
 
 		// Find maximum scale
-		int scaleM = 1.0;
-		for(i=0 ; i<robotState.velocity.size() ; i++)
+		double scaleM = 1.0;
+		for(i=0 ; i<scale.size() ; i++)
 			if (scale[i]>scaleM)
 				scaleM = scale[i];
+
+//		// See when the velocities have to be scaled
+//		cout << "vel:  " ;
+//		for(int i=0; i<7; i++)
+//			cout << " " << robotState.velocity[i];
+//		cout << endl;
+//
+//		cout << "pos:  " ;
+//		for(int i=0; i<7; i++)
+//			cout << " " << robotState.position[i];
+//		cout << endl;
+//
+//		cout << "vM:  " ;
+//		for(int i=0; i<7; i++)
+//			cout << " " << vM[i];
+//		cout << endl;
+//
+//		cout << "scale (vector):  " ;
+//		for(int i=0; i<7; i++)
+//			cout << " " << scale[i];
+//		cout << endl;
+//
+//		cout << "scale:" << scaleM << endl;
+
 
 		// Recalculate velocities in the Robot Space if the scale factor is greater than one
 		if (scaleM > 1.0)
 		{
 			for(i=0 ; i<robotState.velocity.size() ; i++)
 				robotState.velocity[i] /= scaleM;
+
+
 
 			return 1;
 		}
@@ -176,10 +200,13 @@ namespace trajectory_generator
 
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
 
-    	#if DEBUG
+#if DEBUG
     	cout << "a new jnt pose arrived" << endl;
 #endif
     	input_jntPosPort.read(cmdJntState);
+
+    	jntVelScaling(cmdJntState);
+
     	lastCommandedPoseJntPos = cmdJntState.position;
     	lastCommandedPoseJntVel = cmdJntState.velocity;
 

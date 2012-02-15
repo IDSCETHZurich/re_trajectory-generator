@@ -8,7 +8,7 @@
   <simple name="Synchronize" type="boolean"><description>Set to true if the timestamp should be synchronized with the logging</description><value>0</value></simple>
   <struct name="ReportData" type="PropertyBag">
      <description>A PropertyBag which defines which ports or components to report.</description>
-     <simple name="Port" type="string"><value>trajectoryGenerator.JointPositionDes</value></simple>
+     <simple name="Port" type="string"><value>FRIServer.desJntPos</value></simple>
      <simple name="Port" type="string"><value>FRIServer.msrJntTrq</value></simple>
      <simple name="Port" type="string"><value>FRIServer.msrJntPos</value></simple>
   </struct>

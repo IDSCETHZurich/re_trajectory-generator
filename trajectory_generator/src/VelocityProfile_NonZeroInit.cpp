@@ -96,9 +96,16 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _inivel, double _finalvel)
 {
 	//Precondition
-	if (abs(_inivel) > maxVel || abs(_finalvel) > maxVel )
+	if (abs(_inivel) > maxVel)
 	{
 		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << endl;
+		cout << "Profile will not be built" << endl;
+		return false;
+	}
+
+	if (abs(_finalvel) > maxVel)
+	{
+		cout << "VelocityProfile_NonZeroInit::SetProfile: Final velocity higher than maximum" << endl;
 		cout << "Profile will not be built" << endl;
 		return false;
 	}

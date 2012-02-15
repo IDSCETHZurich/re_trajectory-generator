@@ -71,7 +71,12 @@ class kuka_IK
    tFriRobotData tmpRobotData;
    ///@}
 
-   //Jacobian
+   // Robot Kinematic Chain declaration
+   KDL::Chain robotChain;
+   //KDL::ChainIkSolverVel_pinv ikvelsolver;
+
+
+   // Jacobian
    Matrix<double, 6, 7>	Jacobian;
    Matrix<double, 6, 1>	xDot;
    Matrix<double, 7, 1>	thetaDot;

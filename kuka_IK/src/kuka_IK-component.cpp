@@ -43,13 +43,52 @@ namespace kuka_IK{
     	 this->addPort("RobotStatePort", RobotStatePort);
 
     	 jntPos = std::vector<double>(7,0.0);
+
+    	 // Creation of the Kinematic Robot Chain based on D-H parameters
+    	 robotChain = Chain();
+    	 robotChain.addSegment(Segment(Joint(Joint::RotZ), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.31))));
+    	 robotChain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.2))));
+    	 robotChain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.2))));
+    	 robotChain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.2))));
+    	 robotChain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.19))));
+    	 robotChain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI))));
+    	 robotChain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.078))));
+
+    	 // Definition of the solver for joint velocity
+    	 //KDL::ChainIkSolverVel_pinv ikvelsolver = KDL::ChainIkSolverVel_pinv(robotChain); // Other parameters are default eps=0.00001 & iter=150
+
     }
 
     bool kuka_IK::cartPosInputHandle(RTT::base::PortInterface* portInterface){
     	input_cartPosPort.read(commandedState);
-
     	if(commandedState.size()!=13)
     		std::cout << "vector dimensions does not agree" << std::endl;
+
+    	KDL::ChainIkSolverVel_pinv ikvelsolver = KDL::ChainIkSolverVel_pinv(robotChain);
+
+    	// Read out the robot joint position
+    	msr_jntPosPort.read(jntPos);
+    	KDL::JntArray q_init,qdot_out;
+    	Eigen::Matrix<double, 7, 1> vec7d;
+    	for(int i=0; i< 7; i++)
+    		vec7d[i] = jntPos[i];
+
+    	q_init.data = vec7d;
+
+    	KDL::Twist v_in;
+    	v_in.vel = KDL::Vector(commandedState[7],commandedState[8],commandedState[9]);
+    	v_in.rot = KDL::Vector(commandedState[10],commandedState[11],commandedState[12]);
+    	//std::cout << "LINE 87" << std::endl;
+
+    	Eigen::Matrix<double, 7, 1> tmpVec;
+    	for(int i=0; i< 7; i++)
+    		tmpVec[i] = 0.0;
+    	qdot_out.data = tmpVec;
+
+        ikvelsolver.CartToJnt(q_init, v_in, qdot_out);
+
+//        for ( int i = 0; i < 6; i++)
+//        	xDot(i) = commandedState[i+7];
 
     	commandedPose.position.x = commandedState[0];
     	commandedPose.position.y = commandedState[1];
@@ -58,27 +97,23 @@ namespace kuka_IK{
     	commandedPose.orientation.y = commandedState[4];
     	commandedPose.orientation.z = commandedState[5];
     	commandedPose.orientation.w = commandedState[6];
-
     	//rest is the twist
-    	RobotStatePort.read(tmpRobotData);
 
-        for ( int i = 0; i < 6; i++)
-          for ( int j = 0; j < 7; j++)
-  			Jacobian(i,j) = tmpRobotData.jacobian[i*7+j];
-        cout << "Jacobian = "  << endl << Jacobian << endl;
 
-        for ( int i = 0; i < 6; i++)
-        	xDot(i) = commandedState[i+7];
-
-        thetaDot = (	((Jacobian.transpose()*Jacobian).inverse())	*	Jacobian.transpose()	)	*	xDot;
-        cout << "thetaDot = "  << endl << thetaDot << endl;
+//    	RobotStatePort.read(tmpRobotData);
+//		//TODO: Clean from code of Jacobian from FRI once we have tested the IkSolverVel
+//        for ( int i = 0; i < 6; i++)
+//          for ( int j = 0; j < 7; j++)
+//  			Jacobian(i,j) = tmpRobotData.jacobian[i*7+j];
+//        cout << "Jacobian = "  << endl << Jacobian << endl;
+//        thetaDot = (	((Jacobian.transpose()*Jacobian).inverse())	*	Jacobian.transpose()	)	*	xDot;
+//        cout << "thetaDot = "  << endl << thetaDot << endl;
 
 #if DEBUG
     	cout << "Pose.position.y  = " << commandedPose.position.y << endl;
     	cout << "Pose.position.z  = " << commandedPose.position.z << endl;
 #endif
-    	// Read out the robot joint position
-    	msr_jntPosPort.read(jntPos);
+
 
 #if DEBUG
     	std::cout << " kuka-IK-component.cpp: jntPos" << std::endl;
@@ -97,16 +132,7 @@ namespace kuka_IK{
 
     	cout << "Frame from Robot" << endl << tmpFrame << endl;
 
-    	//Debugging Iterative IK
-		KDL::Chain chain = Chain();
-		chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.31))));
-		chain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.2))));
-		chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.2))));
-		chain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI), Vector(0.0, 0.0, 0.2))));
-		chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.19))));
-		chain.addSegment(Segment(Joint(Joint::RotY), Frame(Rotation::RotZ(M_PI))));
-		chain.addSegment(Segment(Joint(Joint::RotZ), Frame(Vector(0.0, 0.0, 0.078))));
-
+     	//Debugging Iterative IK
 		ChainFkSolverPos_recursive fksolver(chain);
 
 		// Create joint array
@@ -147,12 +173,14 @@ namespace kuka_IK{
     		for(int i = 0; i < 7; i++)  std::cout << commndedPoseJntPos[i] << " " ;
     		std::cout << std::endl;
     	}
+    	//cout << "passing line 164" << endl;
         
         sensor_msgs::JointState tmpJntState;
         tmpJntState.position.clear();
         for(int i=0; i < 7; i++){
     		tmpJntState.position.push_back(commndedPoseJntPos[i]);
-    		tmpJntState.velocity.push_back(thetaDot[i]);
+    		//tmpJntState.velocity.push_back(thetaDot(i));
+    		tmpJntState.velocity.push_back(qdot_out.data(i));
     		//tmpJntState.velocity.push_back(0.0);
     	}
 
@@ -163,68 +191,10 @@ namespace kuka_IK{
 
     bool kuka_IK::configureHook(){return true;}
     bool kuka_IK::startHook(){
-#if 0
-    	std::cout << "Dimensionality Reduction - data acquisition STARTED" << std::endl;
-    	xI=0;yI=0;y_inc=1;
-    	logFile.open ("log.txt");
-    	logFile << "Dimensionality Reduction LOGS\n";
-#endif
+
     	return true;}
     void kuka_IK::updateHook(){
-#if 0
-    	//Dimensionality Reduction - data acquisition
-    	int gridSize = 20;
-    	if(xI < gridSize && yI < gridSize){
-    		std::cout << std::endl << "============= xI=" << xI << ", yI = " << yI <<" ==============" << std::endl;
-			//Generate Pose on Horizontal Grid
-			geometry_msgs::Pose gridPointPose;
-			gridPointPose.orientation.x = 0.0;
-			gridPointPose.orientation.y = 0.0;
-			gridPointPose.orientation.z = 0.0;
-			gridPointPose.orientation.w = 1.0;
 
-			gridPointPose.position.z = 0.77;
-			gridPointPose.position.x = -0.55 + xI*0.01;
-			gridPointPose.position.y = -0.15 + yI*0.01;
-
-			msr_jntPosPort.read(jntPos);
-			//std::cout << " KUKA-IK-component.cpp: jntPos" << std::endl;
-			//for(int i = 0; i < 7; i++)  std::cout << jntPos[i] << " " ; std::cout << std::endl;
-			std::cout << " KUKA-IK-component.cpp: commndedCartPos" << std::endl;
-			std::cout << gridPointPose.position.x << " " << gridPointPose.position.y << " " << gridPointPose.position.z << std::endl;
-			logFile << gridPointPose.position.x << "," << gridPointPose.position.y << "," << gridPointPose.position.z  << ", ";
-
-			commndedPoseJntPos = std::vector<double>(7,0.0);
-
-			if (!(KukaLWR_Kinematics::ikSolverIterative7DOF(jntPos, gridPointPose, commndedPoseJntPos))){
-				cout << "lastCommandedPose cannot be achieved" << endl;
-				for(int i = 0; i < 7; i++) {
-					std::cout << commndedPoseJntPos[i] << " " ;
-				}
-				std::cout << std::endl;
-				logFile << "IK Solver failed \n";
-			}
-
-			for(int i = 0; i < 7; i++)	logFile << commndedPoseJntPos[i] << "," ;
-			logFile << "\n";
-
-			//Sending out to trajectory_generator
-			sensor_msgs::JointState tmpJntState;
-			tmpJntState.position.clear();
-			for(int i=0; i < 7; i++){
-				tmpJntState.position.push_back(commndedPoseJntPos[i]);
-			}
-			//output_jntPosPort.write(tmpJntState);
-
-			if ((yI == gridSize-1 && y_inc==1) || (yI == 0 && y_inc == -1) ) { y_inc=y_inc*-1;  xI++; }
-			else yI = yI + y_inc;
-
-    	}else{
-    		std::cout << "Grid Scanning Done. Calling stopHook()" << std::endl;
-    		logFile.close();
-    		this->stop();
-    	}
-#endif
     }
     void kuka_IK::stopHook(){}
     void kuka_IK::cleanupHook(){}
