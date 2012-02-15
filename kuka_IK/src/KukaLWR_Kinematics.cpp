@@ -60,6 +60,12 @@ bool KukaLWR_Kinematics::ikSolver(std::vector<double> & jntPosMsr, geometry_msgs
     // wrist position
     KDL::Vector pW = p - D7 * R.UnitZ();
 
+    std::cout << "Rotation matrix" << std::endl;
+    std::cout << R << std::endl;
+    std::cout << "x:" << pW.x() << "; y:" << pW.y() << "; z:" << pW.z() << std::endl;
+    std::cout << "D3:" << D3 << "; D5:" << D5 << std::endl;
+    std::cout << "num:" << (mod_pW - D3*D3 - D5*D5) << "; den:" << (2*D3*D5) << std::endl;
+
     // Calculate wrist position
     jntPosDsr[0] = std::atan2(pW[1], pW[0]);
     mod_pW = pow(pW.Norm(),2);

@@ -167,8 +167,8 @@ namespace kuka_IK{
 #endif
 
 
-    	//if (!(KukaLWR_Kinematics::ikSolver(jntPos, commandedPose, commndedPoseJntPos))){
-    	if (!(KukaLWR_Kinematics::ikSolverIterative7DOF(jntPos, commandedPose, commndedPoseJntPos))){
+    	if (!(KukaLWR_Kinematics::ikSolver(jntPos, commandedPose, commndedPoseJntPos))){
+    	//if (!(KukaLWR_Kinematics::ikSolverIterative7DOF(jntPos, commandedPose, commndedPoseJntPos))){
     		cout << "lastCommandedPose cannot be achieved" << endl;
     		for(int i = 0; i < 7; i++)  std::cout << commndedPoseJntPos[i] << " " ;
     		std::cout << std::endl;
@@ -194,7 +194,6 @@ namespace kuka_IK{
 
     	return true;}
     void kuka_IK::updateHook(){
-
     }
     void kuka_IK::stopHook(){}
     void kuka_IK::cleanupHook(){}
