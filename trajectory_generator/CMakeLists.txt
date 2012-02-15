@@ -12,9 +12,8 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 rosbuild_init()
 
 # Modified by Gajan
-#rosbuild_add_library(${PROJECT_NAME} src/VelocityProfile_NonZeroInit.cpp)
 rosbuild_find_ros_package(rtt )
-find_package(Orocos-RTT HINTS ${rtt_PACKAGE_PATH}/install )
+find_package(Orocos-RTT HINTS ${rtt_PACKAGE_PATH}/../install )
 # Defines the orocos_* cmake macros. See that file for additional
 # documentation.
 include(${OROCOS-RTT_USE_FILE_PATH}/UseOROCOS-RTT.cmake)
@@ -22,9 +21,9 @@ orocos_library(${PROJECT_NAME} src/VelocityProfile_NonZeroInit.cpp)
 orocos_component(${PROJECT_NAME} src/CartesianGenerator.cpp  src/TrajectoryGenerator.cpp)
 
 #set the default path for built executables to the "bin" directory
-#set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
-#set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #uncomment if you have defined messages
 #rosbuild_genmsg()

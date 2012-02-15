@@ -77,6 +77,7 @@ namespace trajectory_generator
         jntState.name.push_back("arm_6_joint");
         jntState.name.push_back("arm_7_joint");
 
+        timeLogger.open("timeLog.txt");
 
     }
 
@@ -257,6 +258,8 @@ namespace trajectory_generator
     			maxDuration = motionProfile[i].Duration();
     	}
 
+    	timeLogger << maxDuration << endl;
+
     	//Do sync
     	if(doSync){
 			for(int i = 0; i < (int)lastCommandedPoseJntPos.size(); i++){
@@ -280,6 +283,7 @@ namespace trajectory_generator
 			log(Info) << time_passed << endlog();
 			jntPosCmd.clear();
 			jntState.position.clear();
+			jntState.header.stamp = ros::Time::now();
 			for(int i = 0; i < (int)motionProfile.size(); i++){
 				jntPosCmd.push_back(motionProfile[i].Pos(time_passed));
 				jntState.position.push_back(motionProfile[i].Pos(time_passed));
@@ -306,13 +310,13 @@ namespace trajectory_generator
 
     void TrajectoryGenerator::stopHook()
     {
+    	timeLogger.close();
     }
 
     void TrajectoryGenerator::cleanupHook()
     {
 
     }
-
 
 }//namespace
 

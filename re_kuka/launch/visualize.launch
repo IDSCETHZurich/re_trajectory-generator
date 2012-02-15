@@ -6,9 +6,7 @@
 
   <!-- State publisher -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" >
-	<!--<remap from="joint_states" to="joint_positions"/>-->
-  </node>  
+  </node>
 
   <node pkg="rviz" type="rviz" output="screen" name="rviz" />
 </launch>
-

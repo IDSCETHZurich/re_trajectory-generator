@@ -65,7 +65,6 @@ namespace trajectory_generator
 			geometry_msgs::Pose pose;
 			double theta;
 
-
 			pose.position.x=motionProfile[0].Pos(m_time_passed);
 			pose.position.y=motionProfile[1].Pos(m_time_passed);
 			pose.position.z=motionProfile[2].Pos(m_time_passed);
@@ -83,6 +82,7 @@ namespace trajectory_generator
 			m_position_desi_port.write(pose);
 
 			//TO ROS Visualization
+
 			geometry_msgs::PoseStamped poseStamped;
 			poseStamped.header.frame_id = "/frame_id_1";
 			poseStamped.header.stamp = ros::Time::now();
