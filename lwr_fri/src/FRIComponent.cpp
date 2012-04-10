@@ -118,11 +118,11 @@ bool FRIComponent::configureHook() {
 
 	//Add trajectoryGenerator as peer
 	if(this->hasPeer("trajectoryGenerator")){
-		updateTG = this->getPeer("trajectoryGenerator")->getOperation("updateTG");
+		updateGenerator = this->getPeer("trajectoryGenerator")->getOperation("updateTG");
 	}
 
 	if(this->hasPeer("cartesianGenerator")){
-		updateCG = this->getPeer("cartesianGenerator")->getOperation("updateCG");
+		updateGenerator = this->getPeer("cartesianGenerator")->getOperation("updateCG");
 	}
 
 	return true;
@@ -256,15 +256,17 @@ void FRIComponent::updateHook() {
 		if (m_msr_data.intf.state == FRI_STATE_CMD) {
 			if (m_control_mode == 1) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_JNTPOS;
-				if(updateTG()){
+				if(updateGenerator()){
 					if (NewData == m_jntPosPort.read(m_jntPos))
 						for (unsigned int i = 0; i < LBR_MNJ; i++)
 							m_cmd_data.cmd.jntPos[i] = m_jntPos[i];
 //					std::cout << "FRI: "<< m_jntPos[0] << " " << m_jntPos[1] << " " << m_jntPos[2] << " "
 //							<< m_jntPos[3] << " " << m_jntPos[4] << " " << m_jntPos[5] << " "
 //							<< m_jntPos[6] << std::endl;
+				}else{
+					for (unsigned int i = 0; i < LBR_MNJ; i++)
+						m_cmd_data.cmd.jntPos[i] = m_jntPos[i];
 				}
-
 
 
 			} else	if (m_control_mode == 2) {
@@ -280,7 +282,7 @@ void FRIComponent::updateHook() {
 								= m_jntTorques[i];
 			} else if (m_control_mode == 4) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_CARTPOS;
-				if(updateCG()){
+				if(updateGenerator()){
 					if (NewData == m_cartPosPort.read(m_cartPos)) {
 						KDL::Rotation rot = KDL::Rotation::Quaternion(
 								m_cartPos.orientation.x, m_cartPos.orientation.y,
@@ -300,6 +302,10 @@ void FRIComponent::updateHook() {
 						m_cmd_data.cmd.cartPos[11] = m_cartPos.position.z;
 					}//end of if NewData
 				}//end of if updateCG
+				else{
+					for (unsigned int i = 0; i < FRI_CART_FRM_DIM; i++)
+						m_cmd_data.cmd.cartPos[i] = m_msr_data.data.cmdCartPos[i];
+				}
 
 			} else if (m_control_mode == 5) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_TCPFT;

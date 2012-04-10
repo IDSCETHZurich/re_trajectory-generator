@@ -87,6 +87,7 @@ namespace trajectory_generator
     	 *        -1 There was an error: output values are not valid
     	 */
     	int jntVelScaling(sensor_msgs::JointState (&robotState));
+    	double maxDuration;
 
     public:
         /**

@@ -196,7 +196,7 @@ namespace trajectory_generator
     bool TrajectoryGenerator::generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface)
     {
     	//Create joint specific velocity profiles
-    	double maxDuration = 0.0;
+    	maxDuration = 0.0;
     	double p_aux = 0.0;
 
     	time_passed = os::TimeService::Instance()->secondsSince(time_begin);
