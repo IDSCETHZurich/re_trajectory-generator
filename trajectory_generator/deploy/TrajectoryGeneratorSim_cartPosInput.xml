@@ -7,13 +7,14 @@
 	<simple name="Import" type="string"><value>rtt_std_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_sensor_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_geometry_msgs</value></simple>
+	<simple name="Import" type="string"><value>rtt_nav_msgs</value></simple>
 	<simple name="Import" type="string"><value>kuka_IK</value></simple>
 	
-	<struct name="ROSConPoseIn" type="ConnPolicy">
+	<struct name="ROSConOdoIn" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple>
   		<simple name="size" type="short"><value>1</value></simple>
   		<simple name="transport" type="short"><value>3</value></simple>
-  		<simple name="name_id" type="string"><value>poseDsr</value></simple>
+  		<simple name="name_id" type="string"><value>odometryDsr</value></simple>
 	</struct>
 	
 	<struct name="ROSConJntPosOut" type="ConnPolicy">
@@ -31,7 +32,7 @@
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
 		<struct name="Ports" type="PropertyBag">
-    			<simple name="CartesianPoseInput" type="string"><value>ROSConPoseIn</value></simple>
+    			<simple name="CartesianPoseInput" type="string"><value>ROSConOdoIn</value></simple>
     			<simple name="JointPositionDes" type="string"><value>jntPosIK2TG</value></simple>
     			<simple name="JointPositionMsr" type="string"><value>jntPosTG2IK</value></simple>
   		</struct>

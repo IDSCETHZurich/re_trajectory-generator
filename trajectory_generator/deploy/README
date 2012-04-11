@@ -17,26 +17,26 @@ cartPosInput - cartesian position input (geometry_msgs::Pose)
 
 TrajectoryGeneratorSim_jntPosInput.xml
 -----------------------------------
-roslaunch trajectory_generator visualize.launch (config_TrajectoryGenerator.vcg)
+roslaunch re_kuka visualize.launch (config_TrajectoryGenerator.vcg)
 trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorSim_jntPosInput.xml (*1)
 rosrun  poseToOrocos jntPosLoop 
 
 TrajectoryGeneratorSim_cartPosInput.xml
 ------------------------------------
-roslaunch trajectory_generator visualize.launch  (config_TrajectoryGenerator.vcg)
+roslaunch re_kuka visualize.launch  (config_TrajectoryGenerator.vcg)
 trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorSim_cartPosInput.xml (*1)
 rosrun  poseToOrocos poseLoop 
 
 TrajectoryGeneratorReal_jntPosInput.xml
 -----------------------------------
-roslaunch trajectory_generator visualize.launch 
+roslaunch re_kuka visualize.launch 
 trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorReal_jntPosInput.xml (*1)
 rosrun  poseToOrocos jntPosLoop 
 KRC side - select joint position control
 
 TrajectoryGeneratorReal_cartPosInput.xml
 -----------------------------------
-roslaunch trajectory_generator visualize.launch 
+roslaunch re_kuka visualize.launch 
 trajectory_generator/deploy$ ./run.sh TrajectoryGeneratorReal_cartPosInput.xml (*1)
 rosrun  poseToOrocos poseLoop 
 KRC side - select joint position control
@@ -45,7 +45,7 @@ CartesianGeneratorSim_cartPosInput.xml
 -------------------------
 trajectory_generator/deploy$ ./run.sh CartesianGeneratorSim_cartPosInput.xml (*1) 
 rosrun poseToOrocos poseStampedLoop
-roslaunch trajectory_generator visualize.launch (config_CartesianGenerator.vcg)
+roslaunch re_kuka visualize.launch (config_CartesianGenerator.vcg)
 Topics Published to ROS: [/poseStampedCmd],[/poseStampedDsr] (type:geometry_msgs::PoseStamped)
 
 CartesianGeneratorReal_cartPosInput.xml
@@ -54,7 +54,7 @@ trajectory_generator/deploy$ ./run.sh CartesianGeneratorReal_cartPosInput.xml (*
 (Set cartesin impedence ,Go in to FRI monitor mode, 
 reset the CartesianGenerator, and then go to FRI command mode)
 rosrun poseToOrocos poseStampedLoop
-roslaunch trajectory_generator visualize.launch 
+roslaunch re_kuka visualize.launch 
 KRC side - select Cartesian stiffness mode
 
 *1 - should be executed inside trajectory_generator/deploy

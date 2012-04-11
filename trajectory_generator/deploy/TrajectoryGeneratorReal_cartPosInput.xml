@@ -8,13 +8,14 @@
 	<simple name="Import" type="string"><value>rtt_std_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_sensor_msgs</value></simple>
 	<simple name="Import" type="string"><value>rtt_geometry_msgs</value></simple>
+	<simple name="Import" type="string"><value>rtt_nav_msgs</value></simple>
 	<simple name="Import" type="string"><value>kuka_IK</value></simple>
 	
 	<struct name="ROSConPoseIn" type="ConnPolicy">
   		<simple name="type" type="short"><value>0</value></simple>
   		<simple name="size" type="short"><value>1</value></simple>
   		<simple name="transport" type="short"><value>3</value></simple>
-  		<simple name="name_id" type="string"><value>poseDsr</value></simple>
+  		<simple name="name_id" type="string"><value>odometryDsr</value></simple>
 	</struct>
 	
 	<struct name="ROSConJntPosOut" type="ConnPolicy">

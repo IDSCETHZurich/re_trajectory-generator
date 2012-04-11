@@ -33,10 +33,12 @@
 
 #include <geometry_msgs/Pose.h>
 #include <sensor_msgs/JointState.h>
+#include <nav_msgs/Odometry.h>
 #include "KukaLWR_Kinematics.hpp"
 #include <kdl/framevel.hpp>
 #include "friComm.h"
 #include <Eigen/Eigen>
+
 
 using namespace Eigen;
 
@@ -64,9 +66,7 @@ class kuka_IK
     * @brief intermediate command variables
     */
    std::vector<double> commndedPoseJntPos;
-   std::vector<double> commandedState;
-   geometry_msgs::Pose commandedPose;
-   geometry_msgs::Twist commandedTwist;
+   nav_msgs::Odometry commandedState;
    std::vector<double> jntPos;
    tFriRobotData tmpRobotData;
    ///@}
@@ -88,7 +88,7 @@ class kuka_IK
 
  protected:
        /// Dataport containing commanded Cartesian pose
-       RTT::InputPort<std::vector<double> > input_cartPosPort;
+       RTT::InputPort<nav_msgs::Odometry > input_cartPosPort;
        /// Dataport containing the command in joint angles
        RTT::OutputPort< sensor_msgs::JointState > output_jntPosPort;
        /// Dataport containing the measured joint angles from the Robot

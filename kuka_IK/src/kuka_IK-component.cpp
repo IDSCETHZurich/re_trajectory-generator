@@ -56,13 +56,10 @@ namespace kuka_IK{
 
     	 // Definition of the solver for joint velocity
     	 //KDL::ChainIkSolverVel_pinv ikvelsolver = KDL::ChainIkSolverVel_pinv(robotChain); // Other parameters are default eps=0.00001 & iter=150
-
     }
 
     bool kuka_IK::cartPosInputHandle(RTT::base::PortInterface* portInterface){
     	input_cartPosPort.read(commandedState);
-    	if(commandedState.size()!=13)
-    		std::cout << "vector dimensions does not agree" << std::endl;
 
     	KDL::ChainIkSolverVel_pinv ikvelsolver = KDL::ChainIkSolverVel_pinv(robotChain);
 
@@ -76,9 +73,8 @@ namespace kuka_IK{
     	q_init.data = vec7d;
 
     	KDL::Twist v_in;
-    	v_in.vel = KDL::Vector(commandedState[7],commandedState[8],commandedState[9]);
-    	v_in.rot = KDL::Vector(commandedState[10],commandedState[11],commandedState[12]);
-    	//std::cout << "LINE 87" << std::endl;
+    	v_in.vel = KDL::Vector(commandedState.twist.twist.linear.x, commandedState.twist.twist.linear.y, commandedState.twist.twist.linear.z);
+    	v_in.rot = KDL::Vector(commandedState.twist.twist.angular.x, commandedState.twist.twist.angular.y, commandedState.twist.twist.angular.z);
 
     	Eigen::Matrix<double, 7, 1> tmpVec;
     	for(int i=0; i< 7; i++)
@@ -87,93 +83,16 @@ namespace kuka_IK{
 
         ikvelsolver.CartToJnt(q_init, v_in, qdot_out);
 
-//        for ( int i = 0; i < 6; i++)
-//        	xDot(i) = commandedState[i+7];
-
-    	commandedPose.position.x = commandedState[0];
-    	commandedPose.position.y = commandedState[1];
-    	commandedPose.position.z = commandedState[2];
-    	commandedPose.orientation.x = commandedState[3];
-    	commandedPose.orientation.y = commandedState[4];
-    	commandedPose.orientation.z = commandedState[5];
-    	commandedPose.orientation.w = commandedState[6];
-    	//rest is the twist
-
-
-//    	RobotStatePort.read(tmpRobotData);
-//		//TODO: Clean from code of Jacobian from FRI once we have tested the IkSolverVel
-//        for ( int i = 0; i < 6; i++)
-//          for ( int j = 0; j < 7; j++)
-//  			Jacobian(i,j) = tmpRobotData.jacobian[i*7+j];
-//        cout << "Jacobian = "  << endl << Jacobian << endl;
-//        thetaDot = (	((Jacobian.transpose()*Jacobian).inverse())	*	Jacobian.transpose()	)	*	xDot;
-//        cout << "thetaDot = "  << endl << thetaDot << endl;
-
-#if DEBUG
-    	cout << "Pose.position.y  = " << commandedPose.position.y << endl;
-    	cout << "Pose.position.z  = " << commandedPose.position.z << endl;
-#endif
-
-
-#if DEBUG
-    	std::cout << " kuka-IK-component.cpp: jntPos" << std::endl;
-   		for(int i = 0; i < 7; i++)  std::cout << jntPos[i] << " " ;
-#endif
     	//Do IK and reset velocity profiles
     	commndedPoseJntPos = std::vector<double>(7,0.0);
 
-#if DEBUG
-    	cout <<  endl << endl;
-    	cout << "Beginning of Super Debugging" << endl;
-    	geometry_msgs::Pose tmpPose;
-    	cartPosPort.read(tmpPose);
-    	Frame tmpFrame;
-    	tf::PoseMsgToKDL(tmpPose, tmpFrame);
-
-    	cout << "Frame from Robot" << endl << tmpFrame << endl;
-
-     	//Debugging Iterative IK
-		ChainFkSolverPos_recursive fksolver(chain);
-
-		// Create joint array
-		unsigned int nj = chain.getNrOfJoints();
-		KDL::JntArray jointpositions = JntArray(nj);
-
-		// Assign some values to the joint positions
-		std::cout << "jntPos: ";
-		for(unsigned int i=0;i<nj;i++){
-			jointpositions(i)=jntPos[i];
-			std::cout << jntPos[i] << " ";
-		}
-		std::cout << std::endl;
-
-		// Create the frame that will contain the results
-		KDL::Frame cartpos;
-
-		// Calculate forward position kinematics
-		bool kinematics_status;
-		kinematics_status = fksolver.JntToCart(jointpositions,cartpos);
-		if(kinematics_status>=0){
-			std::cout << cartpos <<std::endl;
-			printf("%s \n","Success, thanks KDL!");
-		}else{
-			printf("%s \n","Error: could not calculate forward kinematics");
-			std::cout << cartpos <<std::endl;
-		}
-
-		cout << "End of Super Debugging" << endl << endl;
-
-		//End of Super Debugging
-#endif
-
-
-    	if (!(KukaLWR_Kinematics::ikSolver(jntPos, commandedPose, commndedPoseJntPos))){
-    	//if (!(KukaLWR_Kinematics::ikSolverIterative7DOF(jntPos, commandedPose, commndedPoseJntPos))){
+    	//if (!(KukaLWR_Kinematics::ikSolver(jntPos, commandedState.pose.pose, commndedPoseJntPos))){
+    	if (!(KukaLWR_Kinematics::ikSolverIterative7DOF(jntPos, commandedState.pose.pose, commndedPoseJntPos))){
+    	//if (!(KukaLWR_Kinematics::ikSolverAnalytical7DOF(commandedState.pose.pose, commndedPoseJntPos))){
     		cout << "lastCommandedPose cannot be achieved" << endl;
     		for(int i = 0; i < 7; i++)  std::cout << commndedPoseJntPos[i] << " " ;
     		std::cout << std::endl;
     	}
-    	//cout << "passing line 164" << endl;
         
         sensor_msgs::JointState tmpJntState;
         tmpJntState.position.clear();
