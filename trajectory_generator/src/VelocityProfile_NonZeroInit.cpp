@@ -67,8 +67,8 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 	//Precondition
 	if (abs(_inivel) > maxVel)
 	{
-		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << endl;
-		cout << "Profile will not be built" << endl;
+		std::cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << std::endl;
+		std::cout << "Profile will not be built" << std::endl;
 		return false;
 	}
 	initPos = pos1;
@@ -98,15 +98,15 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 	//Precondition
 	if (abs(_inivel) > maxVel)
 	{
-		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << endl;
-		cout << "Profile will not be built" << endl;
+		std::cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << std::endl;
+		std::cout << "Profile will not be built" << std::endl;
 		return false;
 	}
 
 	if (abs(_finalvel) > maxVel)
 	{
-		cout << "VelocityProfile_NonZeroInit::SetProfile: Final velocity higher than maximum" << endl;
-		cout << "Profile will not be built" << endl;
+		std::cout << "VelocityProfile_NonZeroInit::SetProfile: Final velocity higher than maximum" << std::endl;
+		std::cout << "Profile will not be built" << std::endl;
 		return false;
 	}
 	initPos = pos1;
@@ -136,13 +136,13 @@ bool VelocityProfile_NonZeroInit::SetProfile(double pos1,double pos2, double _in
 	//Precondition
 	if (abs(_inivel) > maxVel || abs(_finalvel) > maxVel )
 	{
-		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << endl;
-		cout << "Profile will not be built" << endl;
+		std::cout << "VelocityProfile_NonZeroInit::SetProfile: Initial velocity higher than maximum" << std::endl;
+		std::cout << "Profile will not be built" << std::endl;
 		return false;
 	}else if (_initime < 0)
 	{
-		cout << "VelocityProfile_NonZeroInit::SetProfile: Initial time cannot be negative" << endl;
-		cout << "Profile will not be built" << endl;
+		std::cout << "VelocityProfile_NonZeroInit::SetProfile: Initial time cannot be negative" << std::endl;
+		std::cout << "Profile will not be built" << std::endl;
 		return false;
 	}
 
@@ -373,7 +373,7 @@ void VelocityProfile_NonZeroInit::SetProfileDuration(double newDuration)
 			syncSign = -1.0;
 
 		if(abs(finalPos-initPos) < epsilon && abs(initVel) < epsilon )
-			cout << "Zero trajectory. It will not be synchronized" << endlog();
+			std::cout << "Zero trajectory. It will not be synchronized" << endlog();
 
 
 		///// The trajectory generator has been changed to allow for vf other than zero
