@@ -40,7 +40,6 @@
  *      Francisco Ramos, Ph.D., Dipl. Ing., ETH Zurich/UCLM
  *
  ****************************************************************************/
-
 #include <rtt/RTT.hpp>
 
 #include <rtt/TaskContext.hpp>
