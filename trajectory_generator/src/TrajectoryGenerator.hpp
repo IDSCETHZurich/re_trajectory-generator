@@ -41,6 +41,7 @@
  *
  ****************************************************************************/
 
+
 #include <rtt/RTT.hpp>
 
 #include <rtt/TaskContext.hpp>
@@ -169,7 +170,7 @@ namespace trajectory_generator
       /// Dataport containing the desired joint angles (In s)
       RTT::OutputPort< sensor_msgs::JointState >  output_jntPosPort_toROS;
 
-      ofstream timeLogger;
+      std::ofstream timeLogger;
 
   }; // class
 }//namespace
