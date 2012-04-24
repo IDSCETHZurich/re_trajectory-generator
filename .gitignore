@@ -2,3 +2,7 @@ lwr_fri/include/friComm.h
 .cproject
 .project
 .pydevproject
+*.pc
+*/build/
+*/lib/
+*/bin/
