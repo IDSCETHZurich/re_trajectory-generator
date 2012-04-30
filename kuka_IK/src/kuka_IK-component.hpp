@@ -47,7 +47,7 @@ class kuka_IK
     : public RTT::TaskContext
 {
  public:
-    kuka_IK(string const& name);
+    kuka_IK(std::string const& name);
 
     bool configureHook();
     bool startHook();
@@ -84,7 +84,7 @@ class kuka_IK
    ///Dimensionality reduction: Grid parameters
    int xI,yI,y_inc;
    ///Dimensionality reduction: logFile
-   ofstream logFile;
+   std::ofstream logFile;
 
  protected:
        /// Dataport containing commanded Cartesian pose

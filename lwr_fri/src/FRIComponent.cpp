@@ -41,7 +41,7 @@ namespace lwr_fri {
 using namespace RTT;
 using namespace std;
 
-FRIComponent::FRIComponent(const string& name) :
+FRIComponent::FRIComponent(const std::string& name) :
 	TaskContext(name, PreOperational){
 
 	this->addAttribute("fromKRL", m_fromKRL);
