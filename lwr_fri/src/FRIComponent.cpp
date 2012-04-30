@@ -39,6 +39,7 @@
 namespace lwr_fri {
 
 using namespace RTT;
+using namespace std;
 
 FRIComponent::FRIComponent(const string& name) :
 	TaskContext(name, PreOperational){
