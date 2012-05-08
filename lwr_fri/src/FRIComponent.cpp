@@ -265,7 +265,7 @@ void FRIComponent::updateHook() {
 //							<< m_jntPos[6] << std::endl;
 				}else{
 					for (unsigned int i = 0; i < LBR_MNJ; i++)
-						m_cmd_data.cmd.jntPos[i] = m_jntPos[i];
+						m_cmd_data.cmd.jntPos[i] = m_msr_data.data.cmdJntPos[i];
 				}
 
 
