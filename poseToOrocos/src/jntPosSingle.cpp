@@ -97,13 +97,19 @@ int main(int argc, char **argv)
 //  srand ( time(NULL) );
   sensor_msgs::JointState jntState;
   jntState.position.clear();
+
+  // joints are in the physical order of the robot, i.e. A1, A2, E1, A3, A4, A5, A6
+  // angles are measured in RAD.
+  // A2 is measured by the robot 90 degrees ahead of what we send.
+  double rad_per_angle = 3.141 / 180;
   jntState.position = std::vector<double>(7,0.0);
-  jntState.position[0] = 3.14159/6;
-  jntState.position[1] = 3.14159/4;
-  jntState.position[2] = 3.14159/10;
-  jntState.position[3] = 3.14159/2;
-  jntState.position[4] = -3.14159/8;
-  jntState.position[5] = -3.14159/3;
+  jntState.position[0] = 60 * rad_per_angle;
+  jntState.position[1] = 30 * rad_per_angle;
+  jntState.position[2] = 30 * rad_per_angle;
+  jntState.position[3] = 30 * rad_per_angle;
+  jntState.position[4] = 60 * rad_per_angle;
+  jntState.position[5] = 30 * rad_per_angle;
+  jntState.position[6] = 0 * rad_per_angle;
 /*  for(int i=0; i< 7 ; i++ ){
   	jntState.position.push_back(-2 + 4.0*((double)rand()/(double)RAND_MAX));
   }
