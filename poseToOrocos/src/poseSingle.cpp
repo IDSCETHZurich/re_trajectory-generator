@@ -42,14 +42,16 @@ int main(int argc, char **argv)
 	geometry_msgs::Pose pose;
 	nav_msgs::Odometry odo;
 
-	pose.position.x = -0.70;
-	pose.position.y = -9.38216471695e-05;
-	pose.position.z = 0.594774723053;
+	// position in meters
+	pose.position.x = .37;
+	pose.position.y = -.34;
+	pose.position.z = .51;
 
-	pose.orientation.x = -4.88070518543e-05;
-	pose.orientation.y = -0.70080730609;
-	pose.orientation.z = 7.50503570579e-05;
-	pose.orientation.w = 0.713350613677;
+	// rotation in quaternion
+	pose.orientation.x = 0.60;
+	pose.orientation.y = 0.0;
+	pose.orientation.z = 0.6;
+	pose.orientation.w = 0.90;
 
 	odo.pose.pose = pose;
 	odoPub.publish(odo);
