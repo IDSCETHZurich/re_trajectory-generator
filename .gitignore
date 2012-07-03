@@ -1,4 +1,4 @@
-lwr_fri/include/friComm.h
+# General and build related
 .cproject
 .project
 .pydevproject
@@ -6,3 +6,12 @@ lwr_fri/include/friComm.h
 */build/
 */lib/
 */bin/
+
+# Proprietary header file
+lwr_fri/include/friComm.h
+
+# Other (log) files
+trajectory_generator/deploy/.tb_history
+trajectory_generator/deploy/orocos.log
+trajectory_generator/deploy/timeLog.txt
+
