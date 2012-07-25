@@ -14,7 +14,6 @@ jntPosInput-joint position input
 cartPosInput - cartesian position input (geometry_msgs::Pose)
 ===================================
 
-
 TrajectoryGeneratorSim_jntPosInput.xml
 -----------------------------------
 roslaunch re_kuka visualize.launch (config_TrajectoryGenerator.vcg)
@@ -55,6 +54,7 @@ trajectory_generator/deploy$ ./run.sh CartesianGeneratorReal_cartPosInput.xml (*
 reset the CartesianGenerator, and then go to FRI command mode)
 rosrun poseToOrocos poseStampedLoop
 roslaunch re_kuka visualize.launch 
+
 KRC side - select Cartesian stiffness mode
 
 *1 - should be executed inside trajectory_generator/deploy

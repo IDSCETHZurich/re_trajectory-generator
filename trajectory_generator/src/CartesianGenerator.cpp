@@ -65,7 +65,6 @@ namespace trajectory_generator
 
     bool CartesianGenerator::updateCG()
     {
-
     	m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
 
     	if (m_time_passed <= t_sync)
@@ -76,6 +75,7 @@ namespace trajectory_generator
 			pose.position.x= TrajVectorDirection.x * m_maximum_velocity[0] *(m_time_passed) + xi;
 			pose.position.y= TrajVectorDirection.y * m_maximum_velocity[0] *(m_time_passed) + yi;
 			pose.position.z= TrajVectorDirection.z * m_maximum_velocity[0] *(m_time_passed) + zi;
+			cout << "--- x = " << pose.position.x << endl;
 
 			theta = theta_vel * m_time_passed;
 			//cout << "--- Theta: " << theta << endl;
@@ -121,7 +121,7 @@ namespace trajectory_generator
     bool CartesianGenerator::generateNewVelocityProfiles(RTT::base::PortInterface* portInterface)
     {
 
-    	m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
+    	//m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
     	
     	geometry_msgs::Pose pose;
     	cmdCartPose.read(pose);
@@ -153,15 +153,17 @@ namespace trajectory_generator
 		yf = pose.position.y;
 		zf = pose.position.z;
 
+		std::cout << "- Current x pos = " << xi << std::endl;
+
 		TrajVectorMagnitude = sqrt( (xf-xi)*(xf-xi)+(yf-yi)*(yf-yi)+(zf-zi)*(zf-zi) );
 		TrajVectorDirection.x = (xf-xi)/TrajVectorMagnitude;
 		TrajVectorDirection.y = (yf-yi)/TrajVectorMagnitude;
 		TrajVectorDirection.z = (zf-zi)/TrajVectorMagnitude;
 
-		double tx,ty,tz;
-		tx = abs(xf-xi)/m_maximum_velocity[0];
-		ty = abs(yf-yi)/m_maximum_velocity[0];
-		tz = abs(zf-zi)/m_maximum_velocity[0];
+//		double tx,ty,tz;
+//		tx = abs(xf-xi)/m_maximum_velocity[0];
+//		ty = abs(yf-yi)/m_maximum_velocity[0];
+//		tz = abs(zf-zi)/m_maximum_velocity[0];
 
 		t_sync = TrajVectorMagnitude/ m_maximum_velocity[0];
 
