@@ -75,7 +75,7 @@ namespace trajectory_generator
 			pose.position.x= TrajVectorDirection.x * m_maximum_velocity[0] *(m_time_passed) + xi;
 			pose.position.y= TrajVectorDirection.y * m_maximum_velocity[0] *(m_time_passed) + yi;
 			pose.position.z= TrajVectorDirection.z * m_maximum_velocity[0] *(m_time_passed) + zi;
-			cout << "--- x = " << pose.position.x << endl;
+			//cout << "x = " << pose.position.x  <<  " [CartGen]" << endl;
 
 			theta = theta_vel * m_time_passed;
 			//cout << "--- Theta: " << theta << endl;
@@ -107,7 +107,7 @@ namespace trajectory_generator
 
     void CartesianGenerator::updateHook()
     {
-    	updateCG();
+    	//updateCG();
     }
 
     void CartesianGenerator::stopHook()

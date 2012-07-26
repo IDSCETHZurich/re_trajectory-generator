@@ -283,7 +283,8 @@ void FRIComponent::updateHook() {
 								= m_jntTorques[i];
 			} else if (m_control_mode == 4) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_CARTPOS;
-				if(updateGenerator()){
+				updateGenerator();
+				if(true){
 					if (NewData == m_cartPosPort.read(m_cartPos)) {
 						KDL::Rotation rot = KDL::Rotation::Quaternion(
 								m_cartPos.orientation.x, m_cartPos.orientation.y,
@@ -301,6 +302,8 @@ void FRIComponent::updateHook() {
 						m_cmd_data.cmd.cartPos[3] = m_cartPos.position.x;
 						m_cmd_data.cmd.cartPos[7] = m_cartPos.position.y;
 						m_cmd_data.cmd.cartPos[11] = m_cartPos.position.z;
+
+						//std::cout << "x = " << m_cartPos.position.x << std::endl;
 					}//end of if NewData
 				}//end of if updateCG
 				else{
