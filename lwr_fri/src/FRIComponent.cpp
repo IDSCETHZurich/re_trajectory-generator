@@ -283,8 +283,7 @@ void FRIComponent::updateHook() {
 								= m_jntTorques[i];
 			} else if (m_control_mode == 4) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_CARTPOS;
-				updateGenerator();
-				if(true){
+				if(updateGenerator()){
 					if (NewData == m_cartPosPort.read(m_cartPos)) {
 						KDL::Rotation rot = KDL::Rotation::Quaternion(
 								m_cartPos.orientation.x, m_cartPos.orientation.y,
@@ -306,9 +305,9 @@ void FRIComponent::updateHook() {
 						//std::cout << "x = " << m_cartPos.position.x << std::endl;
 					}//end of if NewData
 				}//end of if updateCG
-				else{
+				else{// this means the Cartesian generator is still not initialized, i.e., received it's first command.
 					for (unsigned int i = 0; i < FRI_CART_FRM_DIM; i++)
-						m_cmd_data.cmd.cartPos[i] = m_msr_data.data.cmdCartPos[i];
+						m_cmd_data.cmd.cartPos[i] = m_msr_data.data.msrCartPos[i];
 				}
 
 			} else if (m_control_mode == 5) {
