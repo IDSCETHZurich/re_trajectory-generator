@@ -31,6 +31,8 @@ namespace trajectory_generator
         //Adding Methods
         this->addOperation("resetPosition",&CartesianGenerator::resetPosition,this,OwnThread).doc("Reset generator's position");
         this->addOperation("updateCG", &CartesianGenerator::updateCG, this, OwnThread);
+
+        cg_initialized = false;
     }
 
     CartesianGenerator::~CartesianGenerator()
@@ -57,6 +59,7 @@ namespace trajectory_generator
 		m_position_desi_port.write(pose);
 
 		t_sync = 0.0;
+		m_time_begin = 0.0;
 		sleep(1);
 
 		return true;
@@ -65,9 +68,11 @@ namespace trajectory_generator
 
     bool CartesianGenerator::updateCG()
     {
+    	if(!cg_initialized)
+    		return false;
 
+    	//Proceed only if the Cartesian Generator is intialized, i.e., the Cartesian Generator got it's first command
     	m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
-
     	if (m_time_passed <= t_sync)
     	{
 			geometry_msgs::Pose pose;
@@ -76,6 +81,7 @@ namespace trajectory_generator
 			pose.position.x= TrajVectorDirection.x * m_maximum_velocity[0] *(m_time_passed) + xi;
 			pose.position.y= TrajVectorDirection.y * m_maximum_velocity[0] *(m_time_passed) + yi;
 			pose.position.z= TrajVectorDirection.z * m_maximum_velocity[0] *(m_time_passed) + zi;
+			//cout << "x = " << pose.position.x  <<  " [CartGen]" << endl;
 
 			theta = theta_vel * m_time_passed;
 			//cout << "--- Theta: " << theta << endl;
@@ -96,18 +102,24 @@ namespace trajectory_generator
 			poseStamped.pose = pose;
 			m_position_desi_port2ROS.write(poseStamped);
 
-			return true;
-    	}
-    	else
-    	{
-    		return false;
+			//return true;
+    	}else{
+    		//send final desired pose
+    		m_position_desi_port.write(desired_pose);
+
+			//TO ROS Visualization
+			geometry_msgs::PoseStamped poseStamped;
+			poseStamped.header.frame_id = "/frame_id_1";
+			poseStamped.header.stamp = ros::Time::now();
+			poseStamped.pose = desired_pose;
+			m_position_desi_port2ROS.write(poseStamped);
     	}
     }
 
 
     void CartesianGenerator::updateHook()
     {
-    	updateCG();
+    	//updateCG();
     }
 
     void CartesianGenerator::stopHook()
@@ -121,11 +133,13 @@ namespace trajectory_generator
     bool CartesianGenerator::generateNewVelocityProfiles(RTT::base::PortInterface* portInterface)
     {
 
-    	m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
+    	//m_time_passed = os::TimeService::Instance()->secondsSince(m_time_begin);
     	
     	geometry_msgs::Pose pose;
     	cmdCartPose.read(pose);
     	desired_pose = pose;
+
+    	cg_initialized = true;
 
 #if 1
     	std::cout << "A new pose arrived" << std::endl;
@@ -153,15 +167,17 @@ namespace trajectory_generator
 		yf = pose.position.y;
 		zf = pose.position.z;
 
+		std::cout << "- Current x pos = " << xi << std::endl;
+
 		TrajVectorMagnitude = sqrt( (xf-xi)*(xf-xi)+(yf-yi)*(yf-yi)+(zf-zi)*(zf-zi) );
 		TrajVectorDirection.x = (xf-xi)/TrajVectorMagnitude;
 		TrajVectorDirection.y = (yf-yi)/TrajVectorMagnitude;
 		TrajVectorDirection.z = (zf-zi)/TrajVectorMagnitude;
 
-		double tx,ty,tz;
-		tx = abs(xf-xi)/m_maximum_velocity[0];
-		ty = abs(yf-yi)/m_maximum_velocity[0];
-		tz = abs(zf-zi)/m_maximum_velocity[0];
+//		double tx,ty,tz;
+//		tx = abs(xf-xi)/m_maximum_velocity[0];
+//		ty = abs(yf-yi)/m_maximum_velocity[0];
+//		tz = abs(zf-zi)/m_maximum_velocity[0];
 
 		t_sync = TrajVectorMagnitude/ m_maximum_velocity[0];
 

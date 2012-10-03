@@ -68,6 +68,7 @@ namespace trajectory_generator
 
 using namespace RTT;
 using namespace KDL;
+using namespace std;
 
 	/**
 	 * \brief A VelocityProfile with non-zero initial velocity implementation.

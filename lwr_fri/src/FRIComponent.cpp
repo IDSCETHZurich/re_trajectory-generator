@@ -39,6 +39,7 @@
 namespace lwr_fri {
 
 using namespace RTT;
+using namespace std;
 
 FRIComponent::FRIComponent(const std::string& name) :
 	TaskContext(name, PreOperational){
@@ -265,7 +266,7 @@ void FRIComponent::updateHook() {
 //							<< m_jntPos[6] << std::endl;
 				}else{
 					for (unsigned int i = 0; i < LBR_MNJ; i++)
-						m_cmd_data.cmd.jntPos[i] = m_msr_data.data.cmdJntPos[i];
+						m_cmd_data.cmd.jntPos[i] = m_msr_data.data.msrJntPos[i];
 				}
 
 
@@ -300,11 +301,13 @@ void FRIComponent::updateHook() {
 						m_cmd_data.cmd.cartPos[3] = m_cartPos.position.x;
 						m_cmd_data.cmd.cartPos[7] = m_cartPos.position.y;
 						m_cmd_data.cmd.cartPos[11] = m_cartPos.position.z;
+
+						//std::cout << "x = " << m_cartPos.position.x << std::endl;
 					}//end of if NewData
 				}//end of if updateCG
-				else{
+				else{// this means the Cartesian generator is still not initialized, i.e., received it's first command.
 					for (unsigned int i = 0; i < FRI_CART_FRM_DIM; i++)
-						m_cmd_data.cmd.cartPos[i] = m_msr_data.data.cmdCartPos[i];
+						m_cmd_data.cmd.cartPos[i] = m_msr_data.data.msrCartPos[i];
 				}
 
 			} else if (m_control_mode == 5) {

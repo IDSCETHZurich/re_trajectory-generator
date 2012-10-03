@@ -15,9 +15,9 @@ Run the TrajectoryGenerator and visualize the robot maneuvers in rviz
 ROS package without connecting it to the real robot.
 Procedure:
 * roscore
-* roslaunch trajectory_generator visualize.launch
+* roslaunch re_kuka visualize.launch 
 * cd trajectory_generator/deploy
-* ./runSolo.sh
+* ./run.sh TrajectoryGeneratorSim_jntPosInput.xml
 Then you can run
 * rosrun poseToOrocos poseSingle (poseLoop. jntPosSingle, jntPosLoop)
 to issue commands to the robot from ROS 

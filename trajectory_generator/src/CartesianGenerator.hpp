@@ -93,6 +93,7 @@ namespace trajectory_generator
       double t_sync;
       double theta_vel;
       double xi,yi,zi,xf,yf,zf;
+      bool cg_initialized;
       double TrajVectorMagnitude;
       struct VectorDirection
       {

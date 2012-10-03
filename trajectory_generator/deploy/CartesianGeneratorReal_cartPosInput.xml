@@ -10,23 +10,22 @@
 	<simple name="Import" type="string"><value>rtt_geometry_msgs</value></simple>>
 	
 	<struct name="ROSConPoseIn" type="ConnPolicy">
-  		<simple name="type" type="short"><value>0</value></simple>
-  		<simple name="size" type="short"><value>1</value></simple>
-  		<simple name="transport" type="short"><value>3</value></simple>
+  		<simple name="type" type="long"><value>0</value></simple>
+  		<simple name="size" type="long"><value>1</value></simple>
+  		<simple name="transport" type="long"><value>3</value></simple>
   		<simple name="name_id" type="string"><value>poseDsr</value></simple>
 	</struct>
 	
 	<struct name="msrCartPos" type="ConnPolicy">
-  		<simple name="type" type="short"><value>0</value></simple>
-  		<simple name="size" type="short"><value>1</value></simple>
-  		<simple name="transport" type="short"><value>3</value></simple>
+  		<simple name="type" type="long"><value>0</value></simple>
+  		<simple name="size" type="long"><value>1</value></simple>
+  		<simple name="transport" type="long"><value>3</value></simple>
   		<simple name="name_id" type="string"><value>msrCartPos</value></simple>
 	</struct>
 	
 	<struct name="cartesianGenerator" type="trajectory_generator::CartesianGenerator">
-		<struct name="Activity" type="PeriodicActivity">
-			<simple name="Period" type="double"><value>0.02</value></simple>
-			<simple name="Priority" type="short"><value>1</value></simple>
+		<struct name="Activity" type="NonPeriodicActivity">
+			<simple name="Priority" type="long"><value>1</value></simple>
     			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
@@ -37,11 +36,12 @@
     			<simple name="CartesianPoseMsr" type="string"><value>FRI2CartGen</value></simple>
     			<simple name="CartesianPoseDes" type="string"><value>CartGen2FRI</value></simple>
   		</struct>
+
 	</struct>
 	
 	<struct name="FRIServer" type="lwr_fri::FRIComponent">
  		<struct name="Activity" type="NonPeriodicActivity">
-			<simple name="Priority" type="short"><value>1</value></simple>
+			<simple name="Priority" type="long"><value>1</value></simple>
 			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
 		</struct>
 	    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
@@ -60,7 +60,7 @@
 	<struct name="Reporter" type="OCL::FileReporting">
     		<struct name="Activity" type="PeriodicActivity">
 			<simple name="Period" type="double"><value>0.02</value></simple>
-			<simple name="Priority" type="short"><value>0</value></simple>
+			<simple name="Priority" type="long"><value>0</value></simple>
 			<simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
     		</struct>
     		<simple name="AutoConf" type="boolean"><value>1</value></simple>
