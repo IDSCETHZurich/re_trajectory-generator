@@ -8,7 +8,7 @@
   
   <struct name="FRIServer" type="LWR::FRIComponent">
     <struct name="Activity" type="NonPeriodicActivity">
-      <simple name="Priority" type="short"><value>1</value></simple>
+      <simple name="Priority" type="long"><value>1</value></simple>
       <simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
     </struct>
     <simple name="AutoConf" type="boolean"><value>1</value></simple>
@@ -23,7 +23,7 @@
 <struct name="nAxesGeneratorPos" type="OCL::nAxesGeneratorPos">
   <struct name="Activity" type="PeriodicActivity">
     <simple name="Period" type="double"><value>0.01</value></simple>
-    <simple name="Priority" type="short"><value>1</value></simple>
+    <simple name="Priority" type="long"><value>1</value></simple>
     <simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
   </struct>
   <simple name="AutoConf" type="boolean"><value>1</value></simple>
@@ -38,7 +38,7 @@
   <struct name="Reporter" type="OCL::FileReporting"> 
     <struct name="Activity" type="PeriodicActivity"> 
       <simple name="Period" type="double"><value>0.04</value></simple> 
-      <simple name="Priority" type="short"><value>1</value></simple> 
+      <simple name="Priority" type="long"><value>1</value></simple> 
       <simple name="Scheduler" type="string"><value>ORO_SCHED_OTHER</value></simple>
     </struct>
     <simple name="AutoConf" type="boolean"><value>1</value></simple>

@@ -42,14 +42,54 @@ int main(int argc, char **argv)
 	geometry_msgs::Pose pose;
 	nav_msgs::Odometry odo;
 
-	pose.position.x = -0.70;
-	pose.position.y = -9.38216471695e-05;
-	pose.position.z = 0.594774723053;
+	// call with parameter: ``rosrun poseToOrocos poseSingle _pos:=1``
+	ros::NodeHandle nh("~");
+	int pos_choice = 0;
+	nh.getParam("pos", pos_choice);
 
-	pose.orientation.x = -4.88070518543e-05;
-	pose.orientation.y = -0.70080730609;
-	pose.orientation.z = 7.50503570579e-05;
-	pose.orientation.w = 0.713350613677;
+	switch (pos_choice) {
+	  case 0: // arbitrary "high-up" position
+	    // position in meters
+	    pose.position.x = .0;
+	    pose.position.y = .20;
+	    pose.position.z = 0.99;
+	    // rotation in quaternion
+	    pose.orientation.x = -0.2;
+	    pose.orientation.y = 0.0;
+	    pose.orientation.z = 0.0;
+	    pose.orientation.w = 0.9;
+	    break;
+
+	  case 1: // arbitrary "front" position
+	    pose.position.x = .40;
+	    pose.position.y = -.40;
+	    pose.position.z = 0.70;
+	    pose.orientation.x = 0.2;
+	    pose.orientation.y = 0.0;
+	    pose.orientation.z = 0.0;
+	    pose.orientation.w = 0.9;
+	    break;
+
+	  case 2: // (low) position directly over base where plate is horizontal
+	    pose.position.x = .0;
+	    pose.position.y = .0;
+	    pose.position.z = 0.80;
+	    pose.orientation.x = 0.0;
+	    pose.orientation.y = 0.0;
+	    pose.orientation.z = 0.0;
+	    pose.orientation.w = 0.9;
+	    break;
+
+	  case 3: // (high) position directly over base where plate is horizontal
+	    pose.position.x = .0;
+	    pose.position.y = .0;
+	    pose.position.z = 1.15;
+	    pose.orientation.x = 0.0;
+	    pose.orientation.y = 0.0;
+	    pose.orientation.z = 0.0;
+	    pose.orientation.w = 0.9;
+	    break;
+	}
 
 	odo.pose.pose = pose;
 	odoPub.publish(odo);
