@@ -37,4 +37,7 @@ Then you can run
 to issue commands to the robot from ROS 
 
 
+General Notes
+=============
+* To compile everything, use ``rosmake kuka_IK poseToOrocos re_kuka trajectory_generator lwr_fri``
 
