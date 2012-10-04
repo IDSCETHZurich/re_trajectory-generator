@@ -4,11 +4,11 @@
 
  	<simple name="Import" type="string"><value>kdl_typekit</value></simple>
 	<simple name="Import" type="string"><value>lwr_fri</value></simple>
-  	<simple name="Import" type="string"><value>rtt_ros_integration</value></simple>
+  	<simple name="Import" type="string"><value>rtt_rosnode</value></simple>
 	<simple name="Import" type="string"><value>trajectory_generator</value></simple>
-	<simple name="Import" type="string"><value>rtt_ros_integration_std_msgs</value></simple>
-	<simple name="Import" type="string"><value>rtt_ros_integration_sensor_msgs</value></simple>
-	<simple name="Import" type="string"><value>rtt_ros_integration_geometry_msgs</value></simple>>
+	<simple name="Import" type="string"><value>rtt_std_msgs</value></simple>
+	<simple name="Import" type="string"><value>rtt_sensor_msgs</value></simple>
+	<simple name="Import" type="string"><value>rtt_geometry_msgs</value></simple>>
 	
 	<struct name="FRIServer" type="lwr_fri::FRIComponent">
  		<struct name="Activity" type="NonPeriodicActivity">
