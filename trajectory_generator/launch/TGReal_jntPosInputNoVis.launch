@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node name="TG" pkg="ocl" type="deployer-gnulinux" launch-prefix="xterm -e" args="-s $(find trajectory_generator)/deploy/TrajectoryGeneratorReal_jntPosInput.xml -- "> </node>
+
+</launch>

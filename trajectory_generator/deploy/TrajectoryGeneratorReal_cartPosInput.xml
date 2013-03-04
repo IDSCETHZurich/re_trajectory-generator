@@ -27,6 +27,14 @@
   		<simple name="name_id" type="string"><value>joint_states</value></simple>
 	</struct>
 
+	<!-- maps Cartesian Pose from FRI to ROS (cannot be detected by looking at this code) -->
+	<struct name="ROSConMsrCartPosOut" type="ConnPolicy">
+  		<simple name="type" type="long"><value>0</value></simple>
+  		<simple name="size" type="long"><value>1</value></simple>
+  		<simple name="transport" type="long"><value>3</value></simple>
+  		<simple name="name_id" type="string"><value>MsrCartPose</value></simple>
+	</struct>
+
 	<!-- OROCOS components correspond to ROS nodes -->
 	<struct name="kukaIKComponent" type="kuka_IK::kuka_IK">
 		<struct name="Activity" type="NonPeriodicActivity">
@@ -74,6 +82,7 @@
 			<simple name="msrJntPos" type="string"><value>MsrJointPosition2TG</value></simple>
 			<simple name="desJntPos" type="string"><value>DesJointPosition</value></simple>
 			<simple name="msrCartPos" type="string"> <value>MsrCartPos</value></simple>
+			<simple name="msrCartPos" type="string"> <value>ROSConMsrCartPosOut</value></simple>
 		</struct>
 		<!-- peer trajectoryGenerator can be accessed by the FRIServer -->
 		<struct name="Peers" type="PropertyBag">

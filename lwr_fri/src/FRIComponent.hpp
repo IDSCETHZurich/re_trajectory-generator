@@ -95,7 +95,7 @@ private:
 	//RTT::OutputPort<std::vector<double> > gravityPort;
 
 	InputPort<std::vector<double> > m_jntPosPort;
-    InputPort<std::vector<double> > m_jntVelPort;
+    	InputPort<std::vector<double> > m_jntVelPort;
 	InputPort<geometry_msgs::Pose> m_cartPosPort;
 	InputPort<geometry_msgs::Twist> m_cartTwistPort;
 	InputPort<std::vector<double> > m_addJntTrqPort;
