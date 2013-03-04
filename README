@@ -18,6 +18,11 @@ Procedure:
 * roslaunch re_kuka visualize.launch 
 * cd trajectory_generator/deploy
 * ./run.sh TrajectoryGeneratorSim_jntPosInput.xml
+---
+EDIT: the commands above are now combined in the following launch files:
+*roslaunch trajectory_generator TGSim_cartPosInput.launch
+*roslaunch trajectory_generator TGSim_jntPosInput.launch
+---
 Then you can run
 * rosrun poseToOrocos poseSingle (poseLoop. jntPosSingle, jntPosLoop)
 to issue commands to the robot from ROS 
@@ -29,9 +34,14 @@ Run the TrajectoryGenerator and visualize the robot maneuvers in rviz
 ROS package while sending commands to the real robot via FRIComponent.
 Procedure:
 * roscore
-* roslaunch trajectory_generator visualize.launch
+* roslaunch re_kuka visualize.launch
 * cd trajectory_generator/deploy
-* ./runFRI.sh
+* ./run.sh TrajectoryGeneratorReal_jntPosInput.xml
+---
+EDIT: the commands above are now combined in the following launch files:
+*roslaunch trajectory_generator TGSim_cartPosInput.launch
+*roslaunch trajectory_generator TGSim_jntPosInput.launch
+---
 Then you can run
 * rosrun poseToOrocos poseSingle (poseLoop. jntPosSingle, jntPosLoop)
 to issue commands to the robot from ROS 

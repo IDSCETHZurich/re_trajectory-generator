@@ -6,6 +6,7 @@
 */build/
 */lib/
 */bin/
+*~
 
 # Proprietary header file
 lwr_fri/include/friComm.h
