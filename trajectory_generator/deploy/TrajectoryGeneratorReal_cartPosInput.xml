@@ -60,7 +60,7 @@
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGenerator.cpf</value></simple>
+		<simple name="PropertyFile" type="string"><value>/home/nico/ros/trajectory-generator/trajectory_generator/deploy/cpf/trajectoryGenerator.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
     			<simple name="JointPositionInput" type="string"><value>JntPosIn</value></simple>
     			<simple name="JointPositionDesToROS" type="string"><value>ROSConJntPosOut</value></simple>
@@ -76,7 +76,7 @@
 		</struct>
 	    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="LoadProperties" type="string"><value>cpf/FRIServer.cpf</value></simple>
+		<simple name="LoadProperties" type="string"><value>/home/nico/ros/trajectory-generator/trajectory_generator/deploy/cpf/FRIServer.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
 			<simple name="msrJntPos" type="string"><value>MsrJointPosition2IK</value></simple>
 			<simple name="msrJntPos" type="string"><value>MsrJointPosition2TG</value></simple>
@@ -99,7 +99,7 @@
     		<simple name="AutoConf" type="boolean"><value>1</value></simple>
     		<simple name="AutoStart" type="boolean"><value>1</value></simple>
     		<simple name="AutoSave" type="boolean"><value>1</value></simple>
-    		<simple name="LoadProperties" type="string"><value>cpf/reportingReal.cpf</value></simple>
+    		<simple name="LoadProperties" type="string"><value>/home/nico/ros/trajectory-generator/trajectory_generator/deploy/cpf/reportingReal.cpf</value></simple>
     		<struct name="Peers" type="PropertyBag">
     			<simple type="string"><value>trajectoryGenerator</value></simple>
     			<simple type="string"><value>FRIServer</value></simple>
