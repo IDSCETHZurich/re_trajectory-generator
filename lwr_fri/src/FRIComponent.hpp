@@ -113,8 +113,8 @@ private:
 	RTT::os::TimeService::ticks	time_begin;
 	RTT::os::TimeService::Seconds	time_passed;
 
-	RTT::OperationCaller<bool(void)> updateGenerator;
-//	RTT::OperationCaller<bool(void)> updateCG;
+	RTT::OperationCaller<bool(void)> updateGenerator; // this variable is initialized in the constructor
+	std::vector<fri_float_t> last_cmd_jnt_pos;
 };
 
 }//Namespace LWR

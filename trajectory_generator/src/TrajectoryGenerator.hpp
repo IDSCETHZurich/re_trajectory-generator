@@ -156,6 +156,9 @@ namespace trajectory_generator
 
       bool doSync, addFinalVel;
 
+      /// used to check whether tg should return joint positions or not
+      bool exeeded_maxduration;
+
 
     protected:
       /// Dataport containing commanded Cartesian pose
