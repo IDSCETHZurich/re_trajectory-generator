@@ -7,3 +7,4 @@ lwr_fri/include/friComm.h
 */lib*
 */bin*
 *~
+*.cmake

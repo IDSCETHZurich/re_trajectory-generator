@@ -79,6 +79,16 @@ namespace trajectory_generator
 
         timeLogger.open("timeLog.txt");
 
+
+
+        //addition from call. traj. contrl.
+        this->ports()->addEventPort("newTrajectoryFromROS", iprt_trajectory,
+                                    boost::bind(&TrajectoryGenerator::evNewTrajectory, this, _1));
+
+        this->ports()->addPort("characterDrawnToROS", oprt_character_done);
+
+        this->trajectory_iterator = this->trajectory.points.begin();
+
     }
 
     TrajectoryGenerator::~TrajectoryGenerator()
@@ -195,6 +205,8 @@ namespace trajectory_generator
 
     bool TrajectoryGenerator::generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface)
     {
+    	state = time_opt;
+
     	//Create joint specific velocity profiles
     	maxDuration = 0.0;
     	double p_aux = 0.0;
@@ -278,26 +290,37 @@ namespace trajectory_generator
 
 
     bool TrajectoryGenerator::updateTG(void){
-    	if (motionProfile.size()==7){
-			time_passed = os::TimeService::Instance()->secondsSince(time_begin);
-			log(Info) << time_passed << endlog();
-			jntPosCmd.clear();
-			jntState.position.clear();
-			jntState.header.stamp = ros::Time::now();
-			for(int i = 0; i < (int)motionProfile.size(); i++){
-				jntPosCmd.push_back(motionProfile[i].Pos(time_passed));
-				jntState.position.push_back(motionProfile[i].Pos(time_passed));
+
+    	if (state == time_opt)
+    	{
+			if (motionProfile.size()==7){
+				time_passed = os::TimeService::Instance()->secondsSince(time_begin);
+				log(Info) << time_passed << endlog();
+				jntPosCmd.clear();
+				jntState.position.clear();
+				jntState.header.stamp = ros::Time::now();
+				for(int i = 0; i < (int)motionProfile.size(); i++){
+					jntPosCmd.push_back(motionProfile[i].Pos(time_passed));
+					jntState.position.push_back(motionProfile[i].Pos(time_passed));
+				}
+				output_jntPosPort_toROS.write(jntState);
+				#if DEBUG
+					log(Info) << jntPosCmd[0] << " " << jntPosCmd[1] << " " << jntPosCmd[2] << " "
+											<< jntPosCmd[3] << " " << jntPosCmd[4] << " " << jntPosCmd[5] << " "
+											<< jntPosCmd[6] << endlog();
+				#endif
+				output_jntPosPort.write(jntPosCmd);
+				return true;
+			}else{
+				return false;
 			}
-			output_jntPosPort_toROS.write(jntState);
-#if DEBUG
-			log(Info) << jntPosCmd[0] << " " << jntPosCmd[1] << " " << jntPosCmd[2] << " "
-										<< jntPosCmd[3] << " " << jntPosCmd[4] << " " << jntPosCmd[5] << " "
-										<< jntPosCmd[6] << endlog();
-#endif
-			output_jntPosPort.write(jntPosCmd);
-			return true;
-    	}else{
-    		return false;
+    	}
+    	else if (state == iterating)
+    	{
+    		if(getNextPointOnCalligraphyTrajectory())
+    			return true;
+    		else
+    			return false;
     	}
     }
 
@@ -317,6 +340,67 @@ namespace trajectory_generator
     {
 
     }
+
+    void TrajectoryGenerator::evNewTrajectory(RTT::base::PortInterface* portInterface)
+    {
+    	state = iterating;
+
+      if (iprt_trajectory.read(this->trajectory) == RTT::NewData)
+      {
+        //std::cout << "New trajectory received!" << std::endl;
+
+        this->trajectory_iterator = this->trajectory.points.begin();
+
+        //std::cout << "Start drawing" << std::endl;
+      }
+      else
+        std::cout << "ERROR: no new trajectory" << std::endl;
+    }
+
+
+      bool TrajectoryGenerator::getNextPointOnCalligraphyTrajectory()
+      {
+
+        if (this->trajectory.points.size() == 0)
+          return false;
+
+        // the last point in the trajectory has been sent...
+        if (this->trajectory_iterator == this->trajectory.points.end())
+        {
+
+          // send finished signal
+          std_msgs::Bool finished;
+          finished.data = true;
+          oprt_character_done.write(finished);
+
+          //std::cout << "Drawing finished" << std::endl;
+
+          // reset trajectory
+          this->trajectory.points.clear();
+          this->trajectory_iterator = this->trajectory.points.begin();
+
+          return false;
+        }
+
+        sensor_msgs::JointState jointstate;
+
+        jointstate.position = this->trajectory_iterator->positions;
+        jointstate.velocity = std::vector<double>(7, 0);
+        jointstate.header.stamp = ros::Time::now();
+
+        output_jntPosPort.write(this->trajectory_iterator->positions);
+
+        this->trajectory_iterator++;
+
+        return true;
+      }
+
+
+      /*
+      // temporarily disable the joint synchronisation of the trajectory generator while drawing
+      RTT::Property<bool> doSync = this->getPeer("trajectoryGenerator")->properties()->getProperty("doSync");
+      doSync.set(false);
+      */
 
 }//namespace
 

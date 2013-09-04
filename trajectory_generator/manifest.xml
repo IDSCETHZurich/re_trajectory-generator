@@ -15,4 +15,15 @@
   <!--<depend package="kuka_typekit"/>-->
   <depend package="tf_conversions"/>
   <depend package="eigen"/>
+
+
+
+	<depend package="rtt_rosnode"/>
+	<depend package="rtt_sensor_msgs"/>
+	<depend package="rtt_geometry_msgs"/>
+	<depend package="rtt_std_msgs"/>
+	<depend package="rtt_trajectory_msgs"/>
+	<depend package="kdl_typekit"/>
+	<depend package="kdl"/>
+	<depend package="trajectory_msgs"/>
 </package>

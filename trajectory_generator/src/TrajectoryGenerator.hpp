@@ -63,9 +63,21 @@
 
 #include <sensor_msgs/JointState.h>
 
+
 #include <std_msgs/Float64.h>
 
 #include "VelocityProfile_NonZeroInit.hpp"
+
+
+//additions from call. traj. contr.
+#include <trajectory_msgs/JointTrajectory.h>
+#include <trajectory_msgs/JointTrajectoryPoint.h>
+//#include <std_msgs/String.h>
+#include <std_msgs/Bool.h>
+#include "ros/ros.h"
+#include <rtt/Component.hpp>
+
+
 
 namespace trajectory_generator
 {
@@ -88,6 +100,13 @@ namespace trajectory_generator
     	 */
     	int jntVelScaling(sensor_msgs::JointState (&robotState));
     	double maxDuration;
+
+    	/**
+    	 * \brief state in which the TG is in [time-opt.|iterating received vector]
+    	 */
+    	//no need for initialization since both possible callback fcns will define it
+    	enum state_t { time_opt, iterating };
+    	state_t state;
 
     public:
         /**
@@ -170,6 +189,36 @@ namespace trajectory_generator
       RTT::OutputPort< sensor_msgs::JointState >  output_jntPosPort_toROS;
 
       std::ofstream timeLogger;
+
+
+
+      //from here on additions coming from call. traj. contr.
+      /**
+       * This variable contains the trajectory coming from ROS.
+       */
+      trajectory_msgs::JointTrajectory trajectory;
+      /**
+       * Iterator which is used to loop over the trajectory points.
+       */
+      std::vector<trajectory_msgs::JointTrajectoryPoint>::iterator trajectory_iterator;
+      /**
+       * Dataport publishing true once finished to ROS.
+       */
+      RTT::OutputPort<std_msgs::Bool> oprt_character_done;
+      /**
+       * Dataport containing the trajectory from ROS.
+       */
+      RTT::InputPort<trajectory_msgs::JointTrajectory> iprt_trajectory;
+      /**
+       * The event handler which is fired when a new trajectory message arrives.
+       * @param portInterface
+       */
+      void evNewTrajectory(RTT::base::PortInterface* portInterface);
+      /**
+      * called by the update function to send next point out
+      */
+      bool getNextPointOnCalligraphyTrajectory(void);
+
 
   }; // class
 }//namespace
