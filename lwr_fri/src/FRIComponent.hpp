@@ -95,7 +95,7 @@ private:
 	//RTT::OutputPort<std::vector<double> > gravityPort;
 
 	InputPort<std::vector<double> > m_jntPosPort;
-    InputPort<std::vector<double> > m_jntVelPort;
+    	InputPort<std::vector<double> > m_jntVelPort;
 	InputPort<geometry_msgs::Pose> m_cartPosPort;
 	InputPort<geometry_msgs::Twist> m_cartTwistPort;
 	InputPort<std::vector<double> > m_addJntTrqPort;
@@ -113,8 +113,8 @@ private:
 	RTT::os::TimeService::ticks	time_begin;
 	RTT::os::TimeService::Seconds	time_passed;
 
-	RTT::OperationCaller<bool(void)> updateGenerator; // this variable is initialized in the constructor
-	std::vector<fri_float_t> last_cmd_jnt_pos;
+	RTT::OperationCaller<bool(void)> updateGenerator;
+//	RTT::OperationCaller<bool(void)> updateCG;
 };
 
 }//Namespace LWR

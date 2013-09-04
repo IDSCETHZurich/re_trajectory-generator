@@ -61,7 +61,7 @@ namespace trajectory_generator
         this->addProperty("doSync",doSync).doc("Do synchronization");
         this->addProperty("addFinalVel",addFinalVel).doc("Incorporate final velocities");
 
-        this->provides("trajectory_generator")->addOperation("update", &TrajectoryGenerator::updateTG, this, OwnThread);
+        this->addOperation("updateTG", &TrajectoryGenerator::updateTG, this, OwnThread);
 
         lastCommandedPoseJntPos = std::vector<double>(7,0.0);
         lastCommandedPoseJntVel = std::vector<double>(7,0.0);
@@ -79,7 +79,6 @@ namespace trajectory_generator
 
         timeLogger.open("timeLog.txt");
 
-        exeeded_maxduration = true;
     }
 
     TrajectoryGenerator::~TrajectoryGenerator()
@@ -196,8 +195,6 @@ namespace trajectory_generator
 
     bool TrajectoryGenerator::generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface)
     {
-	RTT::os::TimeService::ticks t1 = os::TimeService::Instance()->getTicks();
-
     	//Create joint specific velocity profiles
     	maxDuration = 0.0;
     	double p_aux = 0.0;
@@ -234,8 +231,7 @@ namespace trajectory_generator
     	}
 
 
-	if (exeeded_maxduration) {
-		//cout << "exeeded_maxduration==true, USING MEASUREMENTS" << endl;
+    	if ((int)motionProfile.size() == 0){//Only for the first run
     		for(int i = 0; i < (int)num_axes; i++)
 			{
     			jntVel[i] = 0.0;
@@ -259,19 +255,8 @@ namespace trajectory_generator
     		else
     			motionProfile[i].SetProfile(jntPos[i], lastCommandedPoseJntPos[i], jntVel[i], lastCommandedPoseJntVel[i]);
     		if(motionProfile[i].Duration() > maxDuration )
-		{
     			maxDuration = motionProfile[i].Duration();
-			//std::cout << "[generateNewVelocityProfilesJntPosInput] Updated max duration on joint " << i << ": " << maxDuration << std::endl;
-		}
-	}
-
-	/*
-	for(int i = 0; i < (int)lastCommandedPoseJntPos.size(); i++) {
-		std::cout << "[generateNewVelocityProfilesJntPosInput] lastCommandedPoseJntPos joint " << i << ": " << lastCommandedPoseJntPos[i] / 3.14159265 * 180. << std::endl;
-		std::cout << "[generateNewVelocityProfilesJntPosInput] generated motionprofile joint " << i << ": " << motionProfile[i].Pos(1000) / 3.14159265 * 180. << std::endl;
-		std::cout << "[generateNewVelocityProfilesJntPosInput] current position msrmnt joint " << i << ": " << jntPos[i] / 3.14159265 * 180. << std::endl;
     	}
-	*/
 
     	timeLogger << maxDuration << endl;
 
@@ -287,33 +272,15 @@ namespace trajectory_generator
 #if DEBUG
     	cout << "A new set of motion profiles were successfully created." << endl;
 #endif
+    	return true;
 
-	//std::cout << "TG time: " << os::TimeService::Instance()->secondsSince(t1) << std::endl;
-
-	exeeded_maxduration = false;
-	return true;
     }
 
 
     bool TrajectoryGenerator::updateTG(void){
-
-	if (exeeded_maxduration)
-	{
-		//std::cout << "\033[1;7;30;43m[updateTG]: exeeded_maxduration\033[0m" << std::endl;
-		return false;
-	}
-
     	if (motionProfile.size()==7){
 			time_passed = os::TimeService::Instance()->secondsSince(time_begin);
 			log(Info) << time_passed << endlog();
-
-			if (time_passed > maxDuration)
-			{
-				// do not return yet, let tg send the final joint positions (they will be repeated by FRI if necessary)
-				exeeded_maxduration = true;
-		//std::cout << "\033[1;7;30;43m[updateTG]: time_passed > maxDuration\033[0m" << std::endl;
-			}
-
 			jntPosCmd.clear();
 			jntState.position.clear();
 			jntState.header.stamp = ros::Time::now();
@@ -322,12 +289,6 @@ namespace trajectory_generator
 				jntState.position.push_back(motionProfile[i].Pos(time_passed));
 			}
 			output_jntPosPort_toROS.write(jntState);
-			/*
-			cout << "updateTG: time passed " << time_passed << " (" << maxDuration << "  " << (int)exeeded_maxduration << "), jnt positions: "
-					<< jntPosCmd[0]/3.141592*180 << " " << jntPosCmd[1]/3.141592*180 << " " << jntPosCmd[2]/3.141592*180 << " "
-					<< jntPosCmd[3]/3.141592*180 << " " << jntPosCmd[4]/3.141592*180 << " " << jntPosCmd[5]/3.141592*180 << " "
-					<< jntPosCmd[6]/3.141592*180 << endl;
-			*/
 #if DEBUG
 			log(Info) << jntPosCmd[0] << " " << jntPosCmd[1] << " " << jntPosCmd[2] << " "
 										<< jntPosCmd[3] << " " << jntPosCmd[4] << " " << jntPosCmd[5] << " "
@@ -343,7 +304,7 @@ namespace trajectory_generator
 
     void TrajectoryGenerator::updateHook()
     {
-	//updateTG();
+    	updateTG();
     }
 
 
