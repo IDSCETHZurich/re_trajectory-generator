@@ -79,7 +79,7 @@ namespace trajectory_generator
 
         timeLogger.open("timeLog.txt");
 
-
+        state=time_opt;
 
         //addition from call. traj. contrl.
         this->ports()->addEventPort("newTrajectoryFromROS", iprt_trajectory,
@@ -123,7 +123,7 @@ namespace trajectory_generator
 			if (abs(robotState.velocity[i]) > abs(vM[i]))
 			{
 				scale[i] = robotState.velocity[i]/vM[i];
-				cout << "The requested velocity is higher than it should. Rescaling from "
+				cout << "[TrajectoryGenerator::jntVelScaling]: The requested velocity is higher than it should. Rescaling from "
 						<< robotState.velocity[i] << " to " << vM[i] << " by a factor " << scale[i] << endl;
 			}
 		}
@@ -194,9 +194,9 @@ namespace trajectory_generator
     {
 		if(doSync==true && addFinalVel==true){
 			doSync = false;
-			cout << "Sync with non zero final velocities is not yet implemented" << endl;
+			cout << "[TrajectoryGenerator::startHook]: Sync with non zero final velocities is not yet implemented" << endl;
 		}
-    	std::cout << "TrajectoryGenerator::Trajectory generator running" << std::endl;
+    	std::cout << "[TrajectoryGenerator::startHook]: Trajectory generator running" << std::endl;
 
     	return true;
     }
@@ -205,7 +205,7 @@ namespace trajectory_generator
 
     bool TrajectoryGenerator::generateNewVelocityProfilesJntPosInput(RTT::base::PortInterface* portInterface)
     {
-    	state = time_opt;
+    	cout << "[TrajectoryGenerator::generateNewVelocityProfilesJntPosInput]: New jnt pos received." << endl;
 
     	//Create joint specific velocity profiles
     	maxDuration = 0.0;
@@ -223,11 +223,10 @@ namespace trajectory_generator
     	lastCommandedPoseJntPos = cmdJntState.position;
     	lastCommandedPoseJntVel = cmdJntState.velocity;
 
-
     	for(int i=0; i < 7; i++){
     		if(lastCommandedPoseJntPos[i]<p_min[i] || lastCommandedPoseJntPos[i]>p_max[i]){
     			//log(Info) << "Commanded joint position out of bounds" << endlog();
-    			cout << "Commanded joint position out of bounds " << lastCommandedPoseJntPos[i] << endl;
+    			cout << "[TrajectoryGenerator::generateNewVelocityProfilesJntPosInput]: Commanded joint position out of bounds " << lastCommandedPoseJntPos[i] << endl;
     			return false;
     		}
 
@@ -237,7 +236,7 @@ namespace trajectory_generator
     		// Then, if the motion due to deceleration/acceleration needed to stop_the_robot/reach_the_final_vel
     		// is higher than the distance that we have to the position limits, final state cannot be achieved
     		if (p_aux < 0.5*lastCommandedPoseJntVel[i]*lastCommandedPoseJntVel[i]/a_max[i]){
-    			cout << "Commanded final velocity out of bounds " << lastCommandedPoseJntVel[i] << endl;
+    			cout << "[TrajectoryGenerator::generateNewVelocityProfilesJntPosInput]: Commanded final velocity out of bounds " << lastCommandedPoseJntVel[i] << endl;
     			return false;
     		}
     	}
@@ -281,6 +280,15 @@ namespace trajectory_generator
 
     	//Set times
     	time_begin = os::TimeService::Instance()->getTicks();
+
+    	//Switch to time-opt state
+    	state = time_opt;
+    	cout << "[TrajectoryGenerator::generateNewVelocityProfilesJntPosInput]: Switched to time-opt state." << endl;
+
+    	// reset list of points for iterating state
+    	this->trajectory.points.clear();
+    	this->trajectory_iterator = this->trajectory.points.begin();
+
 #if DEBUG
     	cout << "A new set of motion profiles were successfully created." << endl;
 #endif
@@ -309,6 +317,7 @@ namespace trajectory_generator
 											<< jntPosCmd[3] << " " << jntPosCmd[4] << " " << jntPosCmd[5] << " "
 											<< jntPosCmd[6] << endlog();
 				#endif
+
 				output_jntPosPort.write(jntPosCmd);
 				return true;
 			}else{
@@ -321,6 +330,11 @@ namespace trajectory_generator
     			return true;
     		else
     			return false;
+    	}
+    	else
+    	{
+    		ROS_WARN("[TrajectoryGenerator::updateTG]: Undefined state!");
+    		return false;
     	}
     }
 
@@ -343,18 +357,19 @@ namespace trajectory_generator
 
     void TrajectoryGenerator::evNewTrajectory(RTT::base::PortInterface* portInterface)
     {
-    	state = iterating;
 
       if (iprt_trajectory.read(this->trajectory) == RTT::NewData)
       {
-        //std::cout << "New trajectory received!" << std::endl;
 
         this->trajectory_iterator = this->trajectory.points.begin();
 
-        //std::cout << "Start drawing" << std::endl;
+        state = iterating;
+        motionProfile.clear(); //make sure motion profile of time-opt is stopped
+        std::cout << "[TrajectoryGenerator::evNewTrajectory]: New trajectory received! Switched to iterating state." << std::endl;
+
       }
       else
-        std::cout << "ERROR: no new trajectory" << std::endl;
+        std::cout << "[TrajectoryGenerator::evNewTrajectory]: ERROR: no new trajectory" << std::endl;
     }
 
 
@@ -362,8 +377,10 @@ namespace trajectory_generator
       {
 
         if (this->trajectory.points.size() == 0)
-          return false;
-
+        {
+        	ROS_WARN("[TrajectoryGenerator::getNextPointOnCalligraphyTrajectory]: Trajectory empty");
+        	return false;
+        }
         // the last point in the trajectory has been sent...
         if (this->trajectory_iterator == this->trajectory.points.end())
         {
@@ -373,7 +390,7 @@ namespace trajectory_generator
           finished.data = true;
           oprt_character_done.write(finished);
 
-          //std::cout << "Drawing finished" << std::endl;
+          ROS_INFO("[TrajectoryGenerator::getNextPointOnCalligraphyTrajectory]: Trajectory finished");
 
           // reset trajectory
           this->trajectory.points.clear();

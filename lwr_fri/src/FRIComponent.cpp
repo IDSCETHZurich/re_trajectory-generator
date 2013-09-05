@@ -257,17 +257,43 @@ void FRIComponent::updateHook() {
 			if (m_control_mode == 1) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_JNTPOS;
 				if(updateGenerator()){
-					if (NewData == m_jntPosPort.read(m_jntPos))
-						for (unsigned int i = 0; i < LBR_MNJ; i++)
+					if (NewData == m_jntPosPort.read(m_jntPos)){
+						last_cmd_jnt_pos.clear();
+						last_cmd_jnt_pos.reserve(LBR_MNJ);
+						for (unsigned int i = 0; i < LBR_MNJ; i++){
 							m_cmd_data.cmd.jntPos[i] = m_jntPos[i];
+							last_cmd_jnt_pos.push_back(m_jntPos[i]);
+						}
 //					std::cout << "FRI: "<< m_jntPos[0] << " " << m_jntPos[1] << " " << m_jntPos[2] << " "
 //							<< m_jntPos[3] << " " << m_jntPos[4] << " " << m_jntPos[5] << " "
 //							<< m_jntPos[6] << std::endl;
+					}else{
+						//std::cout << "NO new data" << std::endl;
+					}
 				}else{
+					//std::cout << "sending measurements" << std::endl;
 					for (unsigned int i = 0; i < LBR_MNJ; i++)
 						m_cmd_data.cmd.jntPos[i] = m_msr_data.data.msrJntPos[i];
 				}
+				/*
+				}else{
+					std::cout << "updateGenerator() returned false" << std::endl;
+ 					if (last_cmd_jnt_pos.size() == 0) {
+ 						std::cout << "sending measurements" << std::endl;
+ 						for (unsigned int i = 0; i < LBR_MNJ; i++)
+ 							m_cmd_data.cmd.jntPos[i] = m_msr_data.data.msrJntPos[i];
 
+ 					} else {
+ 						std::cout << "sending last cmd data" << std::endl;
+ 						for (unsigned int i = 0; i < LBR_MNJ; i++)
+ 						m_cmd_data.cmd.jntPos[i] = last_cmd_jnt_pos[i];
+ 					}
+				}
+				std::cout << "FRI cmd: " << m_cmd_data.cmd.jntPos[0]*57.2957795 << " " << m_cmd_data.cmd.jntPos[1]*57.2957795 << " "
+				 << m_cmd_data.cmd.jntPos[2]*57.2957795 << " " << m_cmd_data.cmd.jntPos[3]*57.2957795 << " "
+				 << m_cmd_data.cmd.jntPos[4]*57.2957795 << " " << m_cmd_data.cmd.jntPos[5]*57.2957795 << " "
+				 << m_cmd_data.cmd.jntPos[6]*57.2957795 << std::endl;
+			*/
 
 			} else	if (m_control_mode == 2) {
 				m_cmd_data.cmd.cmdFlags = FRI_CMD_JNTPOS;

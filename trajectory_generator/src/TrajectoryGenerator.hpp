@@ -104,7 +104,6 @@ namespace trajectory_generator
     	/**
     	 * \brief state in which the TG is in [time-opt.|iterating received vector]
     	 */
-    	//no need for initialization since both possible callback fcns will define it
     	enum state_t { time_opt, iterating };
     	state_t state;
 
