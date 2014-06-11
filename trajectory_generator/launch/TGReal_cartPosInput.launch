@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+  <include file="$(find re_kuka)/launch/visualize.launch"/>
+  <node name="TG" pkg="ocl" type="deployer-gnulinux" launch-prefix="xterm -e" args="-s $(find trajectory_generator)/deploy/TrajectoryGeneratorReal_cartPosInput.xml -- "> </node>
+
+</launch>
+

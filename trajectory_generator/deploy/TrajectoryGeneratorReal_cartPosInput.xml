@@ -11,6 +11,7 @@
 	<simple name="Import" type="string"><value>rtt_nav_msgs</value></simple>
 	<simple name="Import" type="string"><value>kuka_IK</value></simple>
 	
+	<!-- maps ROS topic "odometryDsr" to OROCOS topic "ROSConPoseIn" -->
 	<struct name="ROSConPoseIn" type="ConnPolicy">
   		<simple name="type" type="long"><value>0</value></simple>
   		<simple name="size" type="long"><value>1</value></simple>
@@ -18,6 +19,7 @@
   		<simple name="name_id" type="string"><value>odometryDsr</value></simple>
 	</struct>
 	
+	<!-- same thing, but other way round (cannot be detected by looking at this code) -->
 	<struct name="ROSConJntPosOut" type="ConnPolicy">
   		<simple name="type" type="long"><value>0</value></simple>
   		<simple name="size" type="long"><value>1</value></simple>
@@ -25,13 +27,24 @@
   		<simple name="name_id" type="string"><value>joint_states</value></simple>
 	</struct>
 
-    <struct name="kukaIKComponent" type="kuka_IK::kuka_IK">
+	<!-- maps Cartesian Pose from FRI to ROS (cannot be detected by looking at this code) -->
+	<struct name="ROSConMsrCartPosOut" type="ConnPolicy">
+  		<simple name="type" type="long"><value>0</value></simple>
+  		<simple name="size" type="long"><value>1</value></simple>
+  		<simple name="transport" type="long"><value>3</value></simple>
+  		<simple name="name_id" type="string"><value>MsrCartPose</value></simple>
+	</struct>
+
+	<!-- OROCOS components correspond to ROS nodes -->
+	<struct name="kukaIKComponent" type="kuka_IK::kuka_IK">
 		<struct name="Activity" type="NonPeriodicActivity">
 			<simple name="Priority" type="long"><value>1</value></simple>
 			<simple name="Scheduler" type="string"><value>ORO_SCHED_RT</value></simple>
-        	</struct>
+		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
+		<!-- listenes/publishes to these topics; in OROCOS file the name is CartesianPoseInput;
+			the other name "ROSConPoseIn" is only used within this file. -->
 		<struct name="Ports" type="PropertyBag">
     			<simple name="CartesianPoseInput" type="string"><value>ROSConPoseIn</value></simple>
     			<simple name="JointPositionDes" type="string"><value>JntPosIn</value></simple>
@@ -47,7 +60,7 @@
   		</struct>
 		<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="PropertyFile" type="string"><value>cpf/trajectoryGenerator.cpf</value></simple>
+		<simple name="PropertyFile" type="string"><value>/home/nico/ros/trajectory-generator/trajectory_generator/deploy/cpf/trajectoryGenerator.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
     			<simple name="JointPositionInput" type="string"><value>JntPosIn</value></simple>
     			<simple name="JointPositionDesToROS" type="string"><value>ROSConJntPosOut</value></simple>
@@ -63,13 +76,15 @@
 		</struct>
 	    	<simple name="AutoConf" type="boolean"><value>1</value></simple>
 		<simple name="AutoStart" type="boolean"><value>1</value></simple>
-		<simple name="LoadProperties" type="string"><value>cpf/FRIServer.cpf</value></simple>
+		<simple name="LoadProperties" type="string"><value>/home/nico/ros/trajectory-generator/trajectory_generator/deploy/cpf/FRIServer.cpf</value></simple>
 		<struct name="Ports" type="PropertyBag">
 			<simple name="msrJntPos" type="string"><value>MsrJointPosition2IK</value></simple>
 			<simple name="msrJntPos" type="string"><value>MsrJointPosition2TG</value></simple>
 			<simple name="desJntPos" type="string"><value>DesJointPosition</value></simple>
 			<simple name="msrCartPos" type="string"> <value>MsrCartPos</value></simple>
+			<simple name="msrCartPos" type="string"> <value>ROSConMsrCartPosOut</value></simple>
 		</struct>
+		<!-- peer trajectoryGenerator can be accessed by the FRIServer -->
 		<struct name="Peers" type="PropertyBag">
     			<simple type="string"><value>trajectoryGenerator</value></simple>
     	</struct>
@@ -84,7 +99,7 @@
     		<simple name="AutoConf" type="boolean"><value>1</value></simple>
     		<simple name="AutoStart" type="boolean"><value>1</value></simple>
     		<simple name="AutoSave" type="boolean"><value>1</value></simple>
-    		<simple name="LoadProperties" type="string"><value>cpf/reportingReal.cpf</value></simple>
+    		<simple name="LoadProperties" type="string"><value>/home/nico/ros/trajectory-generator/trajectory_generator/deploy/cpf/reportingReal.cpf</value></simple>
     		<struct name="Peers" type="PropertyBag">
     			<simple type="string"><value>trajectoryGenerator</value></simple>
     			<simple type="string"><value>FRIServer</value></simple>

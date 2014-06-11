@@ -1,10 +1,29 @@
-lwr_fri/include/friComm.h
+# General and build related
 .cproject
 .project
 .pydevproject
 *.pc
+<<<<<<< HEAD
 */build*
 */lib*
 */bin*
 *~
 *.cmake
+=======
+*/build/
+*/lib/
+*/bin/
+*~
+
+# Proprietary header file
+lwr_fri/include/friComm.h
+
+# Other (log) files
+.tb_history
+orocos.log
+trajectory_generator/deploy/.tb_history
+trajectory_generator/deploy/orocos.log
+trajectory_generator/deploy/timeLog.txt
+trajectory_generator/deploy/reports.dat
+trajectory_generator/deploy/reportsCartSim.dat
+>>>>>>> 215a834fd8c1d94c2c6e6543307ba3cfd1e5a61d

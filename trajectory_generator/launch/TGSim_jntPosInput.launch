@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find re_kuka)/launch/visualize.launch"/>
+  <node name="TG" pkg="ocl" type="deployer-gnulinux" launch-prefix="xterm -e" args="-s $(find trajectory_generator)/deploy/TrajectoryGeneratorSim_jntPosInput.xml -- "> </node>
+
+</launch>
